@@ -9,12 +9,21 @@ import MyGamesScreen, {
 import CreateGameScreen, {
   screenOptions as createGameScreenOptions,
 } from "../screens/game/CreateGameScreen";
+import ConfirmNewGameScreen, {
+  screenOptions as confirmNewGameScreenOptions,
+} from "../screens/game/ConfirmNewGameScreen";
 import AddPlayersScreen, {
   screenOptions as addPlayersScreenOptions,
 } from "../screens/game/AddPlayersScreen";
 import GameScreen, { screenOptions as gameScreenOptions } from "../screens/game/GameScreen";
 import BidsScreen, { screenOptions as bidsScreenOptions } from "../screens/game/BidsScreen";
 import ScoresScreen, { screenOptions as scoresScreenOptions } from "../screens/game/ScoresScreen";
+import EditPlayerNamesScreen, {
+  screenOptions as editPlayerNamesScreenOptions,
+} from "../screens/game/EditPlayerNamesScreen";
+import AddBonusScreen, {
+  screenOptions as addBonusScreenOptions,
+} from "../screens/game/AddBonusScreen";
 
 import SettingsScreen, { screenOptions as settingsScreenOptions } from "../screens/SettingsScreen";
 
@@ -50,6 +59,12 @@ export const GameNavigator = (props) => {
         options={createGameScreenOptions}
       />
       <GameStackNavigator.Screen
+        name="ConfirmNewGame"
+        component={ConfirmNewGameScreen}
+        options={confirmNewGameScreenOptions}
+      />
+
+      <GameStackNavigator.Screen
         name="AddPlayers"
         component={AddPlayersScreen}
         options={addPlayersScreenOptions}
@@ -60,6 +75,16 @@ export const GameNavigator = (props) => {
         name="Scores"
         component={ScoresScreen}
         options={scoresScreenOptions}
+      />
+      <GameStackNavigator.Screen
+        name="EditPlayerNames"
+        component={EditPlayerNamesScreen}
+        options={editPlayerNamesScreenOptions}
+      />
+      <GameStackNavigator.Screen
+        name="AddBonus"
+        component={AddBonusScreen}
+        options={addBonusScreenOptions}
       />
     </GameStackNavigator.Navigator>
   );

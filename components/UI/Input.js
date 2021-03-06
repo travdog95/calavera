@@ -11,7 +11,7 @@ const Input = (props) => {
 
 const styles = StyleSheet.create({
   input: {
-    borderColor: Colors.theme.grey3,
+    borderColor: Colors.theme.grey4,
     borderWidth: 1,
   },
 });

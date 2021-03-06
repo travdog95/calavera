@@ -1,20 +1,32 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, FlatList } from "react-native";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+
+import HeaderButton from "../../components/UI/HeaderButton";
 
 const FriendsScreen = (props) => {
   return (
     <View style={styles.screen}>
-      <FlatList
-        keyExtractor={(item, index) => item.id.toString()} //Using keyExtractor to override RN default 'key'
-        data={props.route.params.players}
-        renderItem={(itemData) => (
-          <View>
-            <Text>{itemData.item.name}</Text>
-          </View>
-        )}
-      />
+      <Text>Friends Screen</Text>
     </View>
   );
+};
+
+export const screenOptions = (navData) => {
+  return {
+    headerTitle: "Settings",
+    headerLeft: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Item
+          title="Menu"
+          iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+          onPress={() => {
+            navData.navigation.toggleDrawer();
+          }}
+        />
+      </HeaderButtons>
+    ),
+  };
 };
 
 const styles = StyleSheet.create({

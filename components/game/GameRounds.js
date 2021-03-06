@@ -1,11 +1,14 @@
 import React from "react";
-import { Platform, View, Text, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Pressable, View, Text, StyleSheet } from "react-native";
+import { useDispatch } from "react-redux";
 
+import { setCurrentRound } from "../../store/actions/game-actions";
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
 const GameRounds = (props) => {
+  const dispatch = useDispatch();
+
   //convert numRounds to array
   let rounds = [];
   for (let r = 1; r <= props.numRounds; r++) {
@@ -17,9 +20,22 @@ const GameRounds = (props) => {
       {rounds.map((round) => {
         const content = props.currentRound === round ? `<${round}>` : round;
         return (
-          <View key={round.toString()} style={styles.roundContainer}>
-            <Text style={styles.round}>{content}</Text>
-          </View>
+          <Pressable
+            key={round.toString()}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed ? Colors.theme.light2 : Colors.theme.light1,
+              },
+              styles.roundContainer,
+            ]}
+            onPress={() => {
+              dispatch(setCurrentRound(round));
+            }}
+          >
+            <View>
+              <Text style={styles.round}>{content}</Text>
+            </View>
+          </Pressable>
         );
       })}
     </View>
@@ -29,7 +45,7 @@ const GameRounds = (props) => {
 const styles = StyleSheet.create({
   row: {},
   roundContainer: {
-    backgroundColor: Colors.theme.light1,
+    // backgroundColor: Colors.theme.light1,
     alignItems: "center",
     justifyContent: "center",
     borderBottomWidth: 1,

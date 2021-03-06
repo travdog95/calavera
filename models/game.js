@@ -1,11 +1,13 @@
 class Game {
-  constructor(id, players, numRounds, currentRound, gameData, date) {
-    this.id = id;
-    this.players = players;
-    this.numRounds = numRounds;
-    this.gameData = gameData;
-    this.currentRound = currentRound;
-    this.date = date;
+  constructor(game) {
+    this.id = game.id;
+    this.players = game.players;
+    this.numRounds = game.numRounds;
+    this.gameData = game.gameData;
+    this.currentRound = game.currentRound;
+    this.date = game.date;
+    this.status = game.status;
+    this.winner = game.winner;
   }
 }
 

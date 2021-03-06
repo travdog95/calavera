@@ -1,16 +1,15 @@
 class RoundPlayerDetail {
   constructor(
-    // gameId,
     playerId,
     round,
     score = 0,
     bid = 0,
     totalScore = 0,
-    isAligned1 = false,
-    isAligned2 = false,
-    pointsWagered = 0
+    isAligned1 = 0,
+    isAligned2 = 0,
+    pointsWagered = 0,
+    hasTopScore = 0
   ) {
-    // this.gameId = gameId;
     this.playerId = playerId;
     this.round = round;
     this.score = score;
@@ -19,6 +18,7 @@ class RoundPlayerDetail {
     this.pointsWagered = pointsWagered;
     this.bid = bid;
     this.totalScore = totalScore;
+    this.hasTopScore = hasTopScore;
   }
 }
 

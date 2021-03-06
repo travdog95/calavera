@@ -5,7 +5,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/colors";
 
 import Input from "../UI/Input";
-import MainButton from "../../components/UI/MainButton";
+import CustomActionButton from "../../components/CustomActionButton";
+import Defaults from "../../constants/defaults";
 
 const ScoreRow = (props) => {
   const initializeAchievedBid = () => {
@@ -42,9 +43,9 @@ const ScoreRow = (props) => {
     let baseScore = 0;
 
     if (gotBid) {
-      baseScore = props.bid === 0 ? 10 * props.round : 20 * props.bid;
+      baseScore = parseInt(props.bid) === 0 ? 10 * props.round : 20 * props.bid;
     } else {
-      baseScore = props.bid === 0 ? 10 * props.round * -1 : -10;
+      baseScore = parseInt(props.bid) === 0 ? 10 * props.round * -1 : -10;
     }
     props.setScores(baseScore.toString(), props.playerIndex);
     setAchievedBid(gotBid);
@@ -55,31 +56,36 @@ const ScoreRow = (props) => {
       <View style={styles.playerNameContainer}>
         <Text style={styles.playerName}>{props.player.name}</Text>
       </View>
-      <MainButton
+      <CustomActionButton
         style={{
-          ...styles.button,
+          ...styles.bidButton,
           ...{ backgroundColor: achievedBid ? Colors.theme.light2 : Colors.theme.grey7 },
         }}
         onPress={achievedBidHandler.bind(this, !achievedBid)}
       >
-        <Text>{props.bid}</Text>
-      </MainButton>
+        <Text style={styles.buttonText}>{props.bid}</Text>
+      </CustomActionButton>
+
       <Input
         style={styles.score}
         blurOnSubmit
         autoCapitalize="none"
         autoCorrect={false}
         keyboardType="number-pad"
-        maxLength={4}
+        maxLength={3}
         onChangeText={numberInputHandler}
         value={props.scores[props.playerIndex]}
       />
-      <MainButton style={styles.button} onPress={incrementScoreHandler.bind(this, "lower")}>
-        <Ionicons name="chevron-down-outline" size={18} color="white" />
-      </MainButton>
-      <MainButton style={styles.button} onPress={incrementScoreHandler.bind(this, "higher")}>
-        <Ionicons name="chevron-up-outline" size={18} color="white" />
-      </MainButton>
+
+      <CustomActionButton style={styles.button} onPress={incrementScoreHandler.bind(this, "lower")}>
+        <Ionicons name="chevron-down-outline" size={Defaults.fontSize} color="white" />
+      </CustomActionButton>
+      <CustomActionButton
+        style={styles.button}
+        onPress={incrementScoreHandler.bind(this, "higher")}
+      >
+        <Ionicons name="chevron-up-outline" size={Defaults.fontSize} color="white" />
+      </CustomActionButton>
     </View>
   );
 };
@@ -89,6 +95,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     marginVertical: 5,
   },
   playerNameContainer: {
@@ -99,18 +106,26 @@ const styles = StyleSheet.create({
   },
   playerName: {
     fontFamily: "open-sans-bold",
-    fontSize: 18,
+    fontSize: Defaults.largeFontSize,
   },
   score: {
     fontFamily: "open-sans",
-    fontSize: 22,
+    fontSize: Defaults.largeFontSize,
     textAlign: "center",
     marginHorizontal: 10,
     paddingVertical: 5,
-    width: 70,
+    width: 50,
   },
   button: {
     marginHorizontal: 5,
+    backgroundColor: Defaults.button.secondary,
+  },
+  bidButton: {
+    width: 40,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: Defaults.fontSize,
   },
 });
 

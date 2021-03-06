@@ -1,9 +1,5 @@
 import React from "react";
-import { Platform, View, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-
-import Colors from "../../constants/colors";
-import Defaults from "../../constants/defaults";
+import { View, StyleSheet } from "react-native";
 import ScoreBox from "../../components/game/ScoreBox";
 
 const GameRoundRow = (props) => {
@@ -12,7 +8,12 @@ const GameRoundRow = (props) => {
       {props.roundRow.map((item) => {
         const key = `r${item.round.toString()}-${item.playerId}`;
         return (
-          <ScoreBox key={key} item={item} roundPlayerDetailWidth={props.roundPlayerDetailWidth} />
+          <ScoreBox
+            key={key}
+            item={item}
+            roundPlayerDetailWidth={props.roundPlayerDetailWidth}
+            navigation={props.navigation}
+          />
         );
       })}
     </View>

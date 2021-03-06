@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,12 @@ import {
   Dimensions,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { Audio } from "expo-av";
+import { Ionicons } from "@expo/vector-icons";
 
+import HeaderButton from "../../components/UI/HeaderButton";
 import GamePlayersHeader from "../../components/game/GamePlayersHeader";
 import GameRounds from "../../components/game/GameRounds";
 import GameRoundRows from "../../components/game/GameRoundRows";
@@ -25,16 +29,28 @@ const GameScreen = (props) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
   const [isGameOver, setIsGameOver] = useState(false);
+  const [sound, setSound] = useState();
 
-  const game = props.currentGame;
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(require("../../assets/kraken.mp3"));
+    setSound(sound);
 
-  // useEffect(() => {
-  //   console.log("store: GameScreen");
-  //   console.log(props.currentGame.gameData[0]);
-  // }, [props.currentGame]);
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
+
+  const game = useSelector((state) => state.game.currentGame);
+
+  // const dispatch = useDispatch();
 
   const windowWidth = Math.floor(Dimensions.get("window").width);
-  const windowHeight = Dimensions.get("window").height;
 
   //Calculate width of Round Player detail columns
   const calcRoundPlayerDetailWidth = () => {
@@ -47,9 +63,17 @@ const GameScreen = (props) => {
 
   const roundPlayerDetailWidth = calcRoundPlayerDetailWidth();
 
-  const nextRoundHandler = () => {
-    props.updateCurrentRound(game.currentRound + 1);
-  };
+  // const nextRoundHandler = () => {
+  //   if (game.currentRound < game.numRounds) {
+  //     dispatch(setCurrentRound(game.currentRound + 1));
+  //   }
+  // };
+
+  // const prevRoundHandler = () => {
+  //   if (game.currentRound > 1) {
+  //     dispatch(setCurrentRound(game.currentRound - 1));
+  //   }
+  // };
 
   if (error) {
     return (
@@ -75,37 +99,20 @@ const GameScreen = (props) => {
           <GamePlayersHeader
             players={game.players}
             roundPlayerDetailWidth={roundPlayerDetailWidth}
+            navigation={props.navigation}
           />
           <View style={styles.roundsContainer}>
             <GameRounds numRounds={game.numRounds} currentRound={game.currentRound} />
-            <GameRoundRows roundPlayerDetailWidth={roundPlayerDetailWidth} />
+            <GameRoundRows
+              roundPlayerDetailWidth={roundPlayerDetailWidth}
+              navigation={props.navigation}
+            />
           </View>
         </ScrollView>
       </ScrollView>
       <Animatable.View
-        style={{ position: "absolute", left: 20, bottom: 20, flexDirection: "row" }}
+        style={{ position: "absolute", left: 15, bottom: 15, flexDirection: "row" }}
         animation={"slideInLeft"}
-      >
-        <CustomActionButton
-          style={styles.primaryButton}
-          onPress={() => {
-            props.navigation.navigate("Scores", {
-              round: game.currentRound,
-              players: game.players,
-              roundPlayersDetail: game.gameData[game.currentRound - 1],
-            });
-          }}
-        >
-          <Text style={styles.primaryButtonText}>Scores</Text>
-        </CustomActionButton>
-        <CustomActionButton style={styles.nextRoundButton} onPress={nextRoundHandler}>
-          <Text style={styles.primaryButtonText}>Next Round</Text>
-        </CustomActionButton>
-      </Animatable.View>
-
-      <Animatable.View
-        style={{ position: "absolute", right: 20, bottom: 20 }}
-        animation={"slideInRight"}
       >
         <CustomActionButton
           style={styles.primaryButton}
@@ -119,6 +126,50 @@ const GameScreen = (props) => {
         >
           <Text style={styles.primaryButtonText}>Bids</Text>
         </CustomActionButton>
+
+        <CustomActionButton
+          style={styles.primaryButton}
+          onPress={() => {
+            props.navigation.navigate("Scores", {
+              round: game.currentRound,
+              players: game.players,
+              roundPlayersDetail: game.gameData[game.currentRound - 1],
+            });
+          }}
+        >
+          <Text style={styles.primaryButtonText}>Scores</Text>
+        </CustomActionButton>
+        {/* <CustomActionButton style={styles.primaryButton} onPress={prevRoundHandler}>
+          <Text style={styles.primaryButtonText}>Prev Rnd</Text>
+        </CustomActionButton>
+
+        <CustomActionButton style={styles.primaryButton} onPress={nextRoundHandler}>
+          <Text style={styles.primaryButtonText}>Next Rnd</Text>
+        </CustomActionButton> */}
+      </Animatable.View>
+
+      <Animatable.View
+        style={{ position: "absolute", left: 15, bottom: 70 }}
+        animation={"slideInRight"}
+      >
+        <CustomActionButton style={styles.primaryButton} onPress={playSound}>
+          <Text style={styles.primaryButtonText}>
+            <Ionicons name="skull" size={18} color="white" />
+          </Text>
+        </CustomActionButton>
+
+        {/* <CustomActionButton
+          style={styles.primaryButton}
+          onPress={() => {
+            props.navigation.navigate("Bids", {
+              round: game.currentRound,
+              players: game.players,
+              roundPlayersDetail: game.gameData[game.currentRound - 1],
+            });
+          }}
+        >
+          <Text style={styles.primaryButtonText}>Bids</Text>
+        </CustomActionButton> */}
       </Animatable.View>
     </View>
   );
@@ -127,28 +178,6 @@ const GameScreen = (props) => {
 export const screenOptions = (navData) => {
   return {
     headerTitle: "Let's Play!",
-    // headerLeft: () => (
-    //   <HeaderButtons HeaderButtonComponent={HeaderButton}>
-    //     <Item
-    //       title="Menu"
-    //       iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
-    //       onPress={() => {
-    //         navData.navigation.toggleDrawer();
-    //       }}
-    //     />
-    //   </HeaderButtons>
-    // ),
-    //   headerRight: () => (
-    //     <HeaderButtons HeaderButtonComponent={HeaderButton}>
-    //       <Item
-    //         title="Cart"
-    //         iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
-    //         onPress={() => {
-    //           navData.navigation.navigate("Cart");
-    //         }}
-    //       />
-    //     </HeaderButtons>
-    //   ),
   };
 };
 
@@ -158,27 +187,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   primaryButton: {
-    backgroundColor: Colors.theme.main1,
-    borderRadius: 10,
-  },
-  nextRoundButton: {
-    backgroundColor: Colors.theme.main1,
-    borderRadius: 10,
-    marginLeft: 15,
+    backgroundColor: Defaults.button.primary,
+    marginRight: 10,
   },
 
   primaryButtonText: {
     color: "white",
-    fontSize: 16,
+    fontSize: Defaults.fontSize,
   },
 });
 
-//Get properties from redux store
-const mapStateToProps = (state) => ({ currentGame: state.game });
-
-//Set properties in redux store
-const mapDispatchToProps = (dispatch) => ({
-  updateCurrentRound: (currentRound) => dispatch(setCurrentRound(currentRound)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(GameScreen);
+export default GameScreen;

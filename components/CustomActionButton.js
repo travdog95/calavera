@@ -44,7 +44,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 8,
+    elevation: 5,
+    shadowOffset: { width: 3, height: 3 },
+    shadowColor: Colors.theme.grey5,
+    shadowOpacity: 0.8,
   },
   buttonText: {
     fontFamily: "open-sans",

@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { Platform, View, Text, StyleSheet, Alert } from "react-native";
+import React from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Input from "../UI/Input";
-import MainButton from "../../components/UI/MainButton";
+import CustomActionButton from "../../components/CustomActionButton";
+import Defaults from "../../constants/defaults";
 
 const BidRow = (props) => {
   const numberInputHandler = (inputText) => {
-    props.setBids(inputText.replace(/[^0-9]/g, ""));
+    props.setBids(inputText.replace(/[^0-9]/g, ""), props.playerIndex);
   };
 
   const incrementBidHandler = (direction) => {
@@ -45,12 +46,13 @@ const BidRow = (props) => {
         onChangeText={numberInputHandler}
         value={props.bids[props.playerIndex]}
       />
-      <MainButton style={styles.button} onPress={incrementBidHandler.bind(this, "lower")}>
-        <Ionicons name="chevron-down-outline" size={18} color="white" />
-      </MainButton>
-      <MainButton style={styles.button} onPress={incrementBidHandler.bind(this, "higher")}>
-        <Ionicons name="chevron-up-outline" size={18} color="white" />
-      </MainButton>
+
+      <CustomActionButton style={styles.button} onPress={incrementBidHandler.bind(this, "lower")}>
+        <Ionicons name="chevron-down-outline" size={Defaults.fontSize} color="white" />
+      </CustomActionButton>
+      <CustomActionButton style={styles.button} onPress={incrementBidHandler.bind(this, "higher")}>
+        <Ionicons name="chevron-up-outline" size={Defaults.fontSize} color="white" />
+      </CustomActionButton>
     </View>
   );
 };
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     marginVertical: 5,
   },
   playerNameContainer: {
@@ -70,11 +73,11 @@ const styles = StyleSheet.create({
   },
   playerName: {
     fontFamily: "open-sans-bold",
-    fontSize: 18,
+    fontSize: Defaults.largeFontSize,
   },
   bid: {
     fontFamily: "open-sans",
-    fontSize: 22,
+    fontSize: Defaults.largeFontSize,
     textAlign: "center",
     marginHorizontal: 10,
     paddingVertical: 5,
@@ -82,6 +85,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginHorizontal: 5,
+    backgroundColor: Defaults.button.secondary,
   },
 });
 

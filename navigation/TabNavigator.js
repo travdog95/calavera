@@ -31,12 +31,12 @@ export const AppTabNavigator = (props) => {
         },
       })}
       tabBarOptions={{
-        activeTintColor: Colors.theme.main3,
+        activeTintColor: Colors.theme.dark1,
         inactiveTintColor: Colors.theme.grey6,
       }}
     >
       <Tab.Screen name="Games" component={GameNavigator} />
-      <Tab.Screen name="Friends" component={FriendsScreen} initialParams={{ players: PLAYERS }} />
+      <Tab.Screen name="Friends" component={FriendsScreen} />
       {/* <Tab.Screen name="Standings" component={StandingsScreen} /> */}
       {/* <Tab.Screen
         name="Messages"

@@ -1,41 +1,26 @@
-import { INIT_GAME, UPDATE_PLAYER_DATA, SET_CURRENT_ROUND } from "../actions/game-actions";
+import * as actions from "../actions/game-actions";
 
 //initialize state
 const initialState = {
   games: [],
-  // currentGame: {
-  //   players: [],
-  //   numRounds: 0,
-  //   gameData: [],
-  //   currentRound: 0,
-  //   date: "",
-  // },
-  players: [],
-  numRounds: 0,
-  gameData: [],
-  currentRound: 0,
-  date: "",
+  currentGame: {},
 };
 
 const gameReducer = (state = initialState, action) => {
   switch (action.type) {
-    case INIT_GAME:
+    case actions.INIT_GAME:
       const newGames = state.games.some((game) => game.id === action.game.id)
         ? state.games
         : state.games.concat(action.game);
 
       return {
         ...state,
-        players: action.game.players,
-        numRounds: action.game.numRounds,
-        gameData: action.game.gameData,
-        currentRound: action.game.currentRound,
-        date: action.game.date,
+        currentGame: action.game,
         games: newGames,
       };
-    case UPDATE_PLAYER_DATA:
+    case actions.UPDATE_PLAYER_DATA:
       const newGameData = [];
-      const gameData = state.gameData;
+      const gameData = state.currentGame.gameData;
       const newPlayerDetails = action.playerData;
       const roundToUpdate = action.roundToUpdate;
 
@@ -55,6 +40,18 @@ const gameReducer = (state = initialState, action) => {
             //Update score, if passed in from action
             if (newPlayerDetail.score !== undefined) {
               roundPlayerDetail.score = newPlayerDetail.score;
+
+              //Calculate totalScore
+              if (state.currentGame.currentRound === 1) {
+                roundPlayerDetail.totalScore = roundPlayerDetail.score;
+              } else {
+                newGameData.forEach((rpd) => {
+                  const prevRPD = rpd.find((item) => item.playerId === roundPlayerDetail.playerId);
+
+                  roundPlayerDetail.totalScore =
+                    parseInt(roundPlayerDetail.score) + parseInt(prevRPD.totalScore);
+                });
+              }
             }
 
             //Update bid, if passed in from action
@@ -70,13 +67,32 @@ const gameReducer = (state = initialState, action) => {
         }
       });
 
-      return { ...state, gameData: newGameData };
-    case SET_CURRENT_ROUND:
-      return { ...state, currentRound: action.currentRound };
+      return { ...state, currentGame: { ...state.currentGame, gameData: newGameData } };
+    case actions.SET_CURRENT_ROUND:
+      return {
+        ...state,
+        currentGame: { ...state.currentGame, currentRound: action.currentRound },
+      };
+    case actions.SAVE_PLAYER_NAME:
+      const newPlayers = [];
+      const playerId = action.playerId;
+      const playerName = action.playerName;
+
+      state.currentGame.players.forEach((player) => {
+        const newPlayer = {
+          id: player.id,
+          name: player.id === playerId ? playerName : player.name,
+        };
+        newPlayers.push(newPlayer);
+      });
+
+      return {
+        ...state,
+        currentGame: { ...state.currentGame, players: newPlayers },
+      };
     default:
-      break;
+      return state;
   }
-  return state;
 };
 
 export default gameReducer;

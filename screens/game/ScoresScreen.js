@@ -1,17 +1,20 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, ScrollView, Platform, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import * as Animatable from "react-native-animatable";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { updatePlayerData } from "../../store/actions/game-actions";
+import { updatePlayerData, setCurrentRound } from "../../store/actions/game-actions";
 import ScoreRow from "../../components/game/ScoreRow";
 import CustomActionButton from "../../components/CustomActionButton";
-import Colors from "../../constants/colors";
+import Defaults from "../../constants/defaults";
 
 const ScoresScreen = (props) => {
   const players = props.route.params.players;
   const currentRound = props.route.params.round;
   const roundPlayersDetail = props.route.params.roundPlayersDetail;
+  const finalRound = useSelector((state) => state.game.currentGame.numRounds);
+
+  const dispatch = useDispatch();
 
   const setInitialScores = () => {
     const initialScores = [];
@@ -19,10 +22,10 @@ const ScoresScreen = (props) => {
     roundPlayersDetail.forEach((detail) => {
       if (parseInt(detail.score) === 0) {
         let score = 0;
-        if (detail.bid === 0) {
+        if (parseInt(detail.bid) === 0) {
           score = detail.round * 10;
         } else {
-          score = detail.bid * 20;
+          score = parseInt(detail.bid) * 20;
         }
         initialScores.push(score.toString());
       } else {
@@ -54,8 +57,17 @@ const ScoresScreen = (props) => {
     players.map((player, index) => {
       playerData.push({ playerId: player.id, score: scores[index] });
     });
-    props.updateRoundPlayerData(props.currentGame, currentRound, playerData);
 
+    dispatch(updatePlayerData(currentRound, playerData));
+
+    if (currentRound < finalRound) {
+      dispatch(setCurrentRound(currentRound + 1));
+    }
+
+    props.navigation.navigate("Game");
+  };
+
+  const backButtonHandler = () => {
     props.navigation.navigate("Game");
   };
 
@@ -77,9 +89,23 @@ const ScoresScreen = (props) => {
           );
         })}
       </ScrollView>
-      <CustomActionButton style={styles.primaryButton} onPress={updateScoresHandler}>
-        <Text style={styles.primaryButtonText}>Save scores</Text>
-      </CustomActionButton>
+      <Animatable.View
+        style={{ position: "absolute", left: 20, bottom: 20 }}
+        animation={"slideInLeft"}
+      >
+        <CustomActionButton style={styles.backButton} onPress={backButtonHandler}>
+          <Text style={styles.buttonText}>Back</Text>
+        </CustomActionButton>
+      </Animatable.View>
+
+      <Animatable.View
+        style={{ position: "absolute", right: 20, bottom: 20 }}
+        animation={"slideInRight"}
+      >
+        <CustomActionButton style={styles.primaryButton} onPress={updateScoresHandler}>
+          <Text style={styles.buttonText}>Save scores</Text>
+        </CustomActionButton>
+      </Animatable.View>
     </View>
   );
 };
@@ -95,21 +121,15 @@ export const screenOptions = (navData) => {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   primaryButton: {
-    backgroundColor: Colors.theme.main1,
+    backgroundColor: Defaults.button.primary,
   },
-  primaryButtonText: {
+  backButton: {
+    backgroundColor: Defaults.button.cancel,
+  },
+  buttonText: {
     color: "white",
-    fontSize: 16,
+    fontSize: Defaults.fontSize,
   },
 });
 
-//Get properties from redux store
-const mapStateToProps = (state) => ({ currentGame: state.game });
-
-//Set properties in redux store
-const mapDispatchToProps = (dispatch) => ({
-  updateRoundPlayerData: (game, roundToUpdate, roundScores) =>
-    dispatch(updatePlayerData(game, roundToUpdate, roundScores)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ScoresScreen);
+export default ScoresScreen;

@@ -1,11 +1,8 @@
 import React from "react";
-import { Platform, View, Text, StyleSheet } from "react-native";
-import { HeaderButton } from "react-navigation-header-buttons";
-import { Ionicons } from "@expo/vector-icons";
+import { Pressable, View, Text, StyleSheet } from "react-native";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
-import { setStatusBarBackgroundColor } from "expo-status-bar";
 
 const GamePlayersHeader = (props) => {
   return (
@@ -15,12 +12,25 @@ const GamePlayersHeader = (props) => {
       </View>
       {props.players.map((player) => {
         return (
-          <View
+          <Pressable
             key={player.id.toString()}
-            style={{ ...styles.playerContainer, ...{ width: props.roundPlayerDetailWidth } }}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed ? Colors.theme.main1 : Colors.theme.main2,
+              },
+              { ...styles.playerContainer, ...{ width: props.roundPlayerDetailWidth } },
+            ]}
+            onPress={() => {
+              props.navigation.navigate("EditPlayerNames", {
+                playerId: player.id,
+                playerName: player.name,
+              });
+            }}
           >
-            <Text style={styles.player}>{player.name}</Text>
-          </View>
+            <View>
+              <Text style={styles.player}>{player.name}</Text>
+            </View>
+          </Pressable>
         );
       })}
     </View>
@@ -30,10 +40,10 @@ const GamePlayersHeader = (props) => {
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
-    height: Defaults.game.rowHeight,
+    height: Defaults.game.playerRowHeight,
   },
   playerContainer: {
-    backgroundColor: Colors.theme.light3,
+    // backgroundColor: Colors.theme.light3,
     alignItems: "center",
     justifyContent: "center",
     borderBottomWidth: 1,
@@ -43,6 +53,7 @@ const styles = StyleSheet.create({
   },
   player: {
     fontFamily: "open-sans-bold",
+    color: "white",
   },
   spacer: {
     backgroundColor: "white",

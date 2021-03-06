@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import React from "react";
+import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useSelector } from "react-redux";
 
+import GameRow from "../../components/game/GameRow";
 import CustomActionButton from "../../components/CustomActionButton";
 import HeaderButton from "../../components/UI/HeaderButton";
+import DefaultText from "../../components/UI/DefaultText";
 
 import Colors from "../../constants/colors";
+import Defaults from "../../constants/defaults";
 
 const MyGamesScreen = (props) => {
   const games = useSelector((state) => state.game.games);
@@ -15,15 +18,18 @@ const MyGamesScreen = (props) => {
   return (
     <View style={styles.screen}>
       {games.length === 0 ? (
-        <Text>No games! You should create one and start playing!</Text>
+        <View style={styles.noGames}>
+          <Text>No games! You should create one and start playing!</Text>
+        </View>
       ) : (
         <ScrollView>
+          <View style={styles.headerContainer}>
+            <DefaultText style={styles.gameLabel}>Game</DefaultText>
+            <DefaultText style={styles.playersLabel}># Players</DefaultText>
+            <DefaultText style={styles.statusLabel}>Status</DefaultText>
+          </View>
           {games.map((game, index) => {
-            return (
-              <View key={game.id}>
-                <Text>{game.date}</Text>
-              </View>
-            );
+            return <GameRow key={game.id} game={game} navigation={props.navigation} />;
           })}
         </ScrollView>
       )}
@@ -47,17 +53,17 @@ const MyGamesScreen = (props) => {
 export const screenOptions = (navData) => {
   return {
     headerTitle: "My Games",
-    headerLeft: () => (
-      <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <Item
-          title="Menu"
-          iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
-          onPress={() => {
-            navData.navigation.toggleDrawer();
-          }}
-        />
-      </HeaderButtons>
-    ),
+    // headerLeft: () => (
+    //   <HeaderButtons HeaderButtonComponent={HeaderButton}>
+    //     <Item
+    //       title="Menu"
+    //       iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+    //       onPress={() => {
+    //         navData.navigation.openDrawer();
+    //       }}
+    //     />
+    //   </HeaderButtons>
+    // ),
     //   headerRight: () => (
     //     <HeaderButtons HeaderButtonComponent={HeaderButton}>
     //       <Item
@@ -76,13 +82,43 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
+  noGames: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   primaryButton: {
-    backgroundColor: Colors.theme.main1,
-    borderRadius: 10,
+    backgroundColor: Defaults.button.primary,
   },
   primaryButtonText: {
     color: "white",
-    fontSize: 16,
+    fontSize: Defaults.fontSize,
+  },
+  headerContainer: {
+    flex: 1,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 5,
+    padding: 5,
+  },
+  gameLabel: {
+    fontSize: Defaults.fontSize,
+    width: "40%",
+    fontFamily: "open-sans-bold",
+  },
+  playersLabel: {
+    fontSize: Defaults.fontSize,
+    width: "20%",
+    textAlign: "center",
+    fontFamily: "open-sans-bold",
+  },
+  statusLabel: {
+    fontSize: Defaults.fontSize,
+    width: "30%",
+    textAlign: "right",
+    fontFamily: "open-sans-bold",
   },
 });
 

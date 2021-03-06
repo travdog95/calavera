@@ -1,25 +1,63 @@
 import React from "react";
-import { Platform, View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
 const ScoreBox = (props) => {
+  let wagerIndicator = "";
+  const cellBackgroundColor = props.item.round % 2 === 0 ? Colors.theme.grey2 : "white";
+
+  if (props.item.pointsWagered > 0) {
+    wagerIndicator = props.item.pointsWagered === 10 ? "+" : "++";
+  }
+
   return (
-    <View
-      style={{
-        ...styles.roundContainer,
-        ...{
-          width: props.roundPlayerDetailWidth,
-          backgroundColor: props.item.round % 2 === 0 ? Colors.theme.grey3 : "white",
+    <Pressable
+      style={({ pressed }) => [
+        {
+          backgroundColor: pressed ? Colors.theme.light1 : cellBackgroundColor,
         },
+        {
+          ...styles.roundContainer,
+          ...{
+            width: props.roundPlayerDetailWidth,
+          },
+        },
+      ]}
+      onPress={() => {
+        props.navigation.navigate("AddBonus", {
+          playerId: props.item.playerId,
+          round: props.item.round,
+        });
       }}
     >
-      <Text style={styles.round}>
-        {props.item.bid} | {props.item.score}
-      </Text>
-    </View>
+      <View>
+        <View style={styles.topRowContainer}>
+          <View style={styles.bidContainer}>
+            <Text style={styles.bidText}>{props.item.bid}</Text>
+          </View>
+          <View style={styles.scoreContainer}>
+            <Text style={styles.score}>{props.item.score}</Text>
+          </View>
+          <View style={styles.wagerContainer}>
+            <Text>{wagerIndicator}</Text>
+          </View>
+        </View>
+        <View style={styles.bottomRowContainer}>
+          <View style={styles.allianceContainer}>
+            <Text style={styles.alliance}></Text>
+          </View>
+          <View style={styles.totalScoreContainer}>
+            <Text style={styles.totalScore}>{props.item.totalScore}</Text>
+          </View>
+          <View style={styles.allianceContainer}>
+            <Text style={styles.alliance}></Text>
+          </View>
+        </View>
+      </View>
+    </Pressable>
   );
 };
 
@@ -33,8 +71,49 @@ const styles = StyleSheet.create({
     borderColor: Colors.theme.dark4,
     height: Defaults.game.rowHeight,
   },
-  round: {
+  topRowContainer: {
+    flexDirection: "row",
+    flex: 1,
     fontFamily: "open-sans",
+    fontSize: 12,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bottomRowContainer: {
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  allianceContainer: {
+    width: "25%",
+    alignItems: "center",
+  },
+  totalScoreContainer: {
+    width: "50%",
+    alignItems: "center",
+  },
+
+  bidContainer: {
+    width: "25%",
+    alignItems: "center",
+  },
+  bidText: {
+    color: Colors.theme.main3,
+  },
+  wagerContainer: {
+    width: "25%",
+    alignItems: "center",
+  },
+  scoreContainer: {
+    width: "50%",
+    alignItems: "center",
+  },
+
+  totalScore: {
+    fontFamily: "open-sans-bold",
+    fontSize: 16,
   },
 });
 

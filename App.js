@@ -10,6 +10,7 @@ import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 
 import { DrawNavigator } from "./navigation/DrawerNavigator";
+import { AppTabNavigator } from "./navigation/TabNavigator";
 import gameReducer from "./store/reducers/game-reducer";
 
 enableScreens(); //ensure react-native uses native underlying screen components. Should be called before you render your first screen
@@ -44,7 +45,7 @@ export default function App() {
     <Provider store={store}>
       <SafeAreaView style={styles.screen}>
         <NavigationContainer>
-          <DrawNavigator />
+          <AppTabNavigator />
         </NavigationContainer>
         <StatusBar style="auto" />
       </SafeAreaView>
