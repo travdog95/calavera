@@ -5,10 +5,9 @@ class RoundPlayerDetail {
     score = 0,
     bid = 0,
     totalScore = 0,
-    isAligned1 = 0,
-    isAligned2 = 0,
-    pointsWagered = 0,
-    hasTopScore = 0
+    isAligned1 = "",
+    isAligned2 = "",
+    pointsWagered = 0
   ) {
     this.playerId = playerId;
     this.round = round;
@@ -18,7 +17,6 @@ class RoundPlayerDetail {
     this.pointsWagered = pointsWagered;
     this.bid = bid;
     this.totalScore = totalScore;
-    this.hasTopScore = hasTopScore;
   }
 }
 

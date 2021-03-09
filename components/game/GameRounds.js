@@ -18,13 +18,15 @@ const GameRounds = (props) => {
   return (
     <View style={styles.row}>
       {rounds.map((round) => {
-        const content = props.currentRound === round ? `<${round}>` : round;
+        const content = props.currentRound === round ? `[${round}]` : round;
+        const roundBackgroundColor =
+          props.currentRound === round ? Colors.theme.light3 : Colors.theme.light1;
         return (
           <Pressable
             key={round.toString()}
             style={({ pressed }) => [
               {
-                backgroundColor: pressed ? Colors.theme.light2 : Colors.theme.light1,
+                backgroundColor: pressed ? Colors.theme.light2 : roundBackgroundColor,
               },
               styles.roundContainer,
             ]}
@@ -45,7 +47,6 @@ const GameRounds = (props) => {
 const styles = StyleSheet.create({
   row: {},
   roundContainer: {
-    // backgroundColor: Colors.theme.light1,
     alignItems: "center",
     justifyContent: "center",
     borderBottomWidth: 1,

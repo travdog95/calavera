@@ -24,14 +24,7 @@ const CreateGameScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
-  const [playerNames, setPlayerNames] = useState([
-    "Travis",
-    "Kimmo",
-    "Dave",
-    "Risa",
-    "Sabrina",
-    "Doug",
-  ]);
+  const [playerNames, setPlayerNames] = useState(["Travis", "Kimmo", "Dave", "Risa"]);
   // const [playerNames, setPlayerNames] = useState([]);
   const [playerName, setPlayerName] = useState("");
   const [isGameStartable, setIsGameStartable] = useState(true);

@@ -24,6 +24,9 @@ import EditPlayerNamesScreen, {
 import AddBonusScreen, {
   screenOptions as addBonusScreenOptions,
 } from "../screens/game/AddBonusScreen";
+import LeaderboardScreen, {
+  screenOptions as leaderboardScreenOptions,
+} from "../screens/game/LeaderboardScreen";
 
 import SettingsScreen, { screenOptions as settingsScreenOptions } from "../screens/SettingsScreen";
 
@@ -80,6 +83,11 @@ export const GameNavigator = (props) => {
         name="EditPlayerNames"
         component={EditPlayerNamesScreen}
         options={editPlayerNamesScreenOptions}
+      />
+      <GameStackNavigator.Screen
+        name="Leaderboard"
+        component={LeaderboardScreen}
+        options={leaderboardScreenOptions}
       />
       <GameStackNavigator.Screen
         name="AddBonus"

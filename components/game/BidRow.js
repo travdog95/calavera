@@ -36,6 +36,13 @@ const BidRow = (props) => {
       <View style={styles.playerNameContainer}>
         <Text style={styles.playerName}>{props.player.name}</Text>
       </View>
+      <CustomActionButton
+        style={styles.decrementButton}
+        onPress={incrementBidHandler.bind(this, "lower")}
+      >
+        <Ionicons name="remove-outline" size={Defaults.fontSize} color="white" />
+      </CustomActionButton>
+
       <Input
         style={styles.bid}
         blurOnSubmit
@@ -47,11 +54,11 @@ const BidRow = (props) => {
         value={props.bids[props.playerIndex]}
       />
 
-      <CustomActionButton style={styles.button} onPress={incrementBidHandler.bind(this, "lower")}>
-        <Ionicons name="chevron-down-outline" size={Defaults.fontSize} color="white" />
-      </CustomActionButton>
-      <CustomActionButton style={styles.button} onPress={incrementBidHandler.bind(this, "higher")}>
-        <Ionicons name="chevron-up-outline" size={Defaults.fontSize} color="white" />
+      <CustomActionButton
+        style={styles.incrementButton}
+        onPress={incrementBidHandler.bind(this, "higher")}
+      >
+        <Ionicons name="add-outline" size={Defaults.fontSize} color="white" />
       </CustomActionButton>
     </View>
   );
@@ -79,13 +86,23 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans",
     fontSize: Defaults.largeFontSize,
     textAlign: "center",
-    marginHorizontal: 10,
     paddingVertical: 5,
-    width: 60,
+    width: Defaults.isSmallScreen ? 50 : 55,
+    height: Defaults.isSmallScreen ? 35 : 40,
   },
-  button: {
-    marginHorizontal: 5,
+  incrementButton: {
     backgroundColor: Defaults.button.secondary,
+    borderBottomLeftRadius: 0,
+    borderTopLeftRadius: 0,
+    height: Defaults.isSmallScreen ? 35 : 40,
+    width: Defaults.isSmallScreen ? 35 : 40,
+  },
+  decrementButton: {
+    backgroundColor: Defaults.button.secondary,
+    borderBottomRightRadius: 0,
+    borderTopRightRadius: 0,
+    height: Defaults.isSmallScreen ? 35 : 40,
+    width: Defaults.isSmallScreen ? 35 : 40,
   },
 });
 

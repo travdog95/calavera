@@ -38,7 +38,7 @@ const gameReducer = (state = initialState, action) => {
             );
 
             //Update score, if passed in from action
-            if (newPlayerDetail.score !== undefined) {
+            if (action.methodType === "scores") {
               roundPlayerDetail.score = newPlayerDetail.score;
 
               //Calculate totalScore
@@ -55,8 +55,25 @@ const gameReducer = (state = initialState, action) => {
             }
 
             //Update bid, if passed in from action
-            if (newPlayerDetail.bid !== undefined) {
+            if (action.methodType === "bids") {
               roundPlayerDetail.bid = newPlayerDetail.bid;
+            }
+
+            if (action.methodType === "bonuses" && newPlayerDetail !== undefined) {
+              //update pointsWagered
+              if (newPlayerDetail.pointsWagered !== undefined) {
+                roundPlayerDetail.pointsWagered = newPlayerDetail.pointsWagered;
+              }
+
+              //update isAligned1
+              if (newPlayerDetail.isAligned1 !== undefined) {
+                roundPlayerDetail.isAligned1 = newPlayerDetail.isAligned1;
+              }
+
+              //update isAligned2
+              if (newPlayerDetail.isAligned2 !== undefined) {
+                roundPlayerDetail.isAligned2 = newPlayerDetail.isAligned2;
+              }
             }
 
             newRoundPlayerDetails.push(roundPlayerDetail);

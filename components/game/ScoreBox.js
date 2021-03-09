@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 
 import Colors from "../../constants/colors";
@@ -7,17 +8,36 @@ import Defaults from "../../constants/defaults";
 
 const ScoreBox = (props) => {
   let wagerIndicator = "";
-  const cellBackgroundColor = props.item.round % 2 === 0 ? Colors.theme.grey2 : "white";
+  let cellBackgroundColor = "";
+  const currentRound = useSelector((state) => state.game.currentGame.currentRound);
+
+  let totalScoreStyle = {
+    fontFamily: "open-sans-bold",
+    fontSize: 16,
+    color: "black",
+  };
+  if (props.isRoundLeader) {
+    totalScoreStyle.color = Colors.theme.main3;
+  }
+
+  if (props.item.round === currentRound) {
+    cellBackgroundColor = Colors.theme.light3Shade;
+  } else {
+    cellBackgroundColor = props.item.round % 2 === 0 ? Colors.theme.grey2 : "white";
+  }
 
   if (props.item.pointsWagered > 0) {
     wagerIndicator = props.item.pointsWagered === 10 ? "+" : "++";
   }
 
+  const isAligned1Indicator = props.item.isAligned1 ? "*" : "";
+  const isAligned2Indicator = props.item.isAligned2 ? "*" : "";
+
   return (
     <Pressable
       style={({ pressed }) => [
         {
-          backgroundColor: pressed ? Colors.theme.light1 : cellBackgroundColor,
+          backgroundColor: pressed ? Colors.theme.grey1 : cellBackgroundColor,
         },
         {
           ...styles.roundContainer,
@@ -41,19 +61,19 @@ const ScoreBox = (props) => {
           <View style={styles.scoreContainer}>
             <Text style={styles.score}>{props.item.score}</Text>
           </View>
-          <View style={styles.wagerContainer}>
-            <Text>{wagerIndicator}</Text>
+          <View style={styles.allianceContainer}>
+            <Text style={styles.alliance}>{isAligned1Indicator}</Text>
           </View>
         </View>
         <View style={styles.bottomRowContainer}>
-          <View style={styles.allianceContainer}>
-            <Text style={styles.alliance}></Text>
+          <View style={styles.wagerContainer}>
+            <Text>{wagerIndicator}</Text>
           </View>
           <View style={styles.totalScoreContainer}>
-            <Text style={styles.totalScore}>{props.item.totalScore}</Text>
+            <Text style={totalScoreStyle}>{props.item.totalScore}</Text>
           </View>
           <View style={styles.allianceContainer}>
-            <Text style={styles.alliance}></Text>
+            <Text style={styles.alliance}>{isAligned2Indicator}</Text>
           </View>
         </View>
       </View>
@@ -109,11 +129,6 @@ const styles = StyleSheet.create({
   scoreContainer: {
     width: "50%",
     alignItems: "center",
-  },
-
-  totalScore: {
-    fontFamily: "open-sans-bold",
-    fontSize: 16,
   },
 });
 

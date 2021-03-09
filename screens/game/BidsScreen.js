@@ -48,7 +48,7 @@ const BidsScreen = (props) => {
       playerData.push({ playerId: player.id, bid: bids[index] });
     });
 
-    dispatch(updatePlayerData(currentRound, playerData));
+    dispatch(updatePlayerData(currentRound, playerData, "bids"));
 
     props.navigation.navigate("Game");
   };

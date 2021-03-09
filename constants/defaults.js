@@ -4,14 +4,17 @@ import Colors from "./colors";
 const smallScreenWidth = 340;
 const windowWidth = Math.floor(Dimensions.get("window").width);
 const windowHeight = Math.floor(Dimensions.get("window").height);
+const isSmallScreen = windowWidth < smallScreenWidth ? true : false;
 
 export default {
   windowWidth,
   windowHeight,
   smallScreenWidth,
-  fontSize: windowWidth < smallScreenWidth ? 12 : 16,
-  largeFontSize: windowWidth < smallScreenWidth ? 16 : 20,
-  extraLargeFontSize: windowWidth < smallScreenWidth ? 22 : 28,
+  isSmallScreen,
+  fontSize: isSmallScreen ? 12 : 16,
+  largeFontSize: isSmallScreen ? 16 : 20,
+  extraLargeFontSize: isSmallScreen ? 22 : 28,
+  emphasis: { fontWeight: "bold" },
   button: {
     primary: Colors.theme.dark1,
     secondary: Colors.theme.main1,
@@ -28,8 +31,13 @@ export default {
     roundPlayerDetailWidth: 90,
     bonusOptions: [
       {
-        id: "alliance",
-        name: "Alliance",
+        id: "alliance1",
+        name: "Alliance 1",
+        value: 20,
+      },
+      {
+        id: "alliance2",
+        name: "Alliance 2",
         value: 20,
       },
       {

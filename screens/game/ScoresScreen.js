@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { updatePlayerData, setCurrentRound } from "../../store/actions/game-actions";
 import ScoreRow from "../../components/game/ScoreRow";
 import CustomActionButton from "../../components/CustomActionButton";
+import DefaultText from "../../components/UI/DefaultText";
 import Defaults from "../../constants/defaults";
+import Colors from "../../constants/colors";
 
 const ScoresScreen = (props) => {
   const players = props.route.params.players;
@@ -19,17 +21,45 @@ const ScoresScreen = (props) => {
   const setInitialScores = () => {
     const initialScores = [];
 
-    roundPlayersDetail.forEach((detail) => {
-      if (parseInt(detail.score) === 0) {
-        let score = 0;
-        if (parseInt(detail.bid) === 0) {
-          score = detail.round * 10;
-        } else {
-          score = parseInt(detail.bid) * 20;
+    roundPlayersDetail.forEach((roundPlayerDetail) => {
+      if (parseInt(roundPlayerDetail.score) === 0) {
+        //Determine bonuses
+        let allianceCounter = 0;
+        allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
+        allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
+
+        let allianceIndicator = "";
+        if (allianceCounter === 1) {
+          allianceIndicator = "*";
+        } else if (allianceCounter === 2) {
+          allianceIndicator = "* *";
         }
+
+        let wagerIndicator = "";
+        if (roundPlayerDetail.pointsWagered === 10) {
+          wagerIndicator = "+";
+        } else if (roundPlayerDetail.pointsWagered === 20) {
+          wagerIndicator = "++";
+        }
+
+        let score = 0;
+        if (parseInt(roundPlayerDetail.bid) === 0) {
+          score = roundPlayerDetail.round * 10;
+        } else {
+          score = parseInt(roundPlayerDetail.bid) * 20;
+        }
+
+        if (allianceCounter > 0) {
+          score = score + allianceCounter * 20;
+        }
+
+        if (roundPlayerDetail.pointsWagered > 0) {
+          score = score + roundPlayerDetail.pointsWagered;
+        }
+
         initialScores.push(score.toString());
       } else {
-        initialScores.push(detail.score);
+        initialScores.push(roundPlayerDetail.score);
       }
     });
 
@@ -58,7 +88,7 @@ const ScoresScreen = (props) => {
       playerData.push({ playerId: player.id, score: scores[index] });
     });
 
-    dispatch(updatePlayerData(currentRound, playerData));
+    dispatch(updatePlayerData(currentRound, playerData, "scores"));
 
     if (currentRound < finalRound) {
       dispatch(setCurrentRound(currentRound + 1));
@@ -73,6 +103,12 @@ const ScoresScreen = (props) => {
 
   return (
     <View style={styles.screen}>
+      <View style={styles.header}>
+        <DefaultText style={styles.playerName}>Name</DefaultText>
+        <DefaultText style={styles.bid}>Bid</DefaultText>
+        <DefaultText style={styles.bonus}>Bonus</DefaultText>
+        <DefaultText style={styles.score}>Score</DefaultText>
+      </View>
       <ScrollView>
         {players.map((player, index) => {
           const playerDetail = roundPlayersDetail.filter((detail) => detail.playerId === player.id);
@@ -82,6 +118,7 @@ const ScoresScreen = (props) => {
               player={player}
               round={currentRound}
               bid={playerDetail[0].bid}
+              roundPlayerDetail={playerDetail[0]}
               playerIndex={index}
               scores={scores}
               setScores={updateScoreState}
@@ -120,6 +157,33 @@ export const screenOptions = (navData) => {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    backgroundColor: Colors.theme.light1,
+  },
+  playerName: {
+    width: Defaults.isSmallScreen ? 100 : 120,
+    paddingLeft: 10,
+    fontWeight: "bold",
+  },
+  bid: {
+    width: Defaults.isSmallScreen ? 35 : 40,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  bonus: {
+    width: Defaults.isSmallScreen ? 55 : 55,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  score: {
+    width: Defaults.isSmallScreen ? 120 : 135,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
   primaryButton: {
     backgroundColor: Defaults.button.primary,
   },

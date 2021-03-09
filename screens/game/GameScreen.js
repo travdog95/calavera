@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Audio } from "expo-av";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,10 +19,10 @@ import GamePlayersHeader from "../../components/game/GamePlayersHeader";
 import GameRounds from "../../components/game/GameRounds";
 import GameRoundRows from "../../components/game/GameRoundRows";
 import CustomActionButton from "../../components/CustomActionButton";
+import GameHeaderRight from "../../components/game/GameHeaderRight";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
-import { setCurrentRound } from "../../store/actions/game-actions";
 
 const GameScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,8 +48,6 @@ const GameScreen = (props) => {
 
   const game = useSelector((state) => state.game.currentGame);
 
-  // const dispatch = useDispatch();
-
   const windowWidth = Math.floor(Dimensions.get("window").width);
 
   //Calculate width of Round Player detail columns
@@ -62,18 +60,6 @@ const GameScreen = (props) => {
   };
 
   const roundPlayerDetailWidth = calcRoundPlayerDetailWidth();
-
-  // const nextRoundHandler = () => {
-  //   if (game.currentRound < game.numRounds) {
-  //     dispatch(setCurrentRound(game.currentRound + 1));
-  //   }
-  // };
-
-  // const prevRoundHandler = () => {
-  //   if (game.currentRound > 1) {
-  //     dispatch(setCurrentRound(game.currentRound - 1));
-  //   }
-  // };
 
   if (error) {
     return (
@@ -139,13 +125,6 @@ const GameScreen = (props) => {
         >
           <Text style={styles.primaryButtonText}>Scores</Text>
         </CustomActionButton>
-        {/* <CustomActionButton style={styles.primaryButton} onPress={prevRoundHandler}>
-          <Text style={styles.primaryButtonText}>Prev Rnd</Text>
-        </CustomActionButton>
-
-        <CustomActionButton style={styles.primaryButton} onPress={nextRoundHandler}>
-          <Text style={styles.primaryButtonText}>Next Rnd</Text>
-        </CustomActionButton> */}
       </Animatable.View>
 
       <Animatable.View
@@ -157,19 +136,6 @@ const GameScreen = (props) => {
             <Ionicons name="skull" size={18} color="white" />
           </Text>
         </CustomActionButton>
-
-        {/* <CustomActionButton
-          style={styles.primaryButton}
-          onPress={() => {
-            props.navigation.navigate("Bids", {
-              round: game.currentRound,
-              players: game.players,
-              roundPlayersDetail: game.gameData[game.currentRound - 1],
-            });
-          }}
-        >
-          <Text style={styles.primaryButtonText}>Bids</Text>
-        </CustomActionButton> */}
       </Animatable.View>
     </View>
   );
@@ -177,7 +143,8 @@ const GameScreen = (props) => {
 
 export const screenOptions = (navData) => {
   return {
-    headerTitle: "Let's Play!",
+    headerTitle: "Scorecard",
+    headerRight: () => <GameHeaderRight navigation={navData.navigation} />,
   };
 };
 

@@ -9,6 +9,26 @@ import CustomActionButton from "../../components/CustomActionButton";
 import Defaults from "../../constants/defaults";
 
 const ScoreRow = (props) => {
+  const roundPlayerDetail = props.roundPlayerDetail;
+
+  let allianceCounter = 0;
+  allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
+  allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
+
+  let allianceIndicator = "";
+  if (allianceCounter === 1) {
+    allianceIndicator = "*";
+  } else if (allianceCounter === 2) {
+    allianceIndicator = "* *";
+  }
+
+  let wagerIndicator = "";
+  if (roundPlayerDetail.pointsWagered === 10) {
+    wagerIndicator = "+";
+  } else if (roundPlayerDetail.pointsWagered === 20) {
+    wagerIndicator = "++";
+  }
+
   const initializeAchievedBid = () => {
     return props.scores[props.playerIndex] < 0 ? false : true;
   };
@@ -44,10 +64,24 @@ const ScoreRow = (props) => {
 
     if (gotBid) {
       baseScore = parseInt(props.bid) === 0 ? 10 * props.round : 20 * props.bid;
+
+      if (allianceCounter > 0) {
+        baseScore = baseScore + allianceCounter * 20;
+      }
+
+      if (roundPlayerDetail.pointsWagered > 0) {
+        baseScore = baseScore + roundPlayerDetail.pointsWagered;
+      }
     } else {
       baseScore = parseInt(props.bid) === 0 ? 10 * props.round * -1 : -10;
+
+      if (roundPlayerDetail.pointsWagered > 0) {
+        baseScore = baseScore - roundPlayerDetail.pointsWagered;
+      }
     }
+
     props.setScores(baseScore.toString(), props.playerIndex);
+
     setAchievedBid(gotBid);
   };
 
@@ -65,26 +99,36 @@ const ScoreRow = (props) => {
       >
         <Text style={styles.buttonText}>{props.bid}</Text>
       </CustomActionButton>
-
+      <View style={styles.bonusContainer}>
+        <View style={styles.bonus}>
+          <Text>{allianceIndicator}</Text>
+        </View>
+        <View style={styles.bonus}>
+          <Text>{wagerIndicator}</Text>
+        </View>
+      </View>
+      <CustomActionButton
+        style={styles.decrementButton}
+        onPress={incrementScoreHandler.bind(this, "lower")}
+      >
+        <Ionicons name="remove-outline" size={Defaults.fontSize} color="white" />
+      </CustomActionButton>
       <Input
         style={styles.score}
         blurOnSubmit
         autoCapitalize="none"
         autoCorrect={false}
         keyboardType="number-pad"
-        maxLength={3}
+        maxLength={4}
         onChangeText={numberInputHandler}
         value={props.scores[props.playerIndex]}
       />
 
-      <CustomActionButton style={styles.button} onPress={incrementScoreHandler.bind(this, "lower")}>
-        <Ionicons name="chevron-down-outline" size={Defaults.fontSize} color="white" />
-      </CustomActionButton>
       <CustomActionButton
-        style={styles.button}
+        style={styles.incrementButton}
         onPress={incrementScoreHandler.bind(this, "higher")}
       >
-        <Ionicons name="chevron-up-outline" size={Defaults.fontSize} color="white" />
+        <Ionicons name="add-outline" size={Defaults.fontSize} color="white" />
       </CustomActionButton>
     </View>
   );
@@ -99,7 +143,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   playerNameContainer: {
-    width: 120,
+    width: Defaults.isSmallScreen ? 100 : 120,
     padding: 10,
     alignItems: "flex-start",
     justifyContent: "center",
@@ -112,20 +156,40 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans",
     fontSize: Defaults.largeFontSize,
     textAlign: "center",
-    marginHorizontal: 10,
     paddingVertical: 5,
-    width: 50,
+    width: Defaults.isSmallScreen ? 50 : 55,
+    height: Defaults.isSmallScreen ? 35 : 40,
   },
-  button: {
-    marginHorizontal: 5,
+  incrementButton: {
     backgroundColor: Defaults.button.secondary,
+    borderBottomLeftRadius: 0,
+    borderTopLeftRadius: 0,
+    height: Defaults.isSmallScreen ? 35 : 40,
+    width: Defaults.isSmallScreen ? 35 : 40,
+  },
+  decrementButton: {
+    backgroundColor: Defaults.button.secondary,
+    borderBottomRightRadius: 0,
+    borderTopRightRadius: 0,
+    height: Defaults.isSmallScreen ? 35 : 40,
+    width: Defaults.isSmallScreen ? 35 : 40,
   },
   bidButton: {
-    width: 40,
+    height: Defaults.isSmallScreen ? 35 : 40,
+    width: Defaults.isSmallScreen ? 35 : 40,
+  },
+  bonusContainer: {
+    width: 55,
+  },
+  bonus: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
     color: "white",
     fontSize: Defaults.fontSize,
+    textAlign: "center",
   },
 });
 

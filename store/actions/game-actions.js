@@ -7,8 +7,8 @@ export const initGame = (game) => {
   return { type: INIT_GAME, game };
 };
 
-export const updatePlayerData = (roundToUpdate, playerData) => {
-  return { type: UPDATE_PLAYER_DATA, roundToUpdate, playerData };
+export const updatePlayerData = (roundToUpdate, playerData, methodType) => {
+  return { type: UPDATE_PLAYER_DATA, roundToUpdate, playerData, methodType };
 };
 
 export const setCurrentRound = (currentRound) => {

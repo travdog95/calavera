@@ -33,6 +33,8 @@ export default {
     grey7: "#495057",
     grey8: "#343a40",
     grey9: "#212529",
+    light1Shade: "#FFE8AD",
+    light3Shade: "#FEEDD7",
   },
 };
 

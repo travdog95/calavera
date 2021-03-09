@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, StyleSheet, Button } from "react-native";
+import { View, ScrollView, StyleSheet, Button } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { useDispatch, useSelector } from "react-redux";
 
 import { updatePlayerData } from "../../store/actions/game-actions";
 import CustomActionButton from "../../components/CustomActionButton";
+import DefaultText from "../../components/UI/DefaultText";
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
@@ -12,7 +13,7 @@ const AddBonusScreen = (props) => {
   const currentGame = useSelector((state) => state.game.currentGame);
   const currentPlayerId = props.route.params.playerId;
   const currentPlayer = currentGame.players.filter((player) => player.id === currentPlayerId)[0];
-  const players = currentGame.players.filter((player) => player.id !== currentPlayerId);
+  const eligiblePlayers = currentGame.players.filter((player) => player.id !== currentPlayerId);
   const selectedRound = props.route.params.round;
 
   const bonusOptions = Defaults.game.bonusOptions;
@@ -20,7 +21,7 @@ const AddBonusScreen = (props) => {
   const dispatch = useDispatch();
 
   const [selectedBonus, setSelectedBonus] = useState(bonusOptions[0]);
-  const [selectedPlayer, setSelectedPlayer] = useState(players[0].id);
+  const [selectedPlayer, setSelectedPlayer] = useState(eligiblePlayers[0]);
 
   const setSelectedBonusHandler = (selectedOption) => {
     setSelectedBonus(selectedOption);
@@ -31,17 +32,56 @@ const AddBonusScreen = (props) => {
   };
 
   const updateBonusHandler = () => {
-    // const playerData = [];
-    // currentGame.game.players.map((player, index) => {
-    //   playerData.push({ playerId: player.id, bid: bids[index] });
-    // });
-    // dispatch(updatePlayerData(currentGame.currentRound, playerData));
-    // props.navigation.navigate("Game");
+    const playerData = [];
+    currentGame.players.map((player, index) => {
+      switch (selectedBonus.id) {
+        case "alliance1":
+          if (player.id === currentPlayerId || player.id === selectedPlayer.id) {
+            playerData.push({
+              playerId: player.id,
+              isAligned1: player.id === currentPlayerId ? selectedPlayer.id : currentPlayerId,
+            });
+          } else {
+            playerData.push({ playerId: player.id, isAligned1: "" });
+          }
+          break;
+        case "alliance2":
+          if (player.id === currentPlayerId || player.id === selectedPlayer.id) {
+            playerData.push({
+              playerId: player.id,
+              isAligned2: player.id === currentPlayerId ? selectedPlayer.id : currentPlayerId,
+            });
+          } else {
+            playerData.push({ playerId: player.id, isAligned2: "" });
+          }
+          break;
+        case "wager10":
+          if (player.id === currentPlayerId) {
+            playerData.push({ playerId: player.id, pointsWagered: 10 });
+          } else {
+            playerData.push({ playerId: player.id, pointsWagered: 0 });
+          }
+          break;
+        case "wager20":
+          if (player.id === currentPlayerId) {
+            playerData.push({ playerId: player.id, pointsWagered: 20 });
+          } else {
+            playerData.push({ playerId: player.id, pointsWagered: 0 });
+          }
+          break;
+      }
+    });
+
+    dispatch(updatePlayerData(selectedRound, playerData, "bonuses"));
+
+    props.navigation.navigate("Game");
   };
 
   const backButtonHandler = () => {
     props.navigation.navigate("Game");
   };
+
+  const allianceOrdinal = selectedBonus.id === "alliance1" ? "first" : "second";
 
   return (
     <View style={styles.screen}>
@@ -59,27 +99,45 @@ const AddBonusScreen = (props) => {
           );
         })}
       </View>
-      {selectedBonus.id === "alliance" ? (
-        <ScrollView contentContainerStyle={styles.playersContainer}>
-          {players.map((player, index) => {
-            const buttonColor =
-              selectedPlayer === player.id ? Colors.theme.main1 : Colors.theme.grey5;
+      {selectedBonus.id === "alliance1" || selectedBonus.id === "alliance2" ? (
+        <View style={styles.allianceContainer}>
+          <View style={styles.bonusStatementContainer}>
+            <View>
+              <DefaultText style={styles.bonusStatement}>
+                <DefaultText style={Defaults.emphasis}>{currentPlayer.name}</DefaultText> and{" "}
+                <DefaultText style={Defaults.emphasis}>{selectedPlayer.name}</DefaultText>
+              </DefaultText>
+            </View>
+            <View>
+              <DefaultText style={styles.bonusStatement}>
+                will share the{" "}
+                <DefaultText style={Defaults.emphasis}>{allianceOrdinal}</DefaultText> alliance
+              </DefaultText>
+            </View>
+          </View>
+          <ScrollView contentContainerStyle={styles.playersContainer}>
+            {eligiblePlayers.map((player, index) => {
+              const buttonColor =
+                selectedPlayer.id === player.id ? Colors.theme.main1 : Colors.theme.grey5;
 
-            return (
-              <Button
-                key={index}
-                color={buttonColor}
-                title={player.name}
-                onPress={setSelectedPlayerHandler.bind(this, player.id)}
-              />
-            );
-          })}
-        </ScrollView>
+              return (
+                <Button
+                  key={index}
+                  color={buttonColor}
+                  title={player.name}
+                  onPress={setSelectedPlayerHandler.bind(this, player)}
+                />
+              );
+            })}
+          </ScrollView>
+        </View>
       ) : (
-        <View>
-          <Text>
-            {currentPlayer.name} will wager {selectedBonus.value} points in round {selectedRound}.
-          </Text>
+        <View style={styles.bonusStatementContainer}>
+          <DefaultText style={styles.bonusStatement}>
+            <DefaultText style={Defaults.emphasis}>{currentPlayer.name}</DefaultText> will wager{" "}
+            <DefaultText style={Defaults.emphasis}>{selectedBonus.value}</DefaultText> extra points
+            in round <DefaultText style={Defaults.emphasis}>{selectedRound}</DefaultText>.
+          </DefaultText>
         </View>
       )}
       <Animatable.View
@@ -87,7 +145,7 @@ const AddBonusScreen = (props) => {
         animation={"slideInLeft"}
       >
         <CustomActionButton style={styles.backButton} onPress={backButtonHandler}>
-          <Text style={styles.buttonText}>Back</Text>
+          <DefaultText style={styles.buttonText}>Back</DefaultText>
         </CustomActionButton>
       </Animatable.View>
 
@@ -96,7 +154,7 @@ const AddBonusScreen = (props) => {
         animation={"slideInRight"}
       >
         <CustomActionButton style={styles.primaryButton} onPress={updateBonusHandler}>
-          <Text style={styles.buttonText}>Save bonus</Text>
+          <DefaultText style={styles.buttonText}>Save bonus</DefaultText>
         </CustomActionButton>
       </Animatable.View>
     </View>
@@ -108,7 +166,7 @@ export const screenOptions = (navData) => {
   // const currentPlayer = currentGame.players.filter((player) => player.id === currentPlayerId)[0];
 
   return {
-    headerTitle: "Add Bonus for " + currentPlayerId,
+    headerTitle: "Add Bonus",
   };
 };
 
@@ -124,6 +182,19 @@ const styles = StyleSheet.create({
   playersContainer: {
     flex: 1,
     alignItems: "center",
+  },
+  allianceContainer: {
+    flex: 1,
+  },
+  bonusStatementContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+  },
+  bonusStatement: {
+    fontSize: Defaults.extraLargeFontSize,
+    textAlign: "center",
   },
   primaryButton: {
     backgroundColor: Defaults.button.primary,
