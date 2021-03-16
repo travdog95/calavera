@@ -9,7 +9,6 @@ import CustomActionButton from "../../components/CustomActionButton";
 import HeaderButton from "../../components/UI/HeaderButton";
 import DefaultText from "../../components/UI/DefaultText";
 
-import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
 const MyGamesScreen = (props) => {
@@ -19,7 +18,7 @@ const MyGamesScreen = (props) => {
     <View style={styles.screen}>
       {games.length === 0 ? (
         <View style={styles.noGames}>
-          <Text>No games! You should create one and start playing!</Text>
+          <DefaultText>No games!</DefaultText>
         </View>
       ) : (
         <ScrollView>
@@ -29,7 +28,7 @@ const MyGamesScreen = (props) => {
             <DefaultText style={styles.statusLabel}>Status</DefaultText>
           </View>
           {games.map((game, index) => {
-            return <GameRow key={game.id} game={game} navigation={props.navigation} />;
+            return <GameRow key={game.id} game={game} />;
           })}
         </ScrollView>
       )}

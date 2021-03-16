@@ -11,6 +11,7 @@ export default {
   windowHeight,
   smallScreenWidth,
   isSmallScreen,
+  smallFontSize: isSmallScreen ? 8 : 12,
   fontSize: isSmallScreen ? 12 : 16,
   largeFontSize: isSmallScreen ? 16 : 20,
   extraLargeFontSize: isSmallScreen ? 22 : 28,
@@ -23,6 +24,17 @@ export default {
     light: Colors.theme.grey2,
     dark: Colors.theme.grey7,
   },
+  scoreScreen: {
+    widths: {
+      playerName: 30,
+      bidButton: 9,
+      baseScore: 12,
+      bonusIndicators: 7,
+      bonusScore: 31,
+      roundScore: 11,
+    },
+  },
+
   game: {
     rowHeight: 45,
     playerRowHeight: 40,

@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { updatePlayerData } from "../../store/actions/game-actions";
 import BidRow from "../../components/game/BidRow";
 import CustomActionButton from "../../components/CustomActionButton";
-import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
 const BidsScreen = (props) => {

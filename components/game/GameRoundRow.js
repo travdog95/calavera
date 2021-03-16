@@ -23,7 +23,6 @@ const GameRoundRow = (props) => {
             key={key}
             item={item}
             roundPlayerDetailWidth={props.roundPlayerDetailWidth}
-            navigation={props.navigation}
             isRoundLeader={isRoundLeader}
           />
         );

@@ -6,28 +6,35 @@ import { useSelector } from "react-redux";
 import CustomActionButton from "../../components/CustomActionButton";
 import DefaultText from "../../components/UI/DefaultText";
 import Defaults from "../../constants/defaults";
+import Colors from "../../constants/colors";
 
 const LeaderboardScreen = (props) => {
   const currentGame = useSelector((state) => state.game.currentGame);
 
-  let currentRoundPlayersDetail = [];
-  let prevRoundPlayersDetail = [];
-  let round = 0;
+  let round = currentGame.numRounds;
   currentGame.gameData.some((roundPlayersDetail) => {
     if (roundPlayersDetail[0].score === 0) {
-      round = roundPlayersDetail[0].round;
-      if (round > 1) {
-        currentRoundPlayersDetail = prevRoundPlayersDetail;
-      } else {
-        currentRoundPlayersDetail = roundPlayersDetail;
-      }
+      round = roundPlayersDetail[0].round === 1 ? 1 : roundPlayersDetail[0].round - 1;
       return true;
     }
-    prevRoundPlayersDetail = roundPlayersDetail;
   });
 
-  //Define leaderboard
-  const leaderboardData = currentRoundPlayersDetail.sort(
+  const unSortedLeaderboardData = [];
+  currentGame.players.forEach((player) => {
+    let playerTotalScore = 0;
+
+    currentGame.gameData.forEach((roundPlayersDetail) => {
+      roundPlayersDetail.forEach((roundPlayerDetail) => {
+        if (roundPlayerDetail.playerId === player.id) {
+          playerTotalScore += roundPlayerDetail.score;
+        }
+      });
+    });
+
+    unSortedLeaderboardData.push({ player, totalScore: playerTotalScore });
+  });
+
+  const leaderboardData = unSortedLeaderboardData.sort(
     (a, b) => parseFloat(b.totalScore) - parseFloat(a.totalScore)
   );
 
@@ -37,15 +44,17 @@ const LeaderboardScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <ScrollView>
-        {leaderboardData.map((roundPlayerDetail, index) => {
-          const player = currentGame.players.filter(
-            (player) => player.id === roundPlayerDetail.playerId
-          );
+      <ScrollView contentContainerStyle={styles.leaderboardContainer}>
+        {leaderboardData.map((data, index) => {
+          const rowBackgroundColor = index % 2 === 0 ? Colors.theme.grey2 : "white";
+
           return (
-            <View key={index} style={styles.rowContainer}>
-              <DefaultText style={styles.playerName}>{player[0].name}</DefaultText>
-              <DefaultText style={styles.score}>{roundPlayerDetail.totalScore}</DefaultText>
+            <View
+              key={index}
+              style={{ ...styles.rowContainer, ...{ backgroundColor: rowBackgroundColor } }}
+            >
+              <DefaultText style={styles.playerName}>{data.player.name}</DefaultText>
+              <DefaultText style={styles.score}>{data.totalScore}</DefaultText>
             </View>
           );
         })}
@@ -63,28 +72,31 @@ const LeaderboardScreen = (props) => {
 };
 
 export const screenOptions = (navData) => {
-  const currentRound = navData.route.params.round;
-
   return {
-    headerTitle: "Leaderboard",
+    title: "Leaderboard",
   };
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, alignItems: "center", paddingTop: 30 },
+  screen: { flex: 1, alignItems: "center", justifyContent: "center" },
+  leaderboardContainer: {
+    width: "100%",
+  },
   rowContainer: {
     flexDirection: "row",
+    paddingVertical: 5,
   },
   playerName: {
-    width: Defaults.isSmallScreen ? 100 : 120,
+    width: "80%",
     paddingLeft: 10,
     fontWeight: "bold",
     fontSize: Defaults.extraLargeFontSize,
   },
   score: {
-    width: Defaults.isSmallScreen ? 120 : 135,
-    textAlign: "center",
+    width: "20%",
+    textAlign: "right",
     fontWeight: "bold",
+    paddingHorizontal: 10,
     fontSize: Defaults.extraLargeFontSize,
   },
   backButton: {

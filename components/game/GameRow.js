@@ -1,6 +1,8 @@
 import React from "react";
 import { Pressable, View, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+
 import { initGame } from "../../store/actions/game-actions";
 
 import DefaultText from "../../components/UI/DefaultText";
@@ -9,6 +11,7 @@ import Defaults from "../../constants/defaults";
 
 const GameRow = (props) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   return (
     <Pressable
@@ -22,7 +25,7 @@ const GameRow = (props) => {
         //Load store with game data
         dispatch(initGame(props.game));
 
-        props.navigation.navigate("Game", { game: props.game });
+        navigation.navigate("Game");
       }}
     >
       <View style={styles.row}>

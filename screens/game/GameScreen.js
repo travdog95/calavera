@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  Button,
-  ActivityIndicator,
-  StyleSheet,
-  Dimensions,
-} from "react-native";
+import { View, Text, ScrollView, Button, ActivityIndicator, StyleSheet } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Audio } from "expo-av";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import HeaderButton from "../../components/UI/HeaderButton";
 import GamePlayersHeader from "../../components/game/GamePlayersHeader";
@@ -31,12 +23,35 @@ const GameScreen = (props) => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [sound, setSound] = useState();
 
-  async function playSound() {
-    const { sound } = await Audio.Sound.createAsync(require("../../assets/kraken.mp3"));
+  // const testHandler = () => {
+  //   console.log("here");
+  // };
+
+  // useEffect(() => {
+  //   props.navigation.setOptions({
+  //     headerLeft: () => (
+  //       <HeaderButtons HeaderButtonComponent={HeaderButton}>
+  //         <Item title="Test" iconName="md-checkmark" onPress={testHandler} />
+  //       </HeaderButtons>
+  //     ),
+  //   });
+  // }, [testHandler]);
+
+  const playKraken = async () => {
+    const { sound } = await Audio.Sound.createAsync(require(`../../assets/audio/kraken.mp3`));
     setSound(sound);
 
     await sound.playAsync();
-  }
+  };
+
+  const playNobodyGetsIt = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require(`../../assets/audio/nobody-gets-it.mp3`)
+    );
+    setSound(sound);
+
+    await sound.playAsync();
+  };
 
   useEffect(() => {
     return sound
@@ -48,13 +63,13 @@ const GameScreen = (props) => {
 
   const game = useSelector((state) => state.game.currentGame);
 
-  const windowWidth = Math.floor(Dimensions.get("window").width);
+  console.log(game.rounds);
 
   //Calculate width of Round Player detail columns
   const calcRoundPlayerDetailWidth = () => {
     let width = 0;
 
-    width = Math.floor((windowWidth - Defaults.game.roundNumWidth) / game.players.length);
+    width = Math.floor((Defaults.windowWidth - Defaults.game.roundNumWidth) / game.players.length);
 
     return width < Defaults.game.playerMinWidth ? Defaults.game.playerMinWidth : width;
   };
@@ -85,14 +100,10 @@ const GameScreen = (props) => {
           <GamePlayersHeader
             players={game.players}
             roundPlayerDetailWidth={roundPlayerDetailWidth}
-            navigation={props.navigation}
           />
           <View style={styles.roundsContainer}>
             <GameRounds numRounds={game.numRounds} currentRound={game.currentRound} />
-            <GameRoundRows
-              roundPlayerDetailWidth={roundPlayerDetailWidth}
-              navigation={props.navigation}
-            />
+            <GameRoundRows roundPlayerDetailWidth={roundPlayerDetailWidth} />
           </View>
         </ScrollView>
       </ScrollView>
@@ -128,12 +139,18 @@ const GameScreen = (props) => {
       </Animatable.View>
 
       <Animatable.View
-        style={{ position: "absolute", left: 15, bottom: 70 }}
+        style={{ position: "absolute", left: 15, bottom: 70, flexDirection: "row" }}
         animation={"slideInRight"}
       >
-        <CustomActionButton style={styles.primaryButton} onPress={playSound}>
+        <CustomActionButton style={styles.primaryButton} onPress={playKraken}>
           <Text style={styles.primaryButtonText}>
             <Ionicons name="skull" size={18} color="white" />
+          </Text>
+        </CustomActionButton>
+
+        <CustomActionButton style={styles.primaryButton} onPress={playNobodyGetsIt}>
+          <Text style={styles.primaryButtonText}>
+            <MaterialIcons name="child-care" size={18} color="white" />
           </Text>
         </CustomActionButton>
       </Animatable.View>
@@ -141,10 +158,10 @@ const GameScreen = (props) => {
   );
 };
 
-export const screenOptions = (navData) => {
+export const screenOptions = () => {
   return {
-    headerTitle: "Scorecard",
-    headerRight: () => <GameHeaderRight navigation={navData.navigation} />,
+    title: "Scorecard",
+    headerRight: () => <GameHeaderRight />,
   };
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { useDispatch } from "react-redux";
@@ -8,17 +8,17 @@ import DefaultText from "../../components/UI/DefaultText";
 
 import Player from "../../models/player";
 import Game from "../../models/game";
+import GameRound from "../../models/gameRound";
 import RoundPlayerDetail from "../../models/roundPlayerDetail";
 
 import { initGame } from "../../store/actions/game-actions";
 
 import TKO from "../../helpers/helperFunctions";
 import Defaults from "../../constants/defaults";
-import Colors from "../../constants/colors";
 
 const ConfirmNewGameScreen = (props) => {
-  const [numRounds, setNumRounds] = useState(props.route.params.numRounds);
-  const [playerNames, setPlayerNames] = useState(props.route.params.playerNames);
+  const numRounds = props.route.params.numRounds;
+  const playerNames = props.route.params.playerNames;
 
   const dispatch = useDispatch();
 
@@ -33,6 +33,15 @@ const ConfirmNewGameScreen = (props) => {
     //Init game data
     const gameData = initGameData(players, numRounds);
 
+    //Create gameRounds
+    const gameRounds = {};
+
+    let r = 1;
+    for (r; r <= numRounds; r++) {
+      const gameRound = new GameRound(r);
+      gameRounds[`r${r}`] = gameRound;
+    }
+
     //Create game
     const game = new Game({
       id: "g" + Math.floor(Math.random() * 10000000000).toString(),
@@ -42,12 +51,13 @@ const ConfirmNewGameScreen = (props) => {
       gameData,
       date: TKO.getCurrentDate(),
       status: "In progress",
+      rounds: gameRounds,
     });
 
     //Load store with game data
     dispatch(initGame(game));
 
-    props.navigation.navigate("Game", { game: game });
+    props.navigation.navigate("Game");
   };
 
   const createPlayersHandler = (playerNames) => {
@@ -82,8 +92,9 @@ const ConfirmNewGameScreen = (props) => {
       <View style={styles.messageContainer}>
         <DefaultText style={styles.message}>
           You are about to embark on a swashbuckling journey with{" "}
-          <Text style={styles.emphasis}>{playerNames.length}</Text> brave souls that will last{" "}
-          <Text style={styles.emphasis}>{numRounds}</Text> rounds...may luck favor the foolish!
+          <DefaultText style={styles.emphasis}>{playerNames.length}</DefaultText> brave souls that
+          will last <DefaultText style={styles.emphasis}>{numRounds}</DefaultText> rounds...may luck
+          favor the foolish!
         </DefaultText>
       </View>
       <ScrollView contentContainerStyle={styles.playerNamesContainer}>
@@ -155,7 +166,6 @@ const styles = StyleSheet.create({
   },
   secondaryButton: {
     backgroundColor: Defaults.button.cancel,
-    borderRadius: 10,
   },
 });
 export default ConfirmNewGameScreen;

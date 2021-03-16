@@ -18,69 +18,46 @@ const ScoresScreen = (props) => {
 
   const dispatch = useDispatch();
 
-  const calcBaseScore = (roundPlayerDetail) => {
-    let newBaseScore = 0;
-    const multiplier = roundPlayerDetail.score < 0 ? -1 : 1;
-
-    if (parseInt(roundPlayerDetail.bid) === 0) {
-      newBaseScore = currentRound * 10 * multiplier;
-    } else {
-      newBaseScore = multiplier === -1 ? -10 : parseInt(roundPlayerDetail.bid) * 20;
-    }
-
-    return newBaseScore;
-  };
-
-  const setInitialBaseScores = () => {
-    const initialBaseScores = [];
+  const setInitialScores = () => {
+    const initialScores = [];
 
     roundPlayersDetail.forEach((roundPlayerDetail) => {
       if (parseInt(roundPlayerDetail.score) === 0) {
-        initialBaseScores.push(calcBaseScore(roundPlayerDetail));
-      } else {
-        initialBaseScores.push(roundPlayerDetail.baseScore);
-      }
-    });
-
-    return initialBaseScores;
-  };
-
-  const setInitialBonusScores = () => {
-    const initialBonusScores = [];
-
-    roundPlayersDetail.forEach((roundPlayerDetail) => {
-      if (parseInt(roundPlayerDetail.score) === 0) {
-        let newBonusScore = 0;
         //Determine bonuses
         let allianceCounter = 0;
         allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
         allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
 
+        let allianceIndicator = "";
+        if (allianceCounter === 1) {
+          allianceIndicator = "*";
+        } else if (allianceCounter === 2) {
+          allianceIndicator = "* *";
+        }
+
+        let wagerIndicator = "";
+        if (roundPlayerDetail.pointsWagered === 10) {
+          wagerIndicator = "+";
+        } else if (roundPlayerDetail.pointsWagered === 20) {
+          wagerIndicator = "++";
+        }
+
+        let score = 0;
+        if (parseInt(roundPlayerDetail.bid) === 0) {
+          score = roundPlayerDetail.round * 10;
+        } else {
+          score = parseInt(roundPlayerDetail.bid) * 20;
+        }
+
         if (allianceCounter > 0) {
-          newBonusScore += allianceCounter * 20;
+          score = score + allianceCounter * 20;
         }
 
         if (roundPlayerDetail.pointsWagered > 0) {
-          newBonusScore += roundPlayerDetail.pointsWagered;
+          score = score + roundPlayerDetail.pointsWagered;
         }
 
-        initialBonusScores.push(newBonusScore.toString());
-      } else {
-        initialBonusScores.push(roundPlayerDetail.bonusScore.toString());
-      }
-    });
-
-    return initialBonusScores;
-  };
-
-  const setInitialScores = () => {
-    const initialScores = [];
-
-    roundPlayersDetail.forEach((roundPlayerDetail, index) => {
-      if (parseInt(roundPlayerDetail.score) === 0) {
-        const newScore = parseInt(baseScores[index]) + parseInt(bonusScores[index]);
-
-        initialScores.push(newScore);
+        initialScores.push(score.toString());
       } else {
         initialScores.push(roundPlayerDetail.score);
       }
@@ -89,60 +66,26 @@ const ScoresScreen = (props) => {
     return initialScores;
   };
 
-  const [baseScores, setBaseScores] = useState(setInitialBaseScores);
-  const [bonusScores, setBonusScores] = useState(setInitialBonusScores);
   const [scores, setScores] = useState(setInitialScores);
 
-  const updateBaseScoreState = (newBaseScore, playerIndex) => {
-    const newBaseScores = [];
-
-    baseScores.forEach((baseScore, index) => {
-      if (playerIndex === index) {
-        newBaseScores.push(newBaseScore);
+  const updateScoreState = (newScore, index) => {
+    let tempScores = [];
+    for (let i = 0; i < scores.length; i++) {
+      if (index === i) {
+        tempScores.push(newScore);
       } else {
-        newBaseScores.push(baseScore);
+        tempScores.push(scores[i]);
       }
-    });
+    }
 
-    setBaseScores(newBaseScores);
-  };
-
-  const updateBonusScoreState = (newBonusScore, baseScore, playerIndex) => {
-    const newBonusScores = [];
-    const newScores = [];
-    let newBaseScore = 0;
-
-    bonusScores.forEach((bonusScore, index) => {
-      if (playerIndex === index) {
-        newBonusScores.push(newBonusScore.toString());
-        newBaseScore = baseScore;
-      } else {
-        newBonusScores.push(bonusScore);
-        newBaseScore = baseScores[index];
-      }
-
-      const validatedBonusScore =
-        newBonusScores[index] === "" ? 0 : parseInt(newBonusScores[index]);
-      const newScore = validatedBonusScore + parseInt(newBaseScore);
-      newScores.push(newScore);
-    });
-
-    setBonusScores(newBonusScores);
-
-    //update round score
-    setScores(newScores);
+    setScores(tempScores);
   };
 
   const updateScoresHandler = () => {
     const playerData = [];
 
     players.map((player, index) => {
-      playerData.push({
-        playerId: player.id,
-        score: scores[index],
-        bonusScore: bonusScores[index],
-        baseScore: baseScores[index],
-      });
+      playerData.push({ playerId: player.id, score: scores[index] });
     });
 
     dispatch(updatePlayerData(currentRound, playerData, "scores"));
@@ -156,37 +99,6 @@ const ScoresScreen = (props) => {
 
   const backButtonHandler = () => {
     props.navigation.navigate("Game");
-  };
-
-  const incrementBonusScore = (direction, playerIndex) => {
-    const newBonusScore =
-      direction === "lower"
-        ? parseInt(bonusScores[playerIndex]) - 10
-        : parseInt(bonusScores[playerIndex]) + 10;
-
-    updateBonusScoreState(newBonusScore.toString(), baseScores[playerIndex], playerIndex);
-  };
-
-  const calcBonusScore = (roundPlayerDetail) => {
-    let newBonusScore = 0;
-
-    if (roundPlayerDetail.score === 0) {
-      let allianceCounter = 0;
-      allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
-      allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
-
-      //Alliances
-      newBonusScore = 20 * allianceCounter;
-
-      //Wager
-      if (roundPlayerDetail.pointsWagered > 0) {
-        newBonusScore += roundPlayerDetail.pointsWagered;
-      }
-    } else {
-      newBonusScore = roundPlayerDetail.bonusScore;
-    }
-
-    return newBonusScore.toString();
   };
 
   return (
@@ -203,19 +115,13 @@ const ScoresScreen = (props) => {
           return (
             <ScoreRow
               key={player.id}
-              round={currentRound}
-              playerIndex={index}
               player={player}
+              round={currentRound}
               bid={playerDetail[0].bid}
               roundPlayerDetail={playerDetail[0]}
-              baseScores={baseScores}
-              setBaseScores={updateBaseScoreState}
-              bonusScores={bonusScores}
-              setBonusScores={updateBonusScoreState}
+              playerIndex={index}
               scores={scores}
-              allianceIndicator={"*"}
-              incrementBonusScore={incrementBonusScore}
-              calcBaseScore={calcBaseScore}
+              setScores={updateScoreState}
             />
           );
         })}

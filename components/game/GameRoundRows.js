@@ -15,7 +15,6 @@ const GameRoundRows = (props) => {
             key={index}
             roundRow={roundRow}
             roundPlayerDetailWidth={props.roundPlayerDetailWidth}
-            navigation={props.navigation}
           />
         );
       })}

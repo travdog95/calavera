@@ -1,12 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { useSelector } from "react-redux";
-import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/core";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
 const ScoreBox = (props) => {
+  const navigation = useNavigation();
   let wagerIndicator = "";
   let cellBackgroundColor = "";
   const currentRound = useSelector((state) => state.game.currentGame.currentRound);
@@ -47,7 +48,7 @@ const ScoreBox = (props) => {
         },
       ]}
       onPress={() => {
-        props.navigation.navigate("AddBonus", {
+        navigation.navigate("AddBonus", {
           playerId: props.item.playerId,
           round: props.item.round,
         });

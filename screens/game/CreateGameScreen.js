@@ -7,7 +7,6 @@ import {
   StyleSheet,
   Dimensions,
   Alert,
-  KeyboardAvoidingView,
 } from "react-native";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
@@ -24,11 +23,11 @@ const CreateGameScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
-  const [playerNames, setPlayerNames] = useState(["Travis", "Kimmo", "Dave", "Risa"]);
+  const [playerNames, setPlayerNames] = useState(["Travis", "Kimmo"]);
   // const [playerNames, setPlayerNames] = useState([]);
   const [playerName, setPlayerName] = useState("");
   const [isGameStartable, setIsGameStartable] = useState(true);
-  const [numRounds, setNumRounds] = useState("10");
+  const [numRounds, setNumRounds] = useState("2");
 
   const numberInputHandler = (inputText) => {
     setNumRounds(inputText.replace(/[^0-9]/g, ""));
@@ -95,7 +94,10 @@ const CreateGameScreen = (props) => {
   };
 
   const confirmNewGameHandler = () => {
-    props.navigation.navigate("ConfirmNewGame", { playerNames, numRounds });
+    props.navigation.navigate("ConfirmNewGame", {
+      playerNames,
+      numRounds,
+    });
   };
 
   // if (error) {
@@ -123,8 +125,6 @@ const CreateGameScreen = (props) => {
         <Input
           style={styles.numRounds}
           blurOnSubmit
-          autoCapitalize="none"
-          autoCorrect={false}
           keyboardType="number-pad"
           maxLength={2}
           onChangeText={numberInputHandler}

@@ -12,9 +12,6 @@ import CreateGameScreen, {
 import ConfirmNewGameScreen, {
   screenOptions as confirmNewGameScreenOptions,
 } from "../screens/game/ConfirmNewGameScreen";
-import AddPlayersScreen, {
-  screenOptions as addPlayersScreenOptions,
-} from "../screens/game/AddPlayersScreen";
 import GameScreen, { screenOptions as gameScreenOptions } from "../screens/game/GameScreen";
 import BidsScreen, { screenOptions as bidsScreenOptions } from "../screens/game/BidsScreen";
 import ScoresScreen, { screenOptions as scoresScreenOptions } from "../screens/game/ScoresScreen";
@@ -67,11 +64,6 @@ export const GameNavigator = (props) => {
         options={confirmNewGameScreenOptions}
       />
 
-      <GameStackNavigator.Screen
-        name="AddPlayers"
-        component={AddPlayersScreen}
-        options={addPlayersScreenOptions}
-      />
       <GameStackNavigator.Screen name="Game" component={GameScreen} options={gameScreenOptions} />
       <GameStackNavigator.Screen name="Bids" component={BidsScreen} options={bidsScreenOptions} />
       <GameStackNavigator.Screen

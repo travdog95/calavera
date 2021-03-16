@@ -1,10 +1,12 @@
 import React from "react";
 import { Pressable, View, Text, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
 const GamePlayersHeader = (props) => {
+  const navigation = useNavigation();
   return (
     <View style={styles.row}>
       <View style={styles.spacer}>
@@ -21,7 +23,7 @@ const GamePlayersHeader = (props) => {
               { ...styles.playerContainer, ...{ width: props.roundPlayerDetailWidth } },
             ]}
             onPress={() => {
-              props.navigation.navigate("EditPlayerNames", {
+              navigation.navigate("EditPlayerNames", {
                 playerId: player.id,
                 playerName: player.name,
               });

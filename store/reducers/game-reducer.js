@@ -40,6 +40,8 @@ const gameReducer = (state = initialState, action) => {
             //Update score, if passed in from action
             if (action.methodType === "scores") {
               roundPlayerDetail.score = newPlayerDetail.score;
+              roundPlayerDetail.bonusScore = parseInt(newPlayerDetail.bonusScore);
+              roundPlayerDetail.baseScore = newPlayerDetail.baseScore;
 
               //Calculate totalScore
               if (state.currentGame.currentRound === 1) {
