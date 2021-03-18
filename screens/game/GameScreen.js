@@ -63,8 +63,6 @@ const GameScreen = (props) => {
 
   const game = useSelector((state) => state.game.currentGame);
 
-  console.log(game.rounds);
-
   //Calculate width of Round Player detail columns
   const calcRoundPlayerDetailWidth = () => {
     let width = 0;

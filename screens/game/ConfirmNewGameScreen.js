@@ -8,7 +8,6 @@ import DefaultText from "../../components/UI/DefaultText";
 
 import Player from "../../models/player";
 import Game from "../../models/game";
-import GameRound from "../../models/gameRound";
 import RoundPlayerDetail from "../../models/roundPlayerDetail";
 
 import { initGame } from "../../store/actions/game-actions";
@@ -33,15 +32,6 @@ const ConfirmNewGameScreen = (props) => {
     //Init game data
     const gameData = initGameData(players, numRounds);
 
-    //Create gameRounds
-    const gameRounds = {};
-
-    let r = 1;
-    for (r; r <= numRounds; r++) {
-      const gameRound = new GameRound(r);
-      gameRounds[`r${r}`] = gameRound;
-    }
-
     //Create game
     const game = new Game({
       id: "g" + Math.floor(Math.random() * 10000000000).toString(),
@@ -51,7 +41,6 @@ const ConfirmNewGameScreen = (props) => {
       gameData,
       date: TKO.getCurrentDate(),
       status: "In progress",
-      rounds: gameRounds,
     });
 
     //Load store with game data

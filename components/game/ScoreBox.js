@@ -35,50 +35,55 @@ const ScoreBox = (props) => {
   const isAligned2Indicator = props.item.isAligned2 ? "*" : "";
 
   return (
-    <Pressable
-      style={({ pressed }) => [
-        {
-          backgroundColor: pressed ? Colors.theme.grey1 : cellBackgroundColor,
-        },
-        {
-          ...styles.roundContainer,
-          ...{
-            width: props.roundPlayerDetailWidth,
-          },
-        },
-      ]}
-      onPress={() => {
-        navigation.navigate("AddBonus", {
-          playerId: props.item.playerId,
-          round: props.item.round,
-        });
+    // <Pressable
+    //   style={({ pressed }) => [
+    //     {
+    //       backgroundColor: pressed ? Colors.theme.grey1 : cellBackgroundColor,
+    //     },
+    //     {
+    //       ...styles.roundContainer,
+    //       ...{
+    //         width: props.roundPlayerDetailWidth,
+    //       },
+    //     },
+    //   ]}
+    //   onPress={() => {
+    //     navigation.navigate("AddBonus", {
+    //       playerId: props.item.playerId,
+    //       round: props.item.round,
+    //     });
+    //   }}
+    // >
+    <View
+      style={{
+        ...styles.roundContainer,
+        ...{ width: props.roundPlayerDetailWidth, backgroundColor: cellBackgroundColor },
       }}
     >
-      <View>
-        <View style={styles.topRowContainer}>
-          <View style={styles.bidContainer}>
-            <Text style={styles.bidText}>{props.item.bid}</Text>
-          </View>
-          <View style={styles.scoreContainer}>
-            <Text style={styles.score}>{props.item.score}</Text>
-          </View>
-          <View style={styles.allianceContainer}>
-            <Text style={styles.alliance}>{isAligned1Indicator}</Text>
-          </View>
+      <View style={styles.topRowContainer}>
+        <View style={styles.bidContainer}>
+          <Text style={styles.bidText}>{props.item.bid}</Text>
         </View>
-        <View style={styles.bottomRowContainer}>
-          <View style={styles.wagerContainer}>
-            <Text>{wagerIndicator}</Text>
-          </View>
-          <View style={styles.totalScoreContainer}>
-            <Text style={totalScoreStyle}>{props.item.totalScore}</Text>
-          </View>
-          <View style={styles.allianceContainer}>
-            <Text style={styles.alliance}>{isAligned2Indicator}</Text>
-          </View>
+        <View style={styles.scoreContainer}>
+          <Text style={styles.score}>{props.item.score}</Text>
+        </View>
+        <View style={styles.allianceContainer}>
+          <Text style={styles.alliance}>{isAligned1Indicator}</Text>
         </View>
       </View>
-    </Pressable>
+      <View style={styles.bottomRowContainer}>
+        <View style={styles.wagerContainer}>
+          <Text>{wagerIndicator}</Text>
+        </View>
+        <View style={styles.totalScoreContainer}>
+          <Text style={totalScoreStyle}>{props.item.totalScore}</Text>
+        </View>
+        <View style={styles.allianceContainer}>
+          <Text style={styles.alliance}>{isAligned2Indicator}</Text>
+        </View>
+      </View>
+    </View>
+    // </Pressable>
   );
 };
 

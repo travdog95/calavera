@@ -62,6 +62,26 @@ export default {
         name: "Wager 20",
         value: 20,
       },
+      // {
+      //   id: "pirate",
+      //   name: "Pirate",
+      //   value: 30,
+      // },
+      // {
+      //   id: "skullKing",
+      //   name: "Skull King",
+      //   value: 50,
+      // },
+      // {
+      //   id: "black14",
+      //   name: "Black 14",
+      //   value: 20,
+      // },
+      // {
+      //   id: "normal14",
+      //   name: "Normal 14",
+      //   value: 10,
+      // },
     ],
   },
   setBids: {

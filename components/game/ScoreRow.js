@@ -1,47 +1,26 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 import Colors from "../../constants/colors";
 
-import Input from "../UI/Input";
 import CustomActionButton from "../../components/CustomActionButton";
 import Defaults from "../../constants/defaults";
 
 const ScoreRow = (props) => {
   const roundPlayerDetail = props.roundPlayerDetail;
+  const navigation = useNavigation();
 
   let allianceCounter = 0;
   allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
   allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
-
-  let allianceIndicator = " ";
-  if (allianceCounter === 1) {
-    allianceIndicator = "*";
-  } else if (allianceCounter === 2) {
-    allianceIndicator = "* *";
-  }
-
-  let wagerIndicator = " ";
-  if (roundPlayerDetail.pointsWagered === 10) {
-    wagerIndicator = "+";
-  } else if (roundPlayerDetail.pointsWagered === 20) {
-    wagerIndicator = "++";
-  }
 
   const initializeAchievedBid = () => {
     return roundPlayerDetail.score < 0 ? false : true;
   };
 
   const [achievedBid, setAchievedBid] = useState(initializeAchievedBid);
-
-  const numberInputHandler = (inputText) => {
-    props.setBonusScores(
-      inputText.replace(/[^0-9]/g, "0"),
-      props.baseScores[props.playerIndex],
-      props.playerIndex
-    );
-  };
 
   const achievedBidHandler = (gotBid) => {
     let newBaseScore = 0;
@@ -90,7 +69,7 @@ const ScoreRow = (props) => {
         </View>
       </View>
       <View style={styles.bottomRow}>
-        <View style={styles.bidButtonContainer}>
+        <View style={styles.bidContainer}>
           <CustomActionButton
             style={{
               ...styles.bidButton,
@@ -101,37 +80,47 @@ const ScoreRow = (props) => {
             <Text style={styles.buttonText}>{props.bid}</Text>
           </CustomActionButton>
         </View>
-        <View style={styles.baseScoreContainer}>
-          <Text style={styles.baseScore}>{props.baseScores[props.playerIndex]}</Text>
-        </View>
-        <View style={styles.bonusIndicatorsContainer}>
-          <View style={styles.bonusIndicator}>
-            <Text>{allianceIndicator}</Text>
-          </View>
-          <View style={styles.bonusIndicator}>
-            <Text>{wagerIndicator}</Text>
-          </View>
-        </View>
-
-        <View style={styles.bonusScoreContainer}>
+        <View style={styles.scoreContainer}>
           <CustomActionButton
             style={styles.decrementButton}
-            onPress={props.incrementBonusScore.bind(this, "lower", props.playerIndex)}
+            onPress={props.incOrDecValue.bind(this, "lower", props.playerIndex, 10, "baseScore")}
           >
             <Ionicons name="remove-outline" size={Defaults.fontSize} color="white" />
           </CustomActionButton>
-          <Input
-            style={styles.bonusScore}
-            blurOnSubmit
-            keyboardType="number-pad"
-            maxLength={4}
-            onChangeText={numberInputHandler}
-            value={props.bonusScores[props.playerIndex]}
-          />
-
+          <View style={styles.scoreTextContainer}>
+            <Text style={styles.bonusScore}>{props.baseScores[props.playerIndex]}</Text>
+          </View>
           <CustomActionButton
             style={styles.incrementButton}
-            onPress={props.incrementBonusScore.bind(this, "higher", props.playerIndex)}
+            onPress={props.incOrDecValue.bind(this, "higher", props.playerIndex, 10, "baseScore")}
+          >
+            <Ionicons name="add-outline" size={Defaults.fontSize} color="white" />
+          </CustomActionButton>
+        </View>
+        <View style={styles.bonusButtonContainer}>
+          <CustomActionButton
+            style={styles.bonusButton}
+            onPress={() => {
+              navigation.navigate("Bonus", { player: props.player });
+            }}
+          >
+            <Text style={styles.buttonText}>Bonus</Text>
+          </CustomActionButton>
+        </View>
+
+        <View style={styles.scoreContainer}>
+          <CustomActionButton
+            style={{ ...styles.decrementButton, ...{ backgroundColor: Colors.theme.dark2 } }}
+            onPress={props.incOrDecValue.bind(this, "lower", props.playerIndex, 10, "bonusScore")}
+          >
+            <Ionicons name="remove-outline" size={Defaults.fontSize} color="white" />
+          </CustomActionButton>
+          <View style={styles.scoreTextContainer}>
+            <Text style={styles.bonusScore}>{props.bonusScores[props.playerIndex]}</Text>
+          </View>
+          <CustomActionButton
+            style={{ ...styles.incrementButton, ...{ backgroundColor: Colors.theme.dark2 } }}
+            onPress={props.incOrDecValue.bind(this, "higher", props.playerIndex, 10, "bonusScore")}
           >
             <Ionicons name="add-outline" size={Defaults.fontSize} color="white" />
           </CustomActionButton>
@@ -161,20 +150,21 @@ const styles = StyleSheet.create({
   },
 
   playerNameContainer: {
-    // width: `${Defaults.scoreScreen.widths.playerName}%`,
     textAlign: "left",
   },
   playerName: {
     fontSize: Defaults.largeFontSize,
     fontWeight: "bold",
   },
-  bonusIndicatorsContainer: {
-    // width: `${Defaults.scoreScreen.widths.bonusIndicators}%`,
+  bonusButtonContainer: {
     alignItems: "center",
   },
-  roundScoreContainer: {
-    // width: `${Defaults.scoreScreen.widths.roundScore}%`,
+  bonusButton: {
+    padding: 5,
+    height: Defaults.isSmallScreen ? 30 : 35,
+    backgroundColor: Colors.theme.dark2,
   },
+
   roundScore: {
     textAlign: "right",
     fontSize: Defaults.largeFontSize,
@@ -189,7 +179,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
 
-  bidButtonContainer: {
+  bidContainer: {
     width: `${Defaults.scoreScreen.widths.bidButton}%`,
   },
   bidButton: {
@@ -199,22 +189,25 @@ const styles = StyleSheet.create({
   baseScoreContainer: {
     width: `${Defaults.scoreScreen.widths.baseScore}%`,
   },
-  baseScore: {
-    textAlign: "center",
-    fontSize: Defaults.fontSize,
-  },
-  bonusScoreContainer: {
-    width: `${Defaults.scoreScreen.widths.bonusScore}%`,
+  scoreContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
   },
-  bonusScore: {
-    fontSize: Defaults.fontSize,
-    textAlign: "center",
-    paddingVertical: 3,
+  scoreTextContainer: {
     width: Defaults.isSmallScreen ? 35 : 45,
     height: Defaults.isSmallScreen ? 30 : 35,
+    borderTopWidth: 1,
+    borderColor: Colors.theme.grey4,
+    borderBottomWidth: 1,
+    paddingTop: Platform.OS === "android" ? 0 : 7,
+  },
+  bonusScore: {
+    width: "100%",
+    height: "100%",
+    fontSize: Defaults.fontSize,
+    textAlign: "center",
+    textAlignVertical: "center",
   },
   incrementButton: {
     backgroundColor: Defaults.button.secondary,

@@ -28,7 +28,7 @@ const ScoresScreen = (props) => {
       newBaseScore = multiplier === -1 ? -10 : parseInt(roundPlayerDetail.bid) * 20;
     }
 
-    return newBaseScore;
+    return newBaseScore.toString();
   };
 
   const setInitialBaseScores = () => {
@@ -38,7 +38,7 @@ const ScoresScreen = (props) => {
       if (parseInt(roundPlayerDetail.score) === 0) {
         initialBaseScores.push(calcBaseScore(roundPlayerDetail));
       } else {
-        initialBaseScores.push(roundPlayerDetail.baseScore);
+        initialBaseScores.push(roundPlayerDetail.baseScore.toString());
       }
     });
 
@@ -98,9 +98,9 @@ const ScoresScreen = (props) => {
 
     baseScores.forEach((baseScore, index) => {
       if (playerIndex === index) {
-        newBaseScores.push(newBaseScore);
+        newBaseScores.push(newBaseScore.toString());
       } else {
-        newBaseScores.push(baseScore);
+        newBaseScores.push(baseScore.toString());
       }
     });
 
@@ -140,8 +140,8 @@ const ScoresScreen = (props) => {
       playerData.push({
         playerId: player.id,
         score: scores[index],
-        bonusScore: bonusScores[index],
-        baseScore: baseScores[index],
+        bonusScore: parseInt(bonusScores[index]),
+        baseScore: parseInt(baseScores[index]),
       });
     });
 
@@ -158,13 +158,22 @@ const ScoresScreen = (props) => {
     props.navigation.navigate("Game");
   };
 
-  const incrementBonusScore = (direction, playerIndex) => {
-    const newBonusScore =
-      direction === "lower"
-        ? parseInt(bonusScores[playerIndex]) - 10
-        : parseInt(bonusScores[playerIndex]) + 10;
+  const incOrDecValue = (direction, playerIndex, incOrDecValue, input) => {
+    if (input === "bonusScore") {
+      const newBonusScore =
+        direction === "lower"
+          ? parseInt(bonusScores[playerIndex]) - incOrDecValue
+          : parseInt(bonusScores[playerIndex]) + incOrDecValue;
 
-    updateBonusScoreState(newBonusScore.toString(), baseScores[playerIndex], playerIndex);
+      updateBonusScoreState(newBonusScore.toString(), baseScores[playerIndex], playerIndex);
+    } else if (input === "baseScore") {
+      const newBaseScore =
+        direction === "lower"
+          ? parseInt(baseScores[playerIndex]) - incOrDecValue
+          : parseInt(baseScores[playerIndex]) + incOrDecValue;
+
+      updateBaseScoreState(newBaseScore.toString(), playerIndex);
+    }
   };
 
   const calcBonusScore = (roundPlayerDetail) => {
@@ -214,7 +223,7 @@ const ScoresScreen = (props) => {
               setBonusScores={updateBonusScoreState}
               scores={scores}
               allianceIndicator={"*"}
-              incrementBonusScore={incrementBonusScore}
+              incOrDecValue={incOrDecValue}
               calcBaseScore={calcBaseScore}
             />
           );

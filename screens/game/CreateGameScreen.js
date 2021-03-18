@@ -23,11 +23,11 @@ const CreateGameScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
-  const [playerNames, setPlayerNames] = useState(["Travis", "Kimmo"]);
+  const [playerNames, setPlayerNames] = useState(["Travis", "Kimmo", "Dave", "Risa"]);
   // const [playerNames, setPlayerNames] = useState([]);
   const [playerName, setPlayerName] = useState("");
   const [isGameStartable, setIsGameStartable] = useState(true);
-  const [numRounds, setNumRounds] = useState("2");
+  const [numRounds, setNumRounds] = useState("10");
 
   const numberInputHandler = (inputText) => {
     setNumRounds(inputText.replace(/[^0-9]/g, ""));
