@@ -1,15 +1,7 @@
 import React, { useState } from "react";
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  Text,
-  Platform,
-  Switch,
-} from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { useDispatch, useSelector } from "react-redux";
-import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
 
 import BonusAlliance from "../../components/game/bonus/BonusAlliance";
