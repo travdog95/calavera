@@ -9,6 +9,7 @@ import DefaultText from "../../components/UI/DefaultText";
 import Player from "../../models/player";
 import Game from "../../models/game";
 import RoundPlayerDetail from "../../models/roundPlayerDetail";
+import RoundBonusDetail from "../../models/roundBonusDetail";
 
 import { initGame } from "../../store/actions/game-actions";
 
@@ -25,12 +26,26 @@ const ConfirmNewGameScreen = (props) => {
     props.navigation.navigate("CreateGame");
   };
 
+  const initRoundBonusesDetail = () => {
+    const roundBonusesDetail = {};
+
+    let r = 1;
+    for (r; r <= numRounds; r++) {
+      const key = `r${r}`;
+      roundBonusesDetail[key] = new RoundBonusDetail();
+    }
+
+    return roundBonusesDetail;
+  };
+
   const confirmGameHandler = () => {
     //Create players
     const players = createPlayersHandler(playerNames);
 
     //Init game data
     const gameData = initGameData(players, numRounds);
+
+    const roundBonusesDetail = initRoundBonusesDetail();
 
     //Create game
     const game = new Game({
@@ -41,6 +56,7 @@ const ConfirmNewGameScreen = (props) => {
       gameData,
       date: TKO.getCurrentDate(),
       status: "In progress",
+      roundBonusesDetail,
     });
 
     //Load store with game data
@@ -81,9 +97,12 @@ const ConfirmNewGameScreen = (props) => {
       <View style={styles.messageContainer}>
         <DefaultText style={styles.message}>
           You are about to embark on a swashbuckling journey with{" "}
-          <DefaultText style={styles.emphasis}>{playerNames.length}</DefaultText> brave souls that
-          will last <DefaultText style={styles.emphasis}>{numRounds}</DefaultText> rounds...may luck
-          favor the foolish!
+          <DefaultText style={styles.emphasis}>
+            {playerNames.length}
+          </DefaultText>{" "}
+          brave souls that will last{" "}
+          <DefaultText style={styles.emphasis}>{numRounds}</DefaultText>{" "}
+          rounds...may luck favor the foolish!
         </DefaultText>
       </View>
       <ScrollView contentContainerStyle={styles.playerNamesContainer}>
@@ -99,7 +118,10 @@ const ConfirmNewGameScreen = (props) => {
         style={{ position: "absolute", left: 20, bottom: 20 }}
         animation={"slideInLeft"}
       >
-        <CustomActionButton style={styles.secondaryButton} onPress={backButtonHandler}>
+        <CustomActionButton
+          style={styles.secondaryButton}
+          onPress={backButtonHandler}
+        >
           <Text style={styles.primaryButtonText}>Back</Text>
         </CustomActionButton>
       </Animatable.View>
@@ -108,7 +130,10 @@ const ConfirmNewGameScreen = (props) => {
         style={{ position: "absolute", right: 20, bottom: 20 }}
         animation={"slideInRight"}
       >
-        <CustomActionButton style={styles.primaryButton} onPress={confirmGameHandler}>
+        <CustomActionButton
+          style={styles.primaryButton}
+          onPress={confirmGameHandler}
+        >
           <Text style={styles.primaryButtonText}>Confirm Game</Text>
         </CustomActionButton>
       </Animatable.View>

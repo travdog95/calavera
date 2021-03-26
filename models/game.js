@@ -8,6 +8,7 @@ class Game {
     this.date = game.date;
     this.status = game.status;
     this.winner = game.winner;
+    this.roundBonusesDetail = game.roundBonusesDetail;
   }
 }
 

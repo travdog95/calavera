@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, Button, ActivityIndicator, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Button,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
 import * as Animatable from "react-native-animatable";
 import { useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -38,7 +45,9 @@ const GameScreen = (props) => {
   // }, [testHandler]);
 
   const playKraken = async () => {
-    const { sound } = await Audio.Sound.createAsync(require(`../../assets/audio/kraken.mp3`));
+    const { sound } = await Audio.Sound.createAsync(
+      require(`../../assets/audio/kraken.mp3`)
+    );
     setSound(sound);
 
     await sound.playAsync();
@@ -62,14 +71,17 @@ const GameScreen = (props) => {
   }, [sound]);
 
   const game = useSelector((state) => state.game.currentGame);
-
   //Calculate width of Round Player detail columns
   const calcRoundPlayerDetailWidth = () => {
     let width = 0;
 
-    width = Math.floor((Defaults.windowWidth - Defaults.game.roundNumWidth) / game.players.length);
+    width = Math.floor(
+      (Defaults.windowWidth - Defaults.game.roundNumWidth) / game.players.length
+    );
 
-    return width < Defaults.game.playerMinWidth ? Defaults.game.playerMinWidth : width;
+    return width < Defaults.game.playerMinWidth
+      ? Defaults.game.playerMinWidth
+      : width;
   };
 
   const roundPlayerDetailWidth = calcRoundPlayerDetailWidth();
@@ -78,7 +90,11 @@ const GameScreen = (props) => {
     return (
       <View style={styles.centered}>
         <Text>An error occurred!</Text>
-        <Button title="Try again" onPress={loadProducts} color={Colors.theme.main3} />
+        <Button
+          title="Try again"
+          onPress={loadProducts}
+          color={Colors.theme.main3}
+        />
       </View>
     );
   }
@@ -100,13 +116,21 @@ const GameScreen = (props) => {
             roundPlayerDetailWidth={roundPlayerDetailWidth}
           />
           <View style={styles.roundsContainer}>
-            <GameRounds numRounds={game.numRounds} currentRound={game.currentRound} />
+            <GameRounds
+              numRounds={game.numRounds}
+              currentRound={game.currentRound}
+            />
             <GameRoundRows roundPlayerDetailWidth={roundPlayerDetailWidth} />
           </View>
         </ScrollView>
       </ScrollView>
       <Animatable.View
-        style={{ position: "absolute", left: 15, bottom: 15, flexDirection: "row" }}
+        style={{
+          position: "absolute",
+          left: 15,
+          bottom: 15,
+          flexDirection: "row",
+        }}
         animation={"slideInLeft"}
       >
         <CustomActionButton
@@ -122,22 +146,26 @@ const GameScreen = (props) => {
           <Text style={styles.primaryButtonText}>Bids</Text>
         </CustomActionButton>
 
-        <CustomActionButton
+        {/* <CustomActionButton
           style={styles.primaryButton}
           onPress={() => {
             props.navigation.navigate("Scores", {
               round: game.currentRound,
-              players: game.players,
               roundPlayersDetail: game.gameData[game.currentRound - 1],
             });
           }}
         >
           <Text style={styles.primaryButtonText}>Scores</Text>
-        </CustomActionButton>
+        </CustomActionButton> */}
       </Animatable.View>
 
       <Animatable.View
-        style={{ position: "absolute", left: 15, bottom: 70, flexDirection: "row" }}
+        style={{
+          position: "absolute",
+          left: 15,
+          bottom: 70,
+          flexDirection: "row",
+        }}
         animation={"slideInRight"}
       >
         <CustomActionButton style={styles.primaryButton} onPress={playKraken}>
@@ -146,7 +174,10 @@ const GameScreen = (props) => {
           </Text>
         </CustomActionButton>
 
-        <CustomActionButton style={styles.primaryButton} onPress={playNobodyGetsIt}>
+        <CustomActionButton
+          style={styles.primaryButton}
+          onPress={playNobodyGetsIt}
+        >
           <Text style={styles.primaryButtonText}>
             <MaterialIcons name="child-care" size={18} color="white" />
           </Text>

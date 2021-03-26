@@ -3,7 +3,10 @@ import { View, Text, ScrollView, StyleSheet } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { useDispatch, useSelector } from "react-redux";
 
-import { updatePlayerData, setCurrentRound } from "../../store/actions/game-actions";
+import {
+  updatePlayerData,
+  setCurrentRound,
+} from "../../store/actions/game-actions";
 import ScoreRow from "../../components/game/ScoreRow";
 import CustomActionButton from "../../components/CustomActionButton";
 import DefaultText from "../../components/UI/DefaultText";
@@ -11,10 +14,11 @@ import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
 
 const ScoresScreen = (props) => {
-  const players = props.route.params.players;
+  const game = useSelector((state) => state.game.currentGame);
+  const players = game.players;
   const currentRound = props.route.params.round;
   const roundPlayersDetail = props.route.params.roundPlayersDetail;
-  const finalRound = useSelector((state) => state.game.currentGame.numRounds);
+  const finalRound = game.numRounds;
 
   const dispatch = useDispatch();
 
@@ -25,7 +29,8 @@ const ScoresScreen = (props) => {
     if (parseInt(roundPlayerDetail.bid) === 0) {
       newBaseScore = currentRound * 10 * multiplier;
     } else {
-      newBaseScore = multiplier === -1 ? -10 : parseInt(roundPlayerDetail.bid) * 20;
+      newBaseScore =
+        multiplier === -1 ? -10 : parseInt(roundPlayerDetail.bid) * 20;
     }
 
     return newBaseScore.toString();
@@ -53,8 +58,14 @@ const ScoresScreen = (props) => {
         let newBonusScore = 0;
         //Determine bonuses
         let allianceCounter = 0;
-        allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
-        allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
+        allianceCounter =
+          roundPlayerDetail.isAligned1 !== ""
+            ? ++allianceCounter
+            : allianceCounter;
+        allianceCounter =
+          roundPlayerDetail.isAligned2 !== ""
+            ? ++allianceCounter
+            : allianceCounter;
 
         if (allianceCounter > 0) {
           newBonusScore += allianceCounter * 20;
@@ -78,7 +89,8 @@ const ScoresScreen = (props) => {
 
     roundPlayersDetail.forEach((roundPlayerDetail, index) => {
       if (parseInt(roundPlayerDetail.score) === 0) {
-        const newScore = parseInt(baseScores[index]) + parseInt(bonusScores[index]);
+        const newScore =
+          parseInt(baseScores[index]) + parseInt(bonusScores[index]);
 
         initialScores.push(newScore);
       } else {
@@ -93,18 +105,29 @@ const ScoresScreen = (props) => {
   const [bonusScores, setBonusScores] = useState(setInitialBonusScores);
   const [scores, setScores] = useState(setInitialScores);
 
-  const updateBaseScoreState = (newBaseScore, playerIndex) => {
+  const updateBaseScoreState = (newBaseScore, bonusScore, playerIndex) => {
     const newBaseScores = [];
+    const newScores = [];
+    let newBonusScore = 0;
 
     baseScores.forEach((baseScore, index) => {
       if (playerIndex === index) {
         newBaseScores.push(newBaseScore.toString());
+        newBonusScore = bonusScore;
       } else {
         newBaseScores.push(baseScore.toString());
+        newBonusScore = bonusScores[index];
       }
+
+      const validatedBaseScore =
+        newBaseScores[index] === "" ? 0 : parseInt(newBaseScores[index]);
+      const newScore = validatedBaseScore + parseInt(newBonusScore);
+      newScores.push(newScore);
     });
 
     setBaseScores(newBaseScores);
+
+    setScores(newScores);
   };
 
   const updateBonusScoreState = (newBonusScore, baseScore, playerIndex) => {
@@ -132,6 +155,19 @@ const ScoresScreen = (props) => {
     //update round score
     setScores(newScores);
   };
+
+  // const updateScoresState = () => {
+  //   const newScores = [];
+  //   baseScores.forEach((baseScore, index) => {
+  //     const newBonusScore =
+  //       bonusScores[index] === "" ? 0 : parseInt(bonusScores[index]);
+  //     const newBaseScore = baseScore === "" ? 0 : parseInt(baseScore);
+  //     const newScore = newBonusScore + newBaseScore;
+  //     newScores.push(newScore);
+  //   });
+
+  //   setScores(newScores);
+  // };
 
   const updateScoresHandler = () => {
     const playerData = [];
@@ -165,14 +201,22 @@ const ScoresScreen = (props) => {
           ? parseInt(bonusScores[playerIndex]) - incOrDecValue
           : parseInt(bonusScores[playerIndex]) + incOrDecValue;
 
-      updateBonusScoreState(newBonusScore.toString(), baseScores[playerIndex], playerIndex);
+      updateBonusScoreState(
+        newBonusScore.toString(),
+        baseScores[playerIndex],
+        playerIndex
+      );
     } else if (input === "baseScore") {
       const newBaseScore =
         direction === "lower"
           ? parseInt(baseScores[playerIndex]) - incOrDecValue
           : parseInt(baseScores[playerIndex]) + incOrDecValue;
 
-      updateBaseScoreState(newBaseScore.toString(), playerIndex);
+      updateBaseScoreState(
+        newBaseScore.toString(),
+        bonusScores[playerIndex],
+        playerIndex
+      );
     }
   };
 
@@ -181,8 +225,14 @@ const ScoresScreen = (props) => {
 
     if (roundPlayerDetail.score === 0) {
       let allianceCounter = 0;
-      allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
-      allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
+      allianceCounter =
+        roundPlayerDetail.isAligned1 !== ""
+          ? ++allianceCounter
+          : allianceCounter;
+      allianceCounter =
+        roundPlayerDetail.isAligned2 !== ""
+          ? ++allianceCounter
+          : allianceCounter;
 
       //Alliances
       newBonusScore = 20 * allianceCounter;
@@ -208,7 +258,9 @@ const ScoresScreen = (props) => {
       </View> */}
       <ScrollView>
         {players.map((player, index) => {
-          const playerDetail = roundPlayersDetail.filter((detail) => detail.playerId === player.id);
+          const playerDetail = roundPlayersDetail.filter(
+            (detail) => detail.playerId === player.id
+          );
           return (
             <ScoreRow
               key={player.id}
@@ -233,7 +285,10 @@ const ScoresScreen = (props) => {
         style={{ position: "absolute", left: 20, bottom: 20 }}
         animation={"slideInLeft"}
       >
-        <CustomActionButton style={styles.backButton} onPress={backButtonHandler}>
+        <CustomActionButton
+          style={styles.backButton}
+          onPress={backButtonHandler}
+        >
           <Text style={styles.buttonText}>Back</Text>
         </CustomActionButton>
       </Animatable.View>
@@ -242,7 +297,10 @@ const ScoresScreen = (props) => {
         style={{ position: "absolute", right: 20, bottom: 20 }}
         animation={"slideInRight"}
       >
-        <CustomActionButton style={styles.primaryButton} onPress={updateScoresHandler}>
+        <CustomActionButton
+          style={styles.primaryButton}
+          onPress={updateScoresHandler}
+        >
           <Text style={styles.buttonText}>Save scores</Text>
         </CustomActionButton>
       </Animatable.View>
@@ -273,13 +331,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   bid: {
-    width: `${Defaults.scoreScreen.widths.bidButton + Defaults.scoreScreen.widths.baseScore}%`,
+    width: `${
+      Defaults.scoreScreen.widths.bidButton +
+      Defaults.scoreScreen.widths.baseScore
+    }%`,
     textAlign: "center",
     fontWeight: "bold",
   },
   bonus: {
     width: `${
-      Defaults.scoreScreen.widths.bonusIndicators + Defaults.scoreScreen.widths.bonusScore
+      Defaults.scoreScreen.widths.bonusIndicators +
+      Defaults.scoreScreen.widths.bonusScore
     }%`,
     textAlign: "center",
     fontWeight: "bold",

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import GameRoundRow from "./GameRoundRow";
@@ -8,12 +8,12 @@ const GameRoundRows = (props) => {
   const gameData = useSelector((state) => state.game.currentGame.gameData);
 
   return (
-    <View style={styles.roundRow}>
-      {gameData.map((roundRow, index) => {
+    <View>
+      {gameData.map((roundPlayersDetail, index) => {
         return (
           <GameRoundRow
             key={index}
-            roundRow={roundRow}
+            roundPlayersDetail={roundPlayersDetail}
             roundPlayerDetailWidth={props.roundPlayerDetailWidth}
           />
         );
@@ -21,9 +21,5 @@ const GameRoundRows = (props) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  roundRow: {},
-});
 
 export default GameRoundRows;

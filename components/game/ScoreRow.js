@@ -13,8 +13,10 @@ const ScoreRow = (props) => {
   const navigation = useNavigation();
 
   let allianceCounter = 0;
-  allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
-  allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
+  allianceCounter =
+    roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
+  allianceCounter =
+    roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
 
   const initializeAchievedBid = () => {
     return roundPlayerDetail.score < 0 ? false : true;
@@ -43,7 +45,9 @@ const ScoreRow = (props) => {
       }
     } else {
       newBaseScore =
-        parseInt(roundPlayerDetail.bid) === 0 ? 10 * roundPlayerDetail.round * -1 : -10;
+        parseInt(roundPlayerDetail.bid) === 0
+          ? 10 * roundPlayerDetail.round * -1
+          : -10;
 
       if (roundPlayerDetail.pointsWagered > 0) {
         newBonusScore -= roundPlayerDetail.pointsWagered;
@@ -52,7 +56,7 @@ const ScoreRow = (props) => {
 
     newRoundScore = newBaseScore + newBonusScore;
 
-    props.setBaseScores(newBaseScore, props.playerIndex);
+    props.setBaseScores(newBaseScore, newBonusScore, props.playerIndex);
     props.setBonusScores(newBonusScore, newBaseScore, props.playerIndex);
 
     setAchievedBid(gotBid);
@@ -65,7 +69,9 @@ const ScoreRow = (props) => {
           <Text style={styles.playerName}>{props.player.name}</Text>
         </View>
         <View style={styles.roundScoreContainer}>
-          <Text style={styles.roundScore}>{props.scores[props.playerIndex]}</Text>
+          <Text style={styles.roundScore}>
+            {props.scores[props.playerIndex]}
+          </Text>
         </View>
       </View>
       <View style={styles.bottomRow}>
@@ -73,7 +79,11 @@ const ScoreRow = (props) => {
           <CustomActionButton
             style={{
               ...styles.bidButton,
-              ...{ backgroundColor: achievedBid ? Colors.theme.light2 : Colors.theme.grey7 },
+              ...{
+                backgroundColor: achievedBid
+                  ? Colors.theme.light2
+                  : Colors.theme.grey7,
+              },
             }}
             onPress={achievedBidHandler.bind(this, !achievedBid)}
           >
@@ -83,18 +93,40 @@ const ScoreRow = (props) => {
         <View style={styles.scoreContainer}>
           <CustomActionButton
             style={styles.decrementButton}
-            onPress={props.incOrDecValue.bind(this, "lower", props.playerIndex, 10, "baseScore")}
+            onPress={props.incOrDecValue.bind(
+              this,
+              "lower",
+              props.playerIndex,
+              10,
+              "baseScore"
+            )}
           >
-            <Ionicons name="remove-outline" size={Defaults.fontSize} color="white" />
+            <Ionicons
+              name="remove-outline"
+              size={Defaults.fontSize}
+              color="white"
+            />
           </CustomActionButton>
           <View style={styles.scoreTextContainer}>
-            <Text style={styles.bonusScore}>{props.baseScores[props.playerIndex]}</Text>
+            <Text style={styles.bonusScore}>
+              {props.baseScores[props.playerIndex]}
+            </Text>
           </View>
           <CustomActionButton
             style={styles.incrementButton}
-            onPress={props.incOrDecValue.bind(this, "higher", props.playerIndex, 10, "baseScore")}
+            onPress={props.incOrDecValue.bind(
+              this,
+              "higher",
+              props.playerIndex,
+              10,
+              "baseScore"
+            )}
           >
-            <Ionicons name="add-outline" size={Defaults.fontSize} color="white" />
+            <Ionicons
+              name="add-outline"
+              size={Defaults.fontSize}
+              color="white"
+            />
           </CustomActionButton>
         </View>
         <View style={styles.bonusButtonContainer}>
@@ -110,19 +142,47 @@ const ScoreRow = (props) => {
 
         <View style={styles.scoreContainer}>
           <CustomActionButton
-            style={{ ...styles.decrementButton, ...{ backgroundColor: Colors.theme.dark2 } }}
-            onPress={props.incOrDecValue.bind(this, "lower", props.playerIndex, 10, "bonusScore")}
+            style={{
+              ...styles.decrementButton,
+              ...{ backgroundColor: Colors.theme.dark2 },
+            }}
+            onPress={props.incOrDecValue.bind(
+              this,
+              "lower",
+              props.playerIndex,
+              10,
+              "bonusScore"
+            )}
           >
-            <Ionicons name="remove-outline" size={Defaults.fontSize} color="white" />
+            <Ionicons
+              name="remove-outline"
+              size={Defaults.fontSize}
+              color="white"
+            />
           </CustomActionButton>
           <View style={styles.scoreTextContainer}>
-            <Text style={styles.bonusScore}>{props.bonusScores[props.playerIndex]}</Text>
+            <Text style={styles.bonusScore}>
+              {props.bonusScores[props.playerIndex]}
+            </Text>
           </View>
           <CustomActionButton
-            style={{ ...styles.incrementButton, ...{ backgroundColor: Colors.theme.dark2 } }}
-            onPress={props.incOrDecValue.bind(this, "higher", props.playerIndex, 10, "bonusScore")}
+            style={{
+              ...styles.incrementButton,
+              ...{ backgroundColor: Colors.theme.dark2 },
+            }}
+            onPress={props.incOrDecValue.bind(
+              this,
+              "higher",
+              props.playerIndex,
+              10,
+              "bonusScore"
+            )}
           >
-            <Ionicons name="add-outline" size={Defaults.fontSize} color="white" />
+            <Ionicons
+              name="add-outline"
+              size={Defaults.fontSize}
+              color="white"
+            />
           </CustomActionButton>
         </View>
       </View>

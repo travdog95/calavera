@@ -5,13 +5,13 @@ import ScoreBox from "../../components/game/ScoreBox";
 const GameRoundRow = (props) => {
   return (
     <View style={styles.row}>
-      {props.roundRow.map((item) => {
-        const key = `r${item.round.toString()}-${item.playerId}`;
+      {props.roundPlayersDetail.map((roundPlayerDetail) => {
+        const key = `r${roundPlayerDetail.round.toString()}-${roundPlayerDetail.playerId}`;
 
         const isRoundLeaderHandler = () => {
           let isLeader = true;
-          props.roundRow.forEach((roundPlayerDetail) => {
-            if (roundPlayerDetail.totalScore > item.totalScore || item.score === 0) {
+          props.roundPlayersDetail.forEach((isLeaderRoundPlayerDetail) => {
+            if (isLeaderRoundPlayerDetail.totalScore > roundPlayerDetail.totalScore || roundPlayerDetail.score === 0) {
               isLeader = false;
             }
           });
@@ -21,7 +21,7 @@ const GameRoundRow = (props) => {
         return (
           <ScoreBox
             key={key}
-            item={item}
+            roundPlayerDetail={roundPlayerDetail}
             roundPlayerDetailWidth={props.roundPlayerDetailWidth}
             isRoundLeader={isRoundLeader}
           />

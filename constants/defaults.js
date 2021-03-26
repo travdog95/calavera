@@ -34,55 +34,24 @@ export default {
       roundScore: 11,
     },
   },
-
+  bonusScreen: {
+    rowVerticalPadding: 5,
+  },
   game: {
     rowHeight: 45,
     playerRowHeight: 40,
     playerMinWidth: 80,
     roundNumWidth: 35,
     roundPlayerDetailWidth: 90,
-    bonusOptions: [
-      {
-        id: "alliance1",
-        name: "Alliance 1",
-        value: 20,
-      },
-      {
-        id: "alliance2",
-        name: "Alliance 2",
-        value: 20,
-      },
-      {
-        id: "wager10",
-        name: "Wager 10",
-        value: 10,
-      },
-      {
-        id: "wager20",
-        name: "Wager 20",
-        value: 20,
-      },
-      // {
-      //   id: "pirate",
-      //   name: "Pirate",
-      //   value: 30,
-      // },
-      // {
-      //   id: "skullKing",
-      //   name: "Skull King",
-      //   value: 50,
-      // },
-      // {
-      //   id: "black14",
-      //   name: "Black 14",
-      //   value: 20,
-      // },
-      // {
-      //   id: "normal14",
-      //   name: "Normal 14",
-      //   value: 10,
-      // },
-    ],
+    bonusScoreDefaults: {
+      alliance1: 20,
+      alliance2: 20,
+      wager: [0, 10, 20],
+      normal14s: 10,
+      black14: 20,
+      pirates: 30,
+      skullKing: 50,
+    },
   },
   setBids: {
     rowHeight: 50,
