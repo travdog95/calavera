@@ -1,9 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, StyleSheet, Alert } from "react-native";
 
 import Input from "../UI/Input";
-import CustomActionButton from "../../components/CustomActionButton";
+import DefaultText from "../UI/DefaultText";
+import IncDecButton from "../UI/IncDecButton";
 import Defaults from "../../constants/defaults";
 
 const BidRow = (props) => {
@@ -11,7 +11,7 @@ const BidRow = (props) => {
     props.setBids(inputText.replace(/[^0-9]/g, ""), props.playerIndex);
   };
 
-  const incrementBidHandler = (direction) => {
+  const incOrDecValueHandler = (direction) => {
     const newBid =
       direction === "lower"
         ? parseInt(props.bids[props.playerIndex]) - 1
@@ -34,32 +34,22 @@ const BidRow = (props) => {
   return (
     <View style={styles.row}>
       <View style={styles.playerNameContainer}>
-        <Text style={styles.playerName}>{props.player.name}</Text>
+        <DefaultText style={styles.playerName}>{props.player.name}</DefaultText>
       </View>
-      <CustomActionButton
-        style={styles.decrementButton}
-        onPress={incrementBidHandler.bind(this, "lower")}
-      >
-        <Ionicons name="remove-outline" size={Defaults.fontSize} color="white" />
-      </CustomActionButton>
-
-      <Input
-        style={styles.bid}
-        blurOnSubmit
-        autoCapitalize="none"
-        autoCorrect={false}
-        keyboardType="number-pad"
-        maxLength={2}
-        onChangeText={numberInputHandler}
-        value={props.bids[props.playerIndex]}
-      />
-
-      <CustomActionButton
-        style={styles.incrementButton}
-        onPress={incrementBidHandler.bind(this, "higher")}
-      >
-        <Ionicons name="add-outline" size={Defaults.fontSize} color="white" />
-      </CustomActionButton>
+      <View style={styles.bidContainer}>
+        <IncDecButton incOrDec={"dec"} onPress={incOrDecValueHandler.bind(this, "lower")} />
+        <Input
+          style={styles.bid}
+          blurOnSubmit
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="number-pad"
+          maxLength={2}
+          onChangeText={numberInputHandler}
+          value={props.bids[props.playerIndex]}
+        />
+        <IncDecButton incOrDec={"inc"} onPress={incOrDecValueHandler.bind(this, "higher")} />
+      </View>
     </View>
   );
 };
@@ -70,39 +60,30 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 5,
+    padding: 5,
+    borderColor: "black",
+    borderBottomWidth: 1,
   },
   playerNameContainer: {
-    width: 120,
-    padding: 10,
-    alignItems: "flex-start",
+    width: "70%",
     justifyContent: "center",
   },
   playerName: {
-    fontFamily: "open-sans-bold",
     fontSize: Defaults.largeFontSize,
+    fontWeight: "bold",
+  },
+  bidContainer: {
+    width: "30%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
   bid: {
     fontFamily: "open-sans",
     fontSize: Defaults.largeFontSize,
     textAlign: "center",
-    paddingVertical: 5,
-    width: Defaults.isSmallScreen ? 50 : 55,
-    height: Defaults.isSmallScreen ? 35 : 40,
-  },
-  incrementButton: {
-    backgroundColor: Defaults.button.secondary,
-    borderBottomLeftRadius: 0,
-    borderTopLeftRadius: 0,
-    height: Defaults.isSmallScreen ? 35 : 40,
     width: Defaults.isSmallScreen ? 35 : 40,
-  },
-  decrementButton: {
-    backgroundColor: Defaults.button.secondary,
-    borderBottomRightRadius: 0,
-    borderTopRightRadius: 0,
-    height: Defaults.isSmallScreen ? 35 : 40,
-    width: Defaults.isSmallScreen ? 35 : 40,
+    height: Defaults.isSmallScreen ? 30 : 35,
   },
 });
 

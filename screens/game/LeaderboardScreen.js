@@ -1,9 +1,7 @@
 import React from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
-import * as Animatable from "react-native-animatable";
+import { View, ScrollView, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 
-import CustomActionButton from "../../components/CustomActionButton";
 import DefaultText from "../../components/UI/DefaultText";
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
@@ -46,8 +44,10 @@ const LeaderboardScreen = (props) => {
     <View style={styles.screen}>
       <ScrollView contentContainerStyle={styles.leaderboardContainer}>
         {leaderboardData.map((data, index) => {
-          const rowBackgroundColor = index % 2 === 0 ? Colors.theme.grey2 : "white";
-
+          {
+            /* const rowBackgroundColor = index % 2 === 0 ? Colors.theme.grey2 : "white"; */
+          }
+          const rowBackgroundColor = "white";
           return (
             <View
               key={index}
@@ -59,14 +59,6 @@ const LeaderboardScreen = (props) => {
           );
         })}
       </ScrollView>
-      <Animatable.View
-        style={{ position: "absolute", left: 20, bottom: 20 }}
-        animation={"slideInLeft"}
-      >
-        <CustomActionButton style={styles.backButton} onPress={backButtonHandler}>
-          <Text style={styles.buttonText}>Back</Text>
-        </CustomActionButton>
-      </Animatable.View>
     </View>
   );
 };
@@ -85,6 +77,8 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: "row",
     paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderColor: "black",
   },
   playerName: {
     width: "80%",

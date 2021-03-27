@@ -1,22 +1,21 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Alert, Platform } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-import Colors from "../../constants/colors";
-
 import CustomActionButton from "../../components/CustomActionButton";
+import DefaultText from "../../components/UI/DefaultText";
+
 import Defaults from "../../constants/defaults";
+import Colors from "../../constants/colors";
 
 const ScoreRow = (props) => {
   const roundPlayerDetail = props.roundPlayerDetail;
   const navigation = useNavigation();
 
   let allianceCounter = 0;
-  allianceCounter =
-    roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
-  allianceCounter =
-    roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
+  allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
+  allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
 
   const initializeAchievedBid = () => {
     return roundPlayerDetail.score < 0 ? false : true;
@@ -45,9 +44,7 @@ const ScoreRow = (props) => {
       }
     } else {
       newBaseScore =
-        parseInt(roundPlayerDetail.bid) === 0
-          ? 10 * roundPlayerDetail.round * -1
-          : -10;
+        parseInt(roundPlayerDetail.bid) === 0 ? 10 * roundPlayerDetail.round * -1 : -10;
 
       if (roundPlayerDetail.pointsWagered > 0) {
         newBonusScore -= roundPlayerDetail.pointsWagered;
@@ -66,12 +63,10 @@ const ScoreRow = (props) => {
     <View style={styles.container}>
       <View style={styles.topRow}>
         <View style={styles.playerNameContainer}>
-          <Text style={styles.playerName}>{props.player.name}</Text>
+          <DefaultText style={styles.playerName}>{props.player.name}</DefaultText>
         </View>
         <View style={styles.roundScoreContainer}>
-          <Text style={styles.roundScore}>
-            {props.scores[props.playerIndex]}
-          </Text>
+          <DefaultText style={styles.roundScore}>{props.scores[props.playerIndex]}</DefaultText>
         </View>
       </View>
       <View style={styles.bottomRow}>
@@ -80,53 +75,31 @@ const ScoreRow = (props) => {
             style={{
               ...styles.bidButton,
               ...{
-                backgroundColor: achievedBid
-                  ? Colors.theme.light2
-                  : Colors.theme.grey7,
+                backgroundColor: achievedBid ? Colors.theme.light2 : Colors.theme.grey7,
               },
             }}
             onPress={achievedBidHandler.bind(this, !achievedBid)}
           >
-            <Text style={styles.buttonText}>{props.bid}</Text>
+            <DefaultText style={styles.buttonText}>{props.bid}</DefaultText>
           </CustomActionButton>
         </View>
         <View style={styles.scoreContainer}>
           <CustomActionButton
             style={styles.decrementButton}
-            onPress={props.incOrDecValue.bind(
-              this,
-              "lower",
-              props.playerIndex,
-              10,
-              "baseScore"
-            )}
+            onPress={props.incOrDecValue.bind(this, "lower", props.playerIndex, 10, "baseScore")}
           >
-            <Ionicons
-              name="remove-outline"
-              size={Defaults.fontSize}
-              color="white"
-            />
+            <Ionicons name="remove-outline" size={Defaults.fontSize} color="white" />
           </CustomActionButton>
           <View style={styles.scoreTextContainer}>
-            <Text style={styles.bonusScore}>
+            <DefaultText style={styles.bonusScore}>
               {props.baseScores[props.playerIndex]}
-            </Text>
+            </DefaultText>
           </View>
           <CustomActionButton
             style={styles.incrementButton}
-            onPress={props.incOrDecValue.bind(
-              this,
-              "higher",
-              props.playerIndex,
-              10,
-              "baseScore"
-            )}
+            onPress={props.incOrDecValue.bind(this, "higher", props.playerIndex, 10, "baseScore")}
           >
-            <Ionicons
-              name="add-outline"
-              size={Defaults.fontSize}
-              color="white"
-            />
+            <Ionicons name="add-outline" size={Defaults.fontSize} color="white" />
           </CustomActionButton>
         </View>
         <View style={styles.bonusButtonContainer}>
@@ -136,7 +109,7 @@ const ScoreRow = (props) => {
               navigation.navigate("Bonus", { player: props.player });
             }}
           >
-            <Text style={styles.buttonText}>Bonus</Text>
+            <DefaultText style={styles.buttonText}>Bonus</DefaultText>
           </CustomActionButton>
         </View>
 
@@ -146,43 +119,23 @@ const ScoreRow = (props) => {
               ...styles.decrementButton,
               ...{ backgroundColor: Colors.theme.dark2 },
             }}
-            onPress={props.incOrDecValue.bind(
-              this,
-              "lower",
-              props.playerIndex,
-              10,
-              "bonusScore"
-            )}
+            onPress={props.incOrDecValue.bind(this, "lower", props.playerIndex, 10, "bonusScore")}
           >
-            <Ionicons
-              name="remove-outline"
-              size={Defaults.fontSize}
-              color="white"
-            />
+            <Ionicons name="remove-outline" size={Defaults.fontSize} color="white" />
           </CustomActionButton>
           <View style={styles.scoreTextContainer}>
-            <Text style={styles.bonusScore}>
+            <DefaultText style={styles.bonusScore}>
               {props.bonusScores[props.playerIndex]}
-            </Text>
+            </DefaultText>
           </View>
           <CustomActionButton
             style={{
               ...styles.incrementButton,
               ...{ backgroundColor: Colors.theme.dark2 },
             }}
-            onPress={props.incOrDecValue.bind(
-              this,
-              "higher",
-              props.playerIndex,
-              10,
-              "bonusScore"
-            )}
+            onPress={props.incOrDecValue.bind(this, "higher", props.playerIndex, 10, "bonusScore")}
           >
-            <Ionicons
-              name="add-outline"
-              size={Defaults.fontSize}
-              color="white"
-            />
+            <Ionicons name="add-outline" size={Defaults.fontSize} color="white" />
           </CustomActionButton>
         </View>
       </View>
@@ -196,7 +149,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    borderBottomColor: Colors.theme.grey5,
+    borderBottomColor: "black",
     borderBottomWidth: 1,
   },
   topRow: {

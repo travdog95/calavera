@@ -19,11 +19,12 @@ export const PLAYERS = [
 ];
 
 export const MENUITEMS = [
-  new MenuItem("1", "Messages", "chatbubbles-outline", "chatbubbles"),
-  new MenuItem("2", "Friends", "people-outline", "people"),
-  new MenuItem("3", "Games", "skull-outline", "skull"),
-  new MenuItem("4", "Standings", "list-outline", "list"),
-  new MenuItem("5", "Profile", "person-circle-outline", "person-circle"),
+  new MenuItem("1", "Messages", "chatbubbles-outline", "chatbubbles", "Ionicons"),
+  new MenuItem("6", "Audio", "audiotrack", "audiotrack", "MaterialIcons"),
+  new MenuItem("2", "Friends", "people-outline", "people", "Ionicons"),
+  new MenuItem("3", "Games", "skull-outline", "skull", "Ionicons"),
+  new MenuItem("4", "Standings", "list-outline", "list", "Ionicons"),
+  new MenuItem("5", "Profile", "person-circle-outline", "person-circle", "Ionicons"),
 ];
 
 export const RPD = [

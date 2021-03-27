@@ -16,9 +16,7 @@ import BonusBoolean from "../../components/game/bonus/BonusBoolean";
 const BonusScreen = (props) => {
   const currentGame = useSelector((state) => state.game.currentGame);
   const currentPlayerId = props.route.params.player.id;
-  const currentPlayer = currentGame.players.filter(
-    (player) => player.id === currentPlayerId
-  )[0];
+  const currentPlayer = currentGame.players.filter((player) => player.id === currentPlayerId)[0];
   const currentRound = currentGame.currentRound;
 
   const dispatch = useDispatch();
@@ -81,10 +79,6 @@ const BonusScreen = (props) => {
 
   //   props.navigation.navigate("Game");
   // };
-
-  const backButtonHandler = () => {
-    navigation.navigate("Game");
-  };
 
   const incOrDecValueHandler = (direction) => {
     console.log(direction);
@@ -162,9 +156,7 @@ const BonusScreen = (props) => {
     const newBonusScores = {};
 
     for (const bonusItem in Defaults.game.bonusScoreDefaults) {
-      if (
-        Object.hasOwnProperty.call(Defaults.game.bonusScoreDefaults, bonusItem)
-      ) {
+      if (Object.hasOwnProperty.call(Defaults.game.bonusScoreDefaults, bonusItem)) {
         const bonusValue = Defaults.game.bonusScoreDefaults[bonusItem];
         newBonusScores[bonusItem] = getBonusItem(bonusItem, bonusValue);
       }
@@ -184,16 +176,10 @@ const BonusScreen = (props) => {
         </DefaultText>
       </View>
       <View style={styles.bonusRow}>
-        <BonusAlliance
-          currentPlayer={currentPlayer}
-          bonusItem={bonusScores.alliance1}
-        />
+        <BonusAlliance currentPlayer={currentPlayer} bonusItem={bonusScores.alliance1} />
       </View>
       <View style={styles.bonusRow}>
-        <BonusAlliance
-          currentPlayer={currentPlayer}
-          bonusItem={bonusScores.alliance2}
-        />
+        <BonusAlliance currentPlayer={currentPlayer} bonusItem={bonusScores.alliance2} />
       </View>
       <View style={styles.bonusRow}>
         <BonusWager bonusItem={bonusScores.wager} />
@@ -208,10 +194,7 @@ const BonusScreen = (props) => {
         <BonusBoolean bonusItem={bonusScores.black14} bonusName={"Black 14"} />
       </View>
       <View style={styles.bonusRow}>
-        <BonusBoolean
-          bonusItem={bonusScores.skullKing}
-          bonusName={"skullKing"}
-        />
+        <BonusBoolean bonusItem={bonusScores.skullKing} bonusName={"Skull King"} />
       </View>
     </View>
   );

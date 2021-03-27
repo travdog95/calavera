@@ -1,15 +1,13 @@
-import React, { useState } from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
-import * as Animatable from "react-native-animatable";
+import React, { useState, useEffect } from "react";
+import { View, ScrollView, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
-import {
-  updatePlayerData,
-  setCurrentRound,
-} from "../../store/actions/game-actions";
+import { updatePlayerData, setCurrentRound } from "../../store/actions/game-actions";
 import ScoreRow from "../../components/game/ScoreRow";
-import CustomActionButton from "../../components/CustomActionButton";
-import DefaultText from "../../components/UI/DefaultText";
+import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
+import HeaderButton from "../../components/UI/HeaderButton";
+
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
 
@@ -29,8 +27,7 @@ const ScoresScreen = (props) => {
     if (parseInt(roundPlayerDetail.bid) === 0) {
       newBaseScore = currentRound * 10 * multiplier;
     } else {
-      newBaseScore =
-        multiplier === -1 ? -10 : parseInt(roundPlayerDetail.bid) * 20;
+      newBaseScore = multiplier === -1 ? -10 : parseInt(roundPlayerDetail.bid) * 20;
     }
 
     return newBaseScore.toString();
@@ -58,14 +55,8 @@ const ScoresScreen = (props) => {
         let newBonusScore = 0;
         //Determine bonuses
         let allianceCounter = 0;
-        allianceCounter =
-          roundPlayerDetail.isAligned1 !== ""
-            ? ++allianceCounter
-            : allianceCounter;
-        allianceCounter =
-          roundPlayerDetail.isAligned2 !== ""
-            ? ++allianceCounter
-            : allianceCounter;
+        allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
+        allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
 
         if (allianceCounter > 0) {
           newBonusScore += allianceCounter * 20;
@@ -89,8 +80,7 @@ const ScoresScreen = (props) => {
 
     roundPlayersDetail.forEach((roundPlayerDetail, index) => {
       if (parseInt(roundPlayerDetail.score) === 0) {
-        const newScore =
-          parseInt(baseScores[index]) + parseInt(bonusScores[index]);
+        const newScore = parseInt(baseScores[index]) + parseInt(bonusScores[index]);
 
         initialScores.push(newScore);
       } else {
@@ -119,8 +109,7 @@ const ScoresScreen = (props) => {
         newBonusScore = bonusScores[index];
       }
 
-      const validatedBaseScore =
-        newBaseScores[index] === "" ? 0 : parseInt(newBaseScores[index]);
+      const validatedBaseScore = newBaseScores[index] === "" ? 0 : parseInt(newBaseScores[index]);
       const newScore = validatedBaseScore + parseInt(newBonusScore);
       newScores.push(newScore);
     });
@@ -190,10 +179,6 @@ const ScoresScreen = (props) => {
     props.navigation.navigate("Game");
   };
 
-  const backButtonHandler = () => {
-    props.navigation.navigate("Game");
-  };
-
   const incOrDecValue = (direction, playerIndex, incOrDecValue, input) => {
     if (input === "bonusScore") {
       const newBonusScore =
@@ -201,22 +186,14 @@ const ScoresScreen = (props) => {
           ? parseInt(bonusScores[playerIndex]) - incOrDecValue
           : parseInt(bonusScores[playerIndex]) + incOrDecValue;
 
-      updateBonusScoreState(
-        newBonusScore.toString(),
-        baseScores[playerIndex],
-        playerIndex
-      );
+      updateBonusScoreState(newBonusScore.toString(), baseScores[playerIndex], playerIndex);
     } else if (input === "baseScore") {
       const newBaseScore =
         direction === "lower"
           ? parseInt(baseScores[playerIndex]) - incOrDecValue
           : parseInt(baseScores[playerIndex]) + incOrDecValue;
 
-      updateBaseScoreState(
-        newBaseScore.toString(),
-        bonusScores[playerIndex],
-        playerIndex
-      );
+      updateBaseScoreState(newBaseScore.toString(), bonusScores[playerIndex], playerIndex);
     }
   };
 
@@ -225,14 +202,8 @@ const ScoresScreen = (props) => {
 
     if (roundPlayerDetail.score === 0) {
       let allianceCounter = 0;
-      allianceCounter =
-        roundPlayerDetail.isAligned1 !== ""
-          ? ++allianceCounter
-          : allianceCounter;
-      allianceCounter =
-        roundPlayerDetail.isAligned2 !== ""
-          ? ++allianceCounter
-          : allianceCounter;
+      allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
+      allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
 
       //Alliances
       newBonusScore = 20 * allianceCounter;
@@ -248,6 +219,17 @@ const ScoresScreen = (props) => {
     return newBonusScore.toString();
   };
 
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <HeaderButtonLeaderboard />
+          <Item title="Save" iconName="save" onPress={updateScoresHandler} />
+        </HeaderButtons>
+      ),
+    });
+  }, [updateScoresHandler]);
+
   return (
     <View style={styles.screen}>
       {/* <View style={styles.header}>
@@ -256,11 +238,9 @@ const ScoresScreen = (props) => {
         <DefaultText style={styles.bonus}>Bonus</DefaultText>
         <DefaultText style={styles.score}>Score</DefaultText>
       </View> */}
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.playerScoresContainer}>
         {players.map((player, index) => {
-          const playerDetail = roundPlayersDetail.filter(
-            (detail) => detail.playerId === player.id
-          );
+          const playerDetail = roundPlayersDetail.filter((detail) => detail.playerId === player.id);
           return (
             <ScoreRow
               key={player.id}
@@ -281,29 +261,6 @@ const ScoresScreen = (props) => {
           );
         })}
       </ScrollView>
-      <Animatable.View
-        style={{ position: "absolute", left: 20, bottom: 20 }}
-        animation={"slideInLeft"}
-      >
-        <CustomActionButton
-          style={styles.backButton}
-          onPress={backButtonHandler}
-        >
-          <Text style={styles.buttonText}>Back</Text>
-        </CustomActionButton>
-      </Animatable.View>
-
-      <Animatable.View
-        style={{ position: "absolute", right: 20, bottom: 20 }}
-        animation={"slideInRight"}
-      >
-        <CustomActionButton
-          style={styles.primaryButton}
-          onPress={updateScoresHandler}
-        >
-          <Text style={styles.buttonText}>Save scores</Text>
-        </CustomActionButton>
-      </Animatable.View>
     </View>
   );
 };
@@ -312,12 +269,16 @@ export const screenOptions = (navData) => {
   const currentRound = navData.route.params.round;
 
   return {
-    headerTitle: "Scores for Round " + currentRound,
+    headerTitle: `Round ${currentRound}`,
   };
 };
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
+  playerScoresContainer: {
+    borderColor: "black",
+    borderTopWidth: 1,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -331,17 +292,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   bid: {
-    width: `${
-      Defaults.scoreScreen.widths.bidButton +
-      Defaults.scoreScreen.widths.baseScore
-    }%`,
+    width: `${Defaults.scoreScreen.widths.bidButton + Defaults.scoreScreen.widths.baseScore}%`,
     textAlign: "center",
     fontWeight: "bold",
   },
   bonus: {
     width: `${
-      Defaults.scoreScreen.widths.bonusIndicators +
-      Defaults.scoreScreen.widths.bonusScore
+      Defaults.scoreScreen.widths.bonusIndicators + Defaults.scoreScreen.widths.bonusScore
     }%`,
     textAlign: "center",
     fontWeight: "bold",
@@ -350,16 +307,6 @@ const styles = StyleSheet.create({
     width: `${Defaults.scoreScreen.widths.roundScore}%`,
     textAlign: "center",
     fontWeight: "bold",
-  },
-  primaryButton: {
-    backgroundColor: Defaults.button.primary,
-  },
-  backButton: {
-    backgroundColor: Defaults.button.cancel,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: Defaults.fontSize,
   },
 });
 

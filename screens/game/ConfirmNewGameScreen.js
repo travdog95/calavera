@@ -97,12 +97,9 @@ const ConfirmNewGameScreen = (props) => {
       <View style={styles.messageContainer}>
         <DefaultText style={styles.message}>
           You are about to embark on a swashbuckling journey with{" "}
-          <DefaultText style={styles.emphasis}>
-            {playerNames.length}
-          </DefaultText>{" "}
-          brave souls that will last{" "}
-          <DefaultText style={styles.emphasis}>{numRounds}</DefaultText>{" "}
-          rounds...may luck favor the foolish!
+          <DefaultText style={styles.emphasis}>{playerNames.length}</DefaultText> brave souls that
+          will last <DefaultText style={styles.emphasis}>{numRounds}</DefaultText> rounds...may luck
+          favor the foolish!
         </DefaultText>
       </View>
       <ScrollView contentContainerStyle={styles.playerNamesContainer}>
@@ -114,7 +111,7 @@ const ConfirmNewGameScreen = (props) => {
           );
         })}
       </ScrollView>
-      <Animatable.View
+      {/* <Animatable.View
         style={{ position: "absolute", left: 20, bottom: 20 }}
         animation={"slideInLeft"}
       >
@@ -124,16 +121,13 @@ const ConfirmNewGameScreen = (props) => {
         >
           <Text style={styles.primaryButtonText}>Back</Text>
         </CustomActionButton>
-      </Animatable.View>
+      </Animatable.View> */}
 
       <Animatable.View
         style={{ position: "absolute", right: 20, bottom: 20 }}
         animation={"slideInRight"}
       >
-        <CustomActionButton
-          style={styles.primaryButton}
-          onPress={confirmGameHandler}
-        >
+        <CustomActionButton style={styles.primaryButton} onPress={confirmGameHandler}>
           <Text style={styles.primaryButtonText}>Confirm Game</Text>
         </CustomActionButton>
       </Animatable.View>

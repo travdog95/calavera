@@ -19,19 +19,11 @@ const BonusMultiple = (props) => {
     <View style={styles.row}>
       <BonusName>{props.bonusName}</BonusName>
       <BonusControl>
-        <IncDecButton
-          incOrDec={"inc"}
-          onPress={incOrDecValueHandler.bind(this, "lower")}
-        />
+        <IncDecButton incOrDec={"dec"} onPress={incOrDecValueHandler.bind(this, "lower")} />
         <View style={styles.valueContainer}>
-          <DefaultText style={styles.value}>
-            {props.bonusItem.controlValue}
-          </DefaultText>
+          <DefaultText style={styles.value}>{props.bonusItem.controlValue}</DefaultText>
         </View>
-        <IncDecButton
-          incOrDec={"dec"}
-          onPress={incOrDecValueHandler.bind(this, "higher")}
-        />
+        <IncDecButton incOrDec={"inc"} onPress={incOrDecValueHandler.bind(this, "higher")} />
       </BonusControl>
       <BonusValue>{props.bonusItem.score}</BonusValue>
     </View>

@@ -1,12 +1,16 @@
-import React, { useState } from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
-import * as Animatable from "react-native-animatable";
+import React, { useState, useEffect } from "react";
+import { View, ScrollView, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import { updatePlayerData } from "../../store/actions/game-actions";
 import BidRow from "../../components/game/BidRow";
-import CustomActionButton from "../../components/CustomActionButton";
+import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
+import HeaderButton from "../../components/UI/HeaderButton";
+import DefaultText from "../../components/UI/DefaultText";
+
 import Defaults from "../../constants/defaults";
+import Colors from "../../constants/colors";
 
 const BidsScreen = (props) => {
   const players = props.route.params.players;
@@ -52,12 +56,24 @@ const BidsScreen = (props) => {
     props.navigation.navigate("Game");
   };
 
-  const backButtonHandler = () => {
-    props.navigation.navigate("Game");
-  };
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <HeaderButtonLeaderboard />
+          <Item title="Save" iconName="save" onPress={updateBidsHandler} />
+        </HeaderButtons>
+      ),
+    });
+  }, [updateBidsHandler]);
+
+  const totalBids = bids.reduce((total, current) => parseInt(total) + parseInt(current));
 
   return (
     <View style={styles.screen}>
+      <View style={styles.totalBidsContainer}>
+        <DefaultText style={styles.totalBidsText}>Total bids: {totalBids}</DefaultText>
+      </View>
       <ScrollView>
         {players.map((player, index) => {
           return (
@@ -72,23 +88,6 @@ const BidsScreen = (props) => {
           );
         })}
       </ScrollView>
-      <Animatable.View
-        style={{ position: "absolute", left: 20, bottom: 20 }}
-        animation={"slideInLeft"}
-      >
-        <CustomActionButton style={styles.backButton} onPress={backButtonHandler}>
-          <Text style={styles.buttonText}>Back</Text>
-        </CustomActionButton>
-      </Animatable.View>
-
-      <Animatable.View
-        style={{ position: "absolute", right: 20, bottom: 20 }}
-        animation={"slideInRight"}
-      >
-        <CustomActionButton style={styles.primaryButton} onPress={updateBidsHandler}>
-          <Text style={styles.buttonText}>Save bids</Text>
-        </CustomActionButton>
-      </Animatable.View>
     </View>
   );
 };
@@ -97,21 +96,25 @@ export const screenOptions = (navData) => {
   const currentRound = navData.route.params.round;
 
   return {
-    headerTitle: "Bids for Round " + currentRound,
+    headerTitle: `Round ${currentRound}`,
   };
 };
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  primaryButton: {
-    backgroundColor: Defaults.button.primary,
+  totalBidsContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 5,
+    borderColor: "black",
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    backgroundColor: Colors.theme.light2,
   },
-  buttonText: {
-    color: "white",
-    fontSize: Defaults.fontSize,
-  },
-  backButton: {
-    backgroundColor: Defaults.button.cancel,
+  totalBidsText: {
+    fontSize: Defaults.extraLargeFontSize,
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });
 

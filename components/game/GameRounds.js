@@ -1,6 +1,7 @@
 import React from "react";
 import { Pressable, View, Text, StyleSheet } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 import { setCurrentRound } from "../../store/actions/game-actions";
 import Colors from "../../constants/colors";
@@ -8,6 +9,8 @@ import Defaults from "../../constants/defaults";
 
 const GameRounds = (props) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const game = useSelector((state) => state.game.currentGame);
 
   //convert numRounds to array
   let rounds = [];
@@ -32,6 +35,11 @@ const GameRounds = (props) => {
             ]}
             onPress={() => {
               dispatch(setCurrentRound(round));
+              navigation.navigate("Bids", {
+                round: round,
+                players: game.players,
+                roundPlayersDetail: game.gameData[round - 1],
+              });
             }}
           >
             <View>
