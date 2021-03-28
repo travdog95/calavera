@@ -104,6 +104,7 @@ const ConfirmNewGameScreen = (props) => {
       </View>
       <ScrollView contentContainerStyle={styles.playerNamesContainer}>
         {playerNames.map((playerName, index) => {
+          if (playerName === "") playerName = `Player ${index + 1}`;
           return (
             <View key={index}>
               <DefaultText style={styles.playerName}>{playerName}</DefaultText>

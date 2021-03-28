@@ -5,52 +5,66 @@ import {
   ScrollView,
   ActivityIndicator,
   StyleSheet,
-  Dimensions,
   Alert,
+  Platform,
 } from "react-native";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
-import Input from "../../components/UI/Input";
 import CustomActionButton from "../../components/CustomActionButton";
+import IncDecButton from "../../components/UI/IncDecButton";
+import DefaultText from "../../components/UI/DefaultText";
+import CreateGamePlayerRow from "../../components/game/CreateGamePlayerRow";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
-
-const windowWidth = Math.floor(Dimensions.get("window").width);
 
 const CreateGameScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
   const [playerNames, setPlayerNames] = useState(["Travis", "Kimmo", "Dave", "Risa"]);
-  // const [playerNames, setPlayerNames] = useState([]);
-  const [playerName, setPlayerName] = useState("");
+  // const [playerNames, setPlayerNames] = useState(["", "", "", ""]);
   const [isGameStartable, setIsGameStartable] = useState(true);
   const [numRounds, setNumRounds] = useState("10");
+  const [numPlayers, setNumPlayers] = useState("4");
 
-  const numberInputHandler = (inputText) => {
-    setNumRounds(inputText.replace(/[^0-9]/g, ""));
-  };
+  const incOrDecRoundsHandler = (direction) => {
+    const minNumRounds = 1;
+    const newNumRounds = direction === "lower" ? parseInt(numRounds) - 1 : parseInt(numRounds) + 1;
 
-  const incrementHandler = (input, direction) => {
-    const currentValue = input === "numRounds" ? numRounds : numPlayers;
-    const maxValue = input === "numRounds" ? 1 : 2;
-    const newValue =
-      direction === "lower" ? parseInt(currentValue) - 1 : parseInt(currentValue) + 1;
-
-    if (isNaN(newValue) || newValue <= maxValue) {
-      const message =
-        input === "numRounds"
-          ? "You need to play at least one round!"
-          : "You need to have more than one player!";
+    if (isNaN(newNumRounds) || newNumRounds < minNumRounds) {
+      const message = "You need to play at least one round!";
       Alert.alert("Arrrrg!", message, [
-        { text: "OK", style: "destructive", onPress: resetInputHandler(input) },
+        { text: "OK", style: "destructive", onPress: resetInputHandler("numRounds") },
       ]);
       return;
     }
 
-    input === "numRounds" ? setNumRounds(newValue.toString()) : setNumPlayers(newValue.toString());
+    setNumRounds(newNumRounds.toString());
+  };
+
+  const incOrDecNumPlayersHandler = (direction) => {
+    const minNumPlayers = 2;
+    const newNumPlayers =
+      direction === "lower" ? parseInt(numPlayers) - 1 : parseInt(numPlayers) + 1;
+    const newPlayerNames = playerNames;
+
+    if (isNaN(newNumPlayers) || newNumPlayers < minNumPlayers) {
+      const message = "You need to play at least two players!";
+      Alert.alert("Arrrrg!", message, [
+        { text: "OK", style: "destructive", onPress: resetInputHandler("numPlayers") },
+      ]);
+      return;
+    }
+
+    if (direction === "lower") {
+      newPlayerNames.pop();
+    } else {
+      newPlayerNames.push("");
+    }
+
+    setNumPlayers(newNumPlayers.toString());
+    setPlayerNames(newPlayerNames);
   };
 
   const resetInputHandler = (input) => {
@@ -61,36 +75,17 @@ const CreateGameScreen = (props) => {
     }
   };
 
-  const addPlayerHandler = () => {
-    if (playerName !== "") {
-      const newPlayerName = playerName;
-      setPlayerNames([...playerNames, newPlayerName]);
-      setPlayerName("");
-
-      if (playerNames.length + 1 >= 2) {
-        setIsGameStartable(true);
+  const updatePlayerNamesState = (newPlayerName, index) => {
+    let newPlayerNames = [];
+    for (let i = 0; i < playerNames.length; i++) {
+      if (index === i) {
+        newPlayerNames.push(newPlayerName);
       } else {
-        setIsGameStartable(false);
+        newPlayerNames.push(playerNames[i]);
       }
     }
-  };
 
-  const playerNameInputHandler = (inputText) => {
-    setPlayerName(inputText);
-  };
-
-  const editPlayerNameHandler = (playerIndex) => {
-    //set text input to player name
-    const playerNameToEdit = playerNames.filter((player, index) => index === playerIndex);
-    setPlayerName(...playerNameToEdit);
-
-    //delete from playerNames array
-    deletePlayerNameHandler(playerIndex);
-  };
-
-  const deletePlayerNameHandler = (playerIndex) => {
-    const updatedPlayerNames = playerNames.filter((player, index) => index !== playerIndex);
-    setPlayerNames(updatedPlayerNames);
+    setPlayerNames(newPlayerNames);
   };
 
   const confirmNewGameHandler = () => {
@@ -119,77 +114,37 @@ const CreateGameScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      {/* <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}> */}
       <View style={styles.row}>
-        <Text style={styles.text}>How many rounds?</Text>
-        <Input
-          style={styles.numRounds}
-          blurOnSubmit
-          keyboardType="number-pad"
-          maxLength={2}
-          onChangeText={numberInputHandler}
-          value={numRounds}
-        />
-        <CustomActionButton
-          style={styles.secondaryButton}
-          onPress={incrementHandler.bind(this, "numRounds", "lower")}
-        >
-          <Ionicons name="chevron-down-outline" size={Defaults.fontSize} color="white" />
-        </CustomActionButton>
-
-        <CustomActionButton
-          style={styles.secondaryButton}
-          onPress={incrementHandler.bind(this, "numRounds", "higher")}
-        >
-          <Ionicons name="chevron-up-outline" size={Defaults.fontSize} color="white" />
-        </CustomActionButton>
-      </View>
-      <View style={styles.label}>
-        <Text style={styles.text}>Add Player:</Text>
+        <DefaultText style={styles.label}>How many rounds?</DefaultText>
+        <View style={styles.numRoundsContainer}>
+          <IncDecButton incOrDec={"dec"} onPress={incOrDecRoundsHandler.bind(this, "lower")} />
+          <DefaultText style={styles.incDecValue}>{numRounds}</DefaultText>
+          <IncDecButton incOrDec={"inc"} onPress={incOrDecRoundsHandler.bind(this, "higher")} />
+        </View>
       </View>
       <View style={styles.row}>
-        <Input
-          style={styles.addPlayerInput}
-          blurOnSubmit
-          autoCapitalize="none"
-          autoCorrect={false}
-          maxLength={10}
-          placeholder="Player name"
-          onChangeText={playerNameInputHandler}
-          value={playerName}
-        />
-
-        <CustomActionButton style={styles.secondaryButton} onPress={addPlayerHandler}>
-          <Text style={styles.buttonText}>Add</Text>
-        </CustomActionButton>
+        <DefaultText style={styles.label}>How many Players?</DefaultText>
+        <View style={styles.numRoundsContainer}>
+          <IncDecButton incOrDec={"dec"} onPress={incOrDecNumPlayersHandler.bind(this, "lower")} />
+          <DefaultText style={styles.incDecValue}>{numPlayers}</DefaultText>
+          <IncDecButton incOrDec={"inc"} onPress={incOrDecNumPlayersHandler.bind(this, "higher")} />
+        </View>
       </View>
 
       <ScrollView>
         <View style={styles.playerNamesContainer}>
           {playerNames.map((playerName, index) => {
             return (
-              <View style={styles.playerNameContainer} key={index}>
-                <Text style={styles.playerName}>{playerName}</Text>
-                <CustomActionButton
-                  style={styles.secondaryButton}
-                  onPress={() => editPlayerNameHandler(index)}
-                >
-                  <FontAwesome name="edit" size={16} color="white" />
-                </CustomActionButton>
-                <CustomActionButton
-                  style={styles.deleteButton}
-                  onPress={() => deletePlayerNameHandler(index)}
-                >
-                  <Text style={styles.buttonText}>
-                    <FontAwesome name="trash" size={16} color="white" />
-                  </Text>
-                </CustomActionButton>
-              </View>
+              <CreateGamePlayerRow
+                key={index}
+                playerNameIndex={index}
+                playerNames={playerNames}
+                setPlayerNames={updatePlayerNamesState}
+              />
             );
           })}
         </View>
       </ScrollView>
-      {/* </KeyboardAvoidingView> */}
       {isGameStartable ? (
         <Animatable.View
           style={{ position: "absolute", right: 20, bottom: 20 }}
@@ -211,59 +166,41 @@ export const screenOptions = (navData) => {
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, padding: 5 },
+  screen: { flex: 1, borderTopWidth: 1, borderColor: "black" },
   row: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
+    borderBottomWidth: 1,
+    borderColor: "black",
+    padding: 5,
   },
   label: {
-    paddingTop: 10,
-  },
-  text: {
-    fontFamily: "open-sans-bold",
     fontSize: Defaults.largeFontSize,
+    fontWeight: "bold",
+    paddingRight: 5,
   },
-  numRounds: {
+  numRoundsContainer: {
+    flexDirection: "row",
+  },
+  incDecValue: {
     fontFamily: "open-sans",
     fontSize: Defaults.largeFontSize,
     textAlign: "center",
-    paddingVertical: 5,
-    width: windowWidth <= Defaults.smallScreenWidth ? 40 : 60,
-  },
-  addPlayerInput: {
-    fontFamily: "open-sans",
-    fontSize: Defaults.largeFontSize,
-    padding: 5,
-    width: "70%",
+    width: Defaults.isSmallScreen ? 35 : 40,
+    height: Defaults.isSmallScreen ? 30 : 35,
+    textAlignVertical: "center",
+    paddingTop: Platform.OS === "ios" ? 3 : 0,
+    borderColor: Colors.theme.grey4,
+    borderWidth: 1,
   },
   playerNamesContainer: {
     marginTop: 10,
     alignItems: "center",
   },
-  playerNameContainer: {
-    width: "80%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  playerName: {
-    paddingVertical: 5,
-    fontFamily: "open-sans-bold",
-    textAlign: "left",
-    width: "65%",
-    fontSize: Defaults.largeFontSize,
-    marginVertical: 3,
-  },
   primaryButton: {
     backgroundColor: Defaults.button.primary,
-  },
-  secondaryButton: {
-    backgroundColor: Defaults.button.secondary,
-  },
-  deleteButton: {
-    backgroundColor: Defaults.button.dark,
   },
   buttonText: {
     color: "white",
