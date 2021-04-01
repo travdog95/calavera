@@ -14,7 +14,6 @@ const HeaderButtonScores = (props) => {
       onPress={() => {
         navigation.navigate("Scores", {
           round: game.currentRound,
-          roundPlayersDetail: game.gameData[game.currentRound - 1],
         });
       }}
       iconComponent={MaterialCommunityIcons}

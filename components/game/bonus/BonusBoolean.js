@@ -8,19 +8,25 @@ import BonusValue from "../../game/bonus/BonusValue";
 import Colors from "../../../constants/colors";
 
 const BonusBoolean = (props) => {
-  const [boolean, setBoolean] = useState(false);
-  const toggleBoolean = () => setBoolean((previousState) => !previousState);
+  const [booleanValue, setBooleanValue] = useState(props.bonusItem.controlValue);
+  const toggleBoolean = (newBooleanValue) => {
+    setBooleanValue(newBooleanValue);
 
+    props.setBonusItems(props.bonusItemKey, {
+      controlValue: newBooleanValue,
+      score: newBooleanValue ? Defaults.game.bonusScoreDefaults[props.bonusItemKey] : 0,
+    });
+  };
   return (
     <View style={styles.row}>
       <BonusName>{props.bonusName}</BonusName>
       <BonusControl>
         <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={boolean ? "#f5dd4b" : "#f4f3f4"}
+          trackColor={{ false: Colors.theme.grey5, true: Colors.theme.grey5 }}
+          thumbColor={booleanValue ? Defaults.button.primary : Colors.theme.grey6}
           ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleBoolean}
-          value={boolean}
+          onValueChange={toggleBoolean.bind(this, !booleanValue)}
+          value={booleanValue}
         />
       </BonusControl>
       <BonusValue>{props.bonusItem.score}</BonusValue>

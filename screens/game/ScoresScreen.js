@@ -6,6 +6,7 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { updatePlayerData, setCurrentRound } from "../../store/actions/game-actions";
 import ScoreRow from "../../components/game/ScoreRow";
 import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
+import HeaderButtonBids from "../../components/game/HeaderButtonBids";
 import HeaderButton from "../../components/UI/HeaderButton";
 
 import Defaults from "../../constants/defaults";
@@ -13,9 +14,10 @@ import Colors from "../../constants/colors";
 
 const ScoresScreen = (props) => {
   const game = useSelector((state) => state.game.currentGame);
+  // console.log(game.roundBonusesDetail);
   const players = game.players;
-  const currentRound = props.route.params.round;
-  const roundPlayersDetail = props.route.params.roundPlayersDetail;
+  const round = props.route.params.round;
+  const roundPlayersDetail = game.gameData[round - 1];
   const finalRound = game.numRounds;
 
   const dispatch = useDispatch();
@@ -25,7 +27,7 @@ const ScoresScreen = (props) => {
     const multiplier = roundPlayerDetail.score < 0 ? -1 : 1;
 
     if (parseInt(roundPlayerDetail.bid) === 0) {
-      newBaseScore = currentRound * 10 * multiplier;
+      newBaseScore = round * 10 * multiplier;
     } else {
       newBaseScore = multiplier === -1 ? -10 : parseInt(roundPlayerDetail.bid) * 20;
     }
@@ -170,10 +172,10 @@ const ScoresScreen = (props) => {
       });
     });
 
-    dispatch(updatePlayerData(currentRound, playerData, "scores"));
+    dispatch(updatePlayerData(round, playerData, "scores"));
 
-    if (currentRound < finalRound) {
-      dispatch(setCurrentRound(currentRound + 1));
+    if (round < finalRound) {
+      dispatch(setCurrentRound(round + 1));
     }
 
     props.navigation.navigate("Game");
@@ -223,6 +225,8 @@ const ScoresScreen = (props) => {
     props.navigation.setOptions({
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <HeaderButtonBids />
+
           <HeaderButtonLeaderboard />
           <Item title="Save" iconName="save" onPress={updateScoresHandler} />
         </HeaderButtons>
@@ -244,7 +248,7 @@ const ScoresScreen = (props) => {
           return (
             <ScoreRow
               key={player.id}
-              round={currentRound}
+              round={round}
               playerIndex={index}
               player={player}
               bid={playerDetail[0].bid}
@@ -266,10 +270,10 @@ const ScoresScreen = (props) => {
 };
 
 export const screenOptions = (navData) => {
-  const currentRound = navData.route.params.round;
+  const round = navData.route.params.round;
 
   return {
-    headerTitle: `Round ${currentRound}`,
+    headerTitle: `Round ${round} Scores`,
   };
 };
 

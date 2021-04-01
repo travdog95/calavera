@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 
 import CustomActionButton from "../../CustomActionButton";
@@ -10,19 +10,40 @@ import BonusControl from "../../game/bonus/BonusControl";
 import BonusValue from "../../game/bonus/BonusValue";
 
 const BonusWager = (props) => {
+  const [selectedValue, setSelectedValue] = useState(props.bonusItem.controlValue);
+
+  const updateSelectedValueState = (value) => {
+    setSelectedValue(value);
+
+    props.setBonusItems(props.bonusItemKey, {
+      controlValue: parseInt(value),
+      score: parseInt(value),
+    });
+  };
+
   return (
     <View style={styles.row}>
       <BonusName>Rascal wager:</BonusName>
       <BonusControl>
-        <CustomActionButton style={styles.primaryButton} onPress={() => {}}>
-          <DefaultText style={styles.primaryButtonText}>0</DefaultText>
-        </CustomActionButton>
-        <CustomActionButton style={styles.primaryButton} onPress={() => {}}>
-          <DefaultText style={styles.primaryButtonText}>10</DefaultText>
-        </CustomActionButton>
-        <CustomActionButton style={styles.primaryButton} onPress={() => {}}>
-          <DefaultText style={styles.primaryButtonText}>20</DefaultText>
-        </CustomActionButton>
+        {Defaults.game.bonusScoreDefaults.wager.map((wagerValue) => {
+          const backgroundColor =
+            parseInt(wagerValue) === parseInt(selectedValue)
+              ? Defaults.button.primary
+              : Defaults.button.cancel;
+
+          return (
+            <CustomActionButton
+              key={wagerValue}
+              style={{
+                ...styles.primaryButton,
+                ...{ backgroundColor: backgroundColor },
+              }}
+              onPress={updateSelectedValueState.bind(this, wagerValue)}
+            >
+              <DefaultText style={styles.primaryButtonText}>{wagerValue}</DefaultText>
+            </CustomActionButton>
+          );
+        })}
       </BonusControl>
       <BonusValue>{props.bonusItem.score}</BonusValue>
     </View>

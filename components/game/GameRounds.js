@@ -35,10 +35,8 @@ const GameRounds = (props) => {
             ]}
             onPress={() => {
               dispatch(setCurrentRound(round));
-              navigation.navigate("Bids", {
+              navigation.navigate("Scores", {
                 round: round,
-                players: game.players,
-                roundPlayersDetail: game.gameData[round - 1],
               });
             }}
           >

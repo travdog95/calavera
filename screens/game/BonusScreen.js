@@ -1,172 +1,121 @@
-import React, { useState } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
-import * as Animatable from "react-native-animatable";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { Ionicons } from "@expo/vector-icons";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import BonusAlliance from "../../components/game/bonus/BonusAlliance";
 import BonusWager from "../../components/game/bonus/BonusWager";
-import { updatePlayerData } from "../../store/actions/game-actions";
+import { updateRoundBonuses } from "../../store/actions/game-actions";
 import DefaultText from "../../components/UI/DefaultText";
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 import BonusMultiple from "../../components/game/bonus/BonusMultiple";
 import BonusBoolean from "../../components/game/bonus/BonusBoolean";
+import HeaderButton from "../../components/UI/HeaderButton";
 
 const BonusScreen = (props) => {
-  const currentGame = useSelector((state) => state.game.currentGame);
+  const game = useSelector((state) => state.game.currentGame);
   const currentPlayerId = props.route.params.player.id;
-  const currentPlayer = currentGame.players.filter((player) => player.id === currentPlayerId)[0];
-  const currentRound = currentGame.currentRound;
+  const currentPlayer = game.players.filter((player) => player.id === currentPlayerId)[0];
+  const round = game.currentRound;
+
+  const roundBonusDetail = game.roundBonusesDetail[`r${round}`];
+  const playerBonusDetail = roundBonusDetail.playersBonusDetail[currentPlayerId];
 
   const dispatch = useDispatch();
 
-  const bonusValue = 999;
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item title="Save" iconName="save" onPress={updateBonusHandler} />
+        </HeaderButtons>
+      ),
+    });
+  }, [updateBonusHandler]);
 
-  // const [selectedBonus, setSelectedBonus] = useState(bonusOptions[0]);
-  // const [selectedPlayer, setSelectedPlayer] = useState(eligiblePlayers[0]);
+  const updateBonusHandler = () => {
+    const playerData = [];
+    game.players.map((player, index) => {
+      if (player.id === currentPlayerId) {
+        playerData.push({ playerId: player.id, bonusScore: totalScore });
+      } else {
+        playerData.push({ playerId: player.id });
+      }
+    });
 
-  // const setSelectedBonusHandler = (selectedOption) => {
-  //   setSelectedBonus(selectedOption);
-  // };
+    dispatch(updateRoundBonuses(round, playerData));
 
-  // const setSelectedPlayerHandler = (selectedOption) => {
-  //   setSelectedPlayer(selectedOption);
-  // };
-
-  // const updateBonusHandler = () => {
-  //   const playerData = [];
-  //   currentGame.players.map((player, index) => {
-  //     switch (selectedBonus.id) {
-  //       case "alliance1":
-  //         if (player.id === currentPlayerId || player.id === selectedPlayer.id) {
-  //           playerData.push({
-  //             playerId: player.id,
-  //             isAligned1: player.id === currentPlayerId ? selectedPlayer.id : currentPlayerId,
-  //           });
-  //         } else {
-  //           playerData.push({ playerId: player.id, isAligned1: "" });
-  //         }
-  //         break;
-  //       case "alliance2":
-  //         if (player.id === currentPlayerId || player.id === selectedPlayer.id) {
-  //           playerData.push({
-  //             playerId: player.id,
-  //             isAligned2: player.id === currentPlayerId ? selectedPlayer.id : currentPlayerId,
-  //           });
-  //         } else {
-  //           playerData.push({ playerId: player.id, isAligned2: "" });
-  //         }
-  //         break;
-  //       case "wager10":
-  //         if (player.id === currentPlayerId) {
-  //           playerData.push({ playerId: player.id, pointsWagered: 10 });
-  //         } else {
-  //           playerData.push({ playerId: player.id, pointsWagered: 0 });
-  //         }
-  //         break;
-  //       case "wager20":
-  //         if (player.id === currentPlayerId) {
-  //           playerData.push({ playerId: player.id, pointsWagered: 20 });
-  //         } else {
-  //           playerData.push({ playerId: player.id, pointsWagered: 0 });
-  //         }
-  //         break;
-  //     }
-  //   });
-
-  //   dispatch(updatePlayerData(selectedRound, playerData, "bonuses"));
-
-  //   props.navigation.navigate("Game");
-  // };
-
-  const incOrDecValueHandler = (direction) => {
-    console.log(direction);
+    props.navigation.navigate("Scores", {
+      round: round,
+    });
   };
 
-  const calcTotalScore = () => {
-    return 0;
-  };
+  const getBonusItem = (bonusItemKey) => {
+    const multiplier =
+      roundBonusDetail[bonusItemKey].numAvailable === undefined
+        ? 1
+        : Defaults.game.bonusScoreDefaults[bonusItemKey];
 
-  const getBonusItem = (bonusItem, bonusScore) => {
-    let newBonusItem = {};
-    switch (bonusItem) {
-      case "alliance1":
-        newBonusItem = {
-          isAvailable: true,
-          numAvailable: 0,
-          controlValue: "",
-          score: 0,
-        };
-        break;
-      case "alliance2":
-        newBonusItem = {
-          isAvailable: true,
-          numAvailable: 0,
-          controlValue: "p3",
-          score: bonusScore,
-        };
-        break;
-      case "wager":
-        newBonusItem = {
-          isAvailable: true,
-          numAvailable: 0,
-          controlValue: 20,
-          score: bonusScore[2],
-        };
-        break;
-      case "pirates":
-        newBonusItem = {
-          isAvailable: true,
-          numAvailable: 4,
-          controlValue: 1,
-          score: 30,
-        };
-        break;
-      case "normal14s":
-        newBonusItem = {
-          isAvailable: true,
-          numAvailable: 3,
-          controlValue: 1,
-          score: 10,
-        };
-        break;
-      case "skullKing":
-        newBonusItem = {
-          isAvailable: true,
-          numAvailable: 0,
-          controlValue: false,
-          score: 0,
-        };
-        break;
-      case "black14":
-        newBonusItem = {
-          isAvailable: true,
-          numAvailable: 0,
-          controlValue: true,
-          score: 20,
-        };
-        break;
-      default:
-        return newBonusItem;
-    }
+    const score = playerBonusDetail[bonusItemKey]
+      ? Defaults.game.bonusScoreDefaults[bonusItemKey] * multiplier
+      : 0;
+
+    const newBonusItem = {
+      isAvailable: roundBonusDetail[bonusItemKey].isAvailable,
+      controlValue: playerBonusDetail[bonusItemKey],
+      numAvailable: roundBonusDetail[bonusItemKey].numAvailable ?? null,
+      score: score,
+    };
+
     return newBonusItem;
   };
-  const updateBonusScoresState = () => {
-    const newBonusScores = {};
 
-    for (const bonusItem in Defaults.game.bonusScoreDefaults) {
-      if (Object.hasOwnProperty.call(Defaults.game.bonusScoreDefaults, bonusItem)) {
-        const bonusValue = Defaults.game.bonusScoreDefaults[bonusItem];
-        newBonusScores[bonusItem] = getBonusItem(bonusItem, bonusValue);
+  const initBonusItemsState = () => {
+    const newBonusItems = {};
+
+    for (const bonusItemKey in Defaults.game.bonusScoreDefaults) {
+      if (Object.hasOwnProperty.call(Defaults.game.bonusScoreDefaults, bonusItemKey)) {
+        newBonusItems[bonusItemKey] = getBonusItem(bonusItemKey);
       }
     }
 
-    return newBonusScores;
+    return newBonusItems;
   };
 
-  const [totalScore, setTotalScore] = useState(calcTotalScore);
-  const [bonusScores, setBonusScores] = useState(updateBonusScoresState);
+  const initTotalScore = () => {
+    let total = 0;
+    for (const bonusItemKey in bonusItems) {
+      if (Object.hasOwnProperty.call(bonusItems, bonusItemKey)) {
+        total += parseInt(bonusItems[bonusItemKey].score);
+      }
+    }
+    return total;
+  };
+
+  const [bonusItems, setBonusItems] = useState(initBonusItemsState);
+  const [totalScore, setTotalScore] = useState(initTotalScore);
+
+  const updateBonusItemsState = (updatedBonusItemKey, updatedBonusItem) => {
+    const updatedBonusItems = {};
+    let total = 0;
+    for (const bonusItemKey in bonusItems) {
+      //Find matching bonus item
+      if (bonusItemKey === updatedBonusItemKey) {
+        updatedBonusItems[updatedBonusItemKey] = {
+          ...bonusItems[updatedBonusItemKey],
+          ...updatedBonusItem,
+        };
+      } else {
+        updatedBonusItems[bonusItemKey] = bonusItems[bonusItemKey];
+      }
+
+      total += parseInt(updatedBonusItems[bonusItemKey].score);
+    }
+
+    setBonusItems(updatedBonusItems);
+    setTotalScore(total);
+  };
 
   return (
     <View style={styles.screen}>
@@ -176,25 +125,59 @@ const BonusScreen = (props) => {
         </DefaultText>
       </View>
       <View style={styles.bonusRow}>
-        <BonusAlliance currentPlayer={currentPlayer} bonusItem={bonusScores.alliance1} />
+        <BonusAlliance
+          currentPlayer={currentPlayer}
+          bonusItemKey={"alliance1"}
+          bonusItem={bonusItems.alliance1}
+          setBonusItems={updateBonusItemsState}
+        />
       </View>
       <View style={styles.bonusRow}>
-        <BonusAlliance currentPlayer={currentPlayer} bonusItem={bonusScores.alliance2} />
+        <BonusAlliance
+          currentPlayer={currentPlayer}
+          bonusItemKey={"alliance2"}
+          bonusItem={bonusItems.alliance2}
+          setBonusItems={updateBonusItemsState}
+        />
       </View>
       <View style={styles.bonusRow}>
-        <BonusWager bonusItem={bonusScores.wager} />
+        <BonusWager
+          bonusItem={bonusItems.wager}
+          bonusItemKey={"wager"}
+          setBonusItems={updateBonusItemsState}
+        />
       </View>
       <View style={styles.bonusRow}>
-        <BonusMultiple bonusItem={bonusScores.pirates} bonusName={"Pirates"} />
+        <BonusMultiple
+          bonusItem={bonusItems.pirates}
+          bonusName={"Pirates"}
+          bonusItemKey={"pirates"}
+          setBonusItems={updateBonusItemsState}
+        />
       </View>
       <View style={styles.bonusRow}>
-        <BonusMultiple bonusItem={bonusScores.normal14s} bonusName={"14's"} />
+        <BonusMultiple
+          bonusItem={bonusItems.normal14s}
+          bonusName={"14's"}
+          bonusItemKey={"normal14s"}
+          setBonusItems={updateBonusItemsState}
+        />
       </View>
       <View style={styles.bonusRow}>
-        <BonusBoolean bonusItem={bonusScores.black14} bonusName={"Black 14"} />
+        <BonusBoolean
+          bonusItem={bonusItems.black14}
+          bonusName={"Black 14"}
+          bonusItemKey={"black14"}
+          setBonusItems={updateBonusItemsState}
+        />
       </View>
       <View style={styles.bonusRow}>
-        <BonusBoolean bonusItem={bonusScores.skullKing} bonusName={"Skull King"} />
+        <BonusBoolean
+          bonusItem={bonusItems.skullKing}
+          bonusName={"Skull King"}
+          bonusItemKey={"skullKing"}
+          setBonusItems={updateBonusItemsState}
+        />
       </View>
     </View>
   );
@@ -213,6 +196,8 @@ const styles = StyleSheet.create({
   bonusRow: {
     width: "100%",
     backgroundColor: Colors.theme.grey3,
+    borderColor: Colors.theme.grey5,
+    borderBottomWidth: 1,
   },
   totalRow: {
     width: "100%",
@@ -220,13 +205,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: Defaults.bonusScreen.rowVerticalPadding,
     backgroundColor: Colors.theme.grey3,
+    borderColor: Colors.theme.grey5,
+    borderBottomWidth: 1,
   },
   totalRowText: {
     fontSize: Defaults.extraLargeFontSize,
     fontWeight: "bold",
-  },
-  backButton: {
-    backgroundColor: Defaults.button.cancel,
   },
 });
 

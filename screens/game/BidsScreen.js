@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import { updatePlayerData } from "../../store/actions/game-actions";
@@ -13,9 +13,10 @@ import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
 
 const BidsScreen = (props) => {
-  const players = props.route.params.players;
-  const currentRound = props.route.params.round;
-  const roundPlayersDetail = props.route.params.roundPlayersDetail;
+  const game = useSelector((state) => state.game.currentGame);
+  const round = props.route.params.round;
+  const players = game.players;
+  const roundPlayersDetail = game.gameData[round - 1];
 
   const dispatch = useDispatch();
 
@@ -29,6 +30,7 @@ const BidsScreen = (props) => {
     return initialBids;
   };
 
+  //Local state
   const [bids, setBids] = useState(setInitialBids);
 
   const updateBidsState = (newBid, index) => {
@@ -51,9 +53,11 @@ const BidsScreen = (props) => {
       playerData.push({ playerId: player.id, bid: bids[index] });
     });
 
-    dispatch(updatePlayerData(currentRound, playerData, "bids"));
+    dispatch(updatePlayerData(round, playerData, "bids"));
 
-    props.navigation.navigate("Game");
+    props.navigation.navigate("Scores", {
+      round: round,
+    });
   };
 
   useEffect(() => {
@@ -67,7 +71,12 @@ const BidsScreen = (props) => {
     });
   }, [updateBidsHandler]);
 
-  const totalBids = bids.reduce((total, current) => parseInt(total) + parseInt(current));
+  const calcTotalBids = (total, bid) => {
+    const newBid = bid === "" ? "0" : bid;
+    return parseInt(total) + parseInt(newBid);
+  };
+
+  const totalBids = bids.reduce(calcTotalBids, 0);
 
   return (
     <View style={styles.screen}>
@@ -80,7 +89,7 @@ const BidsScreen = (props) => {
             <BidRow
               key={player.id}
               player={player}
-              round={currentRound}
+              round={round}
               playerIndex={index}
               bids={bids}
               setBids={updateBidsState}
@@ -93,10 +102,10 @@ const BidsScreen = (props) => {
 };
 
 export const screenOptions = (navData) => {
-  const currentRound = navData.route.params.round;
+  const round = navData.route.params.round;
 
   return {
-    headerTitle: `Round ${currentRound}`,
+    headerTitle: `Round ${round} Bids`,
   };
 };
 

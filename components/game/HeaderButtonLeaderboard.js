@@ -1,6 +1,7 @@
 import React from "react";
 import { Item } from "react-navigation-header-buttons";
 import { useNavigation } from "@react-navigation/native";
+import { Entypo } from "@expo/vector-icons";
 
 const HeaderButtonLeaderboard = (props) => {
   const navigation = useNavigation();
@@ -8,7 +9,8 @@ const HeaderButtonLeaderboard = (props) => {
   return (
     <Item
       title="Leaderboard"
-      iconName="list-outline"
+      iconComponent={Entypo}
+      iconName="medal"
       onPress={() => {
         navigation.navigate("Leaderboard");
       }}

@@ -10,6 +10,7 @@ import Player from "../../models/player";
 import Game from "../../models/game";
 import RoundPlayerDetail from "../../models/roundPlayerDetail";
 import RoundBonusDetail from "../../models/roundBonusDetail";
+import PlayerBonusDetail from "../../models/playerBonusDetail";
 
 import { initGame } from "../../store/actions/game-actions";
 
@@ -26,16 +27,29 @@ const ConfirmNewGameScreen = (props) => {
     props.navigation.navigate("CreateGame");
   };
 
-  const initRoundBonusesDetail = () => {
+  const initRoundBonusesDetail = (players) => {
     const roundBonusesDetail = {};
 
     let r = 1;
     for (r; r <= numRounds; r++) {
       const key = `r${r}`;
-      roundBonusesDetail[key] = new RoundBonusDetail();
+
+      const playersBonusDetail = initPlayersBonusDetail(players);
+
+      roundBonusesDetail[key] = new RoundBonusDetail(r, playersBonusDetail);
     }
 
     return roundBonusesDetail;
+  };
+
+  const initPlayersBonusDetail = (players) => {
+    const playersBonusDetail = {};
+
+    players.forEach((player) => {
+      playersBonusDetail[player.id] = new PlayerBonusDetail(player.id);
+    });
+
+    return playersBonusDetail;
   };
 
   const confirmGameHandler = () => {
@@ -45,7 +59,7 @@ const ConfirmNewGameScreen = (props) => {
     //Init game data
     const gameData = initGameData(players, numRounds);
 
-    const roundBonusesDetail = initRoundBonusesDetail();
+    const roundBonusesDetail = initRoundBonusesDetail(players);
 
     //Create game
     const game = new Game({
@@ -68,11 +82,10 @@ const ConfirmNewGameScreen = (props) => {
   const createPlayersHandler = (playerNames) => {
     //Create players
     const players = [];
-    let id = 1;
 
-    playerNames.forEach((playerName) => {
-      players.push(new Player(`p${id}`, playerName));
-      id++;
+    playerNames.forEach((playerName, index) => {
+      const newPlayerName = playerName === "" ? `Player ${index + 1}` : playerName;
+      players.push(new Player(`p${index + 1}`, newPlayerName));
     });
     return players;
   };

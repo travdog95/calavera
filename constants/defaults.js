@@ -35,7 +35,7 @@ export default {
     },
   },
   bonusScreen: {
-    rowVerticalPadding: 5,
+    rowVerticalPadding: 8,
   },
   game: {
     rowHeight: 45,

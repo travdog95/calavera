@@ -28,8 +28,7 @@ const ScoreBox = (props) => {
   if (props.roundPlayerDetail.round === currentRound) {
     cellBackgroundColor = Colors.theme.light3Shade;
   } else {
-    cellBackgroundColor =
-      props.roundPlayerDetail.round % 2 === 0 ? Colors.theme.grey2 : "white";
+    cellBackgroundColor = props.roundPlayerDetail.round % 2 === 0 ? Colors.theme.grey2 : "white";
   }
 
   if (props.roundPlayerDetail.pointsWagered > 0) {
@@ -59,7 +58,6 @@ const ScoreBox = (props) => {
         //navigate to Scores screen
         navigation.navigate("Scores", {
           round: props.roundPlayerDetail.round,
-          roundPlayersDetail: game.gameData[props.roundPlayerDetail.round - 1],
         });
       }}
     >
@@ -88,9 +86,7 @@ const ScoreBox = (props) => {
             <Text>{wagerIndicator}</Text>
           </View>
           <View style={styles.totalScoreContainer}>
-            <Text style={totalScoreStyle}>
-              {props.roundPlayerDetail.totalScore}
-            </Text>
+            <Text style={totalScoreStyle}>{props.roundPlayerDetail.totalScore}</Text>
           </View>
           <View style={styles.allianceContainer}>
             <Text style={styles.alliance}>{isAligned2Indicator}</Text>

@@ -39,9 +39,14 @@ const gameReducer = (state = initialState, action) => {
 
             //Update score, if passed in from action
             if (action.methodType === "scores") {
-              roundPlayerDetail.score = newPlayerDetail.score;
-              roundPlayerDetail.bonusScore = parseInt(newPlayerDetail.bonusScore);
-              roundPlayerDetail.baseScore = newPlayerDetail.baseScore;
+              roundPlayerDetail.bonusScore =
+                newPlayerDetail.bonusScore ?? roundPlayerDetail.bonusScore;
+              roundPlayerDetail.baseScore =
+                newPlayerDetail.baseScore ?? roundPlayerDetail.baseScore;
+
+              //Total score for the player in the current round
+              roundPlayerDetail.score =
+                parseInt(roundPlayerDetail.bonusScore) + parseInt(roundPlayerDetail.baseScore);
 
               //Calculate totalScore
               if (state.currentGame.currentRound === 1) {
@@ -108,6 +113,10 @@ const gameReducer = (state = initialState, action) => {
       return {
         ...state,
         currentGame: { ...state.currentGame, players: newPlayers },
+      };
+    case actions.UPDATE_ROUND_BONUSES:
+      return {
+        ...state,
       };
     default:
       return state;

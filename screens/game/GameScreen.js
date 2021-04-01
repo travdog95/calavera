@@ -93,6 +93,9 @@ const GameScreen = (props) => {
 export const screenOptions = () => {
   return {
     title: "Scorecard",
+    headerLeft: () => {
+      return null;
+    },
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <HeaderButtonBids />

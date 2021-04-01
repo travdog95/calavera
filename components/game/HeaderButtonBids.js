@@ -15,8 +15,6 @@ const HeaderButtonBids = (props) => {
       onPress={() => {
         navigation.navigate("Bids", {
           round: game.currentRound,
-          players: game.players,
-          roundPlayersDetail: game.gameData[game.currentRound - 1],
         });
       }}
     />
