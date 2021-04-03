@@ -17,7 +17,6 @@ const CreateGamePlayerRow = (props) => {
       <Input
         style={styles.playerNameInput}
         blurOnSubmit
-        autoCapitalize="none"
         autoCorrect={false}
         maxLength={10}
         placeholder="Player name"

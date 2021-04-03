@@ -37,7 +37,6 @@ const EditPlayerNamesScreen = (props) => {
         <Input
           style={styles.addPlayerInput}
           blurOnSubmit
-          autoCapitalize="none"
           autoCorrect={false}
           maxLength={10}
           placeholder="Player name"
