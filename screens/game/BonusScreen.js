@@ -44,7 +44,7 @@ const BonusScreen = (props) => {
       }
     });
 
-    dispatch(updateRoundBonuses(round, playerData));
+    //dispatch(updateRoundBonuses(round, playerData));
 
     props.navigation.navigate("Scores", {
       round: round,
