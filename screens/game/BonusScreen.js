@@ -24,48 +24,18 @@ const BonusScreen = (props) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    props.navigation.setOptions({
-      headerRight: () => (
-        <HeaderButtons HeaderButtonComponent={HeaderButton}>
-          <Item title="Save" iconName="save" onPress={updateBonusHandler} />
-        </HeaderButtons>
-      ),
-    });
-  }, [updateBonusHandler]);
-
-  const updateBonusHandler = () => {
-    const playerData = [];
-    game.players.map((player, index) => {
-      if (player.id === currentPlayerId) {
-        playerData.push({ playerId: player.id, bonusScore: totalScore });
-      } else {
-        playerData.push({ playerId: player.id });
-      }
-    });
-
-    //dispatch(updateRoundBonuses(round, playerData));
-
-    props.navigation.navigate("Scores", {
-      round: round,
-    });
-  };
-
   const getBonusItem = (bonusItemKey) => {
-    const multiplier =
-      roundBonusDetail[bonusItemKey].numAvailable === undefined
-        ? 1
-        : Defaults.game.bonusScoreDefaults[bonusItemKey];
+    const controlValue = playerBonusDetail[bonusItemKey];
+    const multiplier = roundBonusDetail[bonusItemKey].numAvailable === undefined ? 1 : controlValue;
 
     const score = playerBonusDetail[bonusItemKey]
       ? Defaults.game.bonusScoreDefaults[bonusItemKey] * multiplier
       : 0;
-
     const newBonusItem = {
       isAvailable: roundBonusDetail[bonusItemKey].isAvailable,
-      controlValue: playerBonusDetail[bonusItemKey],
+      controlValue,
       numAvailable: roundBonusDetail[bonusItemKey].numAvailable ?? null,
-      score: score,
+      score: bonusItemKey === "wager" ? playerBonusDetail[bonusItemKey] : score,
     };
 
     return newBonusItem;
@@ -93,29 +63,58 @@ const BonusScreen = (props) => {
     return total;
   };
 
+  //Local state
   const [bonusItems, setBonusItems] = useState(initBonusItemsState);
   const [totalScore, setTotalScore] = useState(initTotalScore);
 
-  const updateBonusItemsState = (updatedBonusItemKey, updatedBonusItem) => {
-    const updatedBonusItems = {};
+  const updateBonusItemsState = (updateBonusItemKey, updateBonusItem) => {
+    const updateBonusItems = {};
     let total = 0;
     for (const bonusItemKey in bonusItems) {
       //Find matching bonus item
-      if (bonusItemKey === updatedBonusItemKey) {
-        updatedBonusItems[updatedBonusItemKey] = {
-          ...bonusItems[updatedBonusItemKey],
-          ...updatedBonusItem,
+      if (bonusItemKey === updateBonusItemKey) {
+        updateBonusItems[updateBonusItemKey] = {
+          ...bonusItems[updateBonusItemKey],
+          ...updateBonusItem,
         };
       } else {
-        updatedBonusItems[bonusItemKey] = bonusItems[bonusItemKey];
+        updateBonusItems[bonusItemKey] = bonusItems[bonusItemKey];
       }
 
-      total += parseInt(updatedBonusItems[bonusItemKey].score);
+      total += parseInt(updateBonusItems[bonusItemKey].score);
     }
 
-    setBonusItems(updatedBonusItems);
+    setBonusItems(updateBonusItems);
     setTotalScore(total);
   };
+
+  const updateBonusHandler = () => {
+    const bonusData = {
+      alliance1: bonusItems.alliance1.controlValue,
+      alliance2: bonusItems.alliance2.controlValue,
+      wager: bonusItems.wager.controlValue,
+      pirates: bonusItems.pirates.controlValue,
+      normal14s: bonusItems.normal14s.controlValue,
+      black14: bonusItems.black14.controlValue,
+      skullKing: bonusItems.skullKing.controlValue,
+    };
+
+    dispatch(updateRoundBonuses(round, currentPlayerId, bonusData));
+
+    props.navigation.navigate("Scores", {
+      round: round,
+    });
+  };
+
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item title="Save" iconName="save" onPress={updateBonusHandler} />
+        </HeaderButtons>
+      ),
+    });
+  }, [updateBonusHandler]);
 
   return (
     <View style={styles.screen}>

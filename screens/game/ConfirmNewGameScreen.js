@@ -69,7 +69,7 @@ const ConfirmNewGameScreen = (props) => {
       currentRound: 1,
       gameData,
       date: TKO.getCurrentDate(),
-      status: "In progress",
+      isActive: true,
       roundBonusesDetail,
     });
 

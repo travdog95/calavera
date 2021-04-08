@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useSelector } from "react-redux";
+import _ from "lodash";
 
 import GameRow from "../../components/game/GameRow";
 import CustomActionButton from "../../components/CustomActionButton";
@@ -13,10 +14,10 @@ import Defaults from "../../constants/defaults";
 
 const MyGamesScreen = (props) => {
   const games = useSelector((state) => state.game.games);
-
+  const currentGame = useSelector((state) => state.game.currentGame);
   return (
     <View style={styles.screen}>
-      {games.length === 0 ? (
+      {_.isEmpty(currentGame) ? (
         <View style={styles.noGames}>
           <DefaultText>No games!</DefaultText>
         </View>
@@ -27,9 +28,10 @@ const MyGamesScreen = (props) => {
             <DefaultText style={styles.playersLabel}># Players</DefaultText>
             <DefaultText style={styles.statusLabel}>Status</DefaultText>
           </View>
-          {games.map((game, index) => {
-            return <GameRow key={game.id} game={game} />;
-          })}
+          <GameRow game={currentGame} />
+          {/* {games.map((game) => {
+            if (game.id !== currentGame.id) return <GameRow key={game.id} game={game} />;
+          })} */}
         </ScrollView>
       )}
 

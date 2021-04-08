@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
@@ -15,6 +15,7 @@ const ScoreBox = (props) => {
   let cellBackgroundColor = "";
   const game = useSelector((state) => state.game.currentGame);
   const currentRound = game.currentRound;
+  const scoreBoxRound = props.roundPlayerDetail.round;
 
   let totalScoreStyle = {
     fontFamily: "open-sans-bold",
@@ -25,10 +26,10 @@ const ScoreBox = (props) => {
     totalScoreStyle.color = Colors.theme.main3;
   }
 
-  if (props.roundPlayerDetail.round === currentRound) {
+  if (scoreBoxRound === currentRound) {
     cellBackgroundColor = Colors.theme.light3Shade;
   } else {
-    cellBackgroundColor = props.roundPlayerDetail.round % 2 === 0 ? Colors.theme.grey2 : "white";
+    cellBackgroundColor = scoreBoxRound % 2 === 0 ? Colors.theme.grey2 : "white";
   }
 
   if (props.roundPlayerDetail.pointsWagered > 0) {
@@ -38,62 +39,68 @@ const ScoreBox = (props) => {
   const isAligned1Indicator = props.roundPlayerDetail.isAligned1 ? "*" : "";
   const isAligned2Indicator = props.roundPlayerDetail.isAligned2 ? "*" : "";
 
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        {
-          backgroundColor: pressed ? Colors.theme.grey1 : cellBackgroundColor,
-        },
-        {
-          ...styles.roundContainer,
-          ...{
-            width: props.roundPlayerDetailWidth,
-          },
-        },
-      ]}
-      onPress={() => {
-        //set current round
-        dispatch(setCurrentRound(props.roundPlayerDetail.round));
+  const isPressable = scoreBoxRound !== currentRound ? false : true;
 
-        //navigate to Scores screen
-        navigation.navigate("Scores", {
-          round: props.roundPlayerDetail.round,
-        });
-      }}
-    >
-      <View
-        style={{
-          ...styles.roundContainer,
-          ...{
-            width: props.roundPlayerDetailWidth,
-            backgroundColor: cellBackgroundColor,
+  return (
+    <View>
+      <Pressable
+        style={({ pressed }) => [
+          {
+            backgroundColor: pressed && isPressable ? Colors.theme.grey1 : cellBackgroundColor,
           },
+          {
+            ...styles.roundContainer,
+            ...{
+              width: props.roundPlayerDetailWidth,
+            },
+          },
+        ]}
+        onPress={() => {
+          //set current round
+          //dispatch(setCurrentRound(scoreBoxRound));
+
+          if (isPressable) {
+            //navigate to Scores screen
+            navigation.navigate("Scores", {
+              round: scoreBoxRound,
+            });
+          }
         }}
       >
-        <View style={styles.topRowContainer}>
-          <View style={styles.bidContainer}>
-            <Text style={styles.bidText}>{props.roundPlayerDetail.bid}</Text>
+        <View
+          style={{
+            ...styles.roundContainer,
+            ...{
+              width: props.roundPlayerDetailWidth,
+              backgroundColor: cellBackgroundColor,
+            },
+          }}
+        >
+          <View style={styles.topRowContainer}>
+            <View style={styles.bidContainer}>
+              <Text style={styles.bidText}>{props.roundPlayerDetail.bid}</Text>
+            </View>
+            <View style={styles.scoreContainer}>
+              <Text style={styles.score}>{props.roundPlayerDetail.score}</Text>
+            </View>
+            <View style={styles.allianceContainer}>
+              <Text style={styles.alliance}>{isAligned1Indicator}</Text>
+            </View>
           </View>
-          <View style={styles.scoreContainer}>
-            <Text style={styles.score}>{props.roundPlayerDetail.score}</Text>
-          </View>
-          <View style={styles.allianceContainer}>
-            <Text style={styles.alliance}>{isAligned1Indicator}</Text>
+          <View style={styles.bottomRowContainer}>
+            <View style={styles.wagerContainer}>
+              <Text>{wagerIndicator}</Text>
+            </View>
+            <View style={styles.totalScoreContainer}>
+              <Text style={totalScoreStyle}>{props.roundPlayerDetail.totalScore}</Text>
+            </View>
+            <View style={styles.allianceContainer}>
+              <Text style={styles.alliance}>{isAligned2Indicator}</Text>
+            </View>
           </View>
         </View>
-        <View style={styles.bottomRowContainer}>
-          <View style={styles.wagerContainer}>
-            <Text>{wagerIndicator}</Text>
-          </View>
-          <View style={styles.totalScoreContainer}>
-            <Text style={totalScoreStyle}>{props.roundPlayerDetail.totalScore}</Text>
-          </View>
-          <View style={styles.allianceContainer}>
-            <Text style={styles.alliance}>{isAligned2Indicator}</Text>
-          </View>
-        </View>
-      </View>
-    </Pressable>
+      </Pressable>
+    </View>
   );
 };
 

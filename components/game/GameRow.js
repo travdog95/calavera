@@ -12,6 +12,7 @@ import Defaults from "../../constants/defaults";
 const GameRow = (props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const status = props.game.isActive ? "In progress" : "Completed";
 
   return (
     <Pressable
@@ -31,7 +32,7 @@ const GameRow = (props) => {
       <View style={styles.row}>
         <DefaultText style={styles.date}>{props.game.date}</DefaultText>
         <DefaultText style={styles.players}>{props.game.players.length}</DefaultText>
-        <DefaultText style={styles.status}>{props.game.status}</DefaultText>
+        <DefaultText style={styles.status}>{status}</DefaultText>
       </View>
     </Pressable>
   );

@@ -24,20 +24,26 @@ const GameRounds = (props) => {
         const content = props.currentRound === round ? `[${round}]` : round;
         const roundBackgroundColor =
           props.currentRound === round ? Colors.theme.light3 : Colors.theme.light1;
+        const isPressable = round !== game.currentRound ? false : true;
+
         return (
           <Pressable
             key={round.toString()}
             style={({ pressed }) => [
               {
-                backgroundColor: pressed ? Colors.theme.light2 : roundBackgroundColor,
+                backgroundColor:
+                  pressed && isPressable ? Colors.theme.light2 : roundBackgroundColor,
               },
               styles.roundContainer,
             ]}
             onPress={() => {
-              dispatch(setCurrentRound(round));
-              navigation.navigate("Scores", {
-                round: round,
-              });
+              //dispatch(setCurrentRound(round));
+
+              if (isPressable) {
+                navigation.navigate("Scores", {
+                  round: round,
+                });
+              }
             }}
           >
             <View>

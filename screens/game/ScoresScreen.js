@@ -8,13 +8,13 @@ import ScoreRow from "../../components/game/ScoreRow";
 import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
 import HeaderButtonBids from "../../components/game/HeaderButtonBids";
 import HeaderButton from "../../components/UI/HeaderButton";
+import RoundHeader from "../../components/game/RoundHeader";
 
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
 
 const ScoresScreen = (props) => {
   const game = useSelector((state) => state.game.currentGame);
-  // console.log(game.roundBonusesDetail);
   const players = game.players;
   const round = props.route.params.round;
   const roundPlayersDetail = game.gameData[round - 1];
@@ -236,12 +236,7 @@ const ScoresScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      {/* <View style={styles.header}>
-        <DefaultText style={styles.playerName}>Name</DefaultText>
-        <DefaultText style={styles.bid}>Bid</DefaultText>
-        <DefaultText style={styles.bonus}>Bonus</DefaultText>
-        <DefaultText style={styles.score}>Score</DefaultText>
-      </View> */}
+      <RoundHeader round={round} />
       <ScrollView contentContainerStyle={styles.playerScoresContainer}>
         {players.map((player, index) => {
           const playerDetail = roundPlayersDetail.filter((detail) => detail.playerId === player.id);
@@ -273,7 +268,7 @@ export const screenOptions = (navData) => {
   const round = navData.route.params.round;
 
   return {
-    headerTitle: `Round ${round} Scores`,
+    headerTitle: `Scores`,
   };
 };
 

@@ -3,8 +3,9 @@ import { View, ScrollView, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 
 import DefaultText from "../../components/UI/DefaultText";
+import RoundHeader from "../../components/game/RoundHeader";
+
 import Defaults from "../../constants/defaults";
-import Colors from "../../constants/colors";
 
 const LeaderboardScreen = (props) => {
   const currentGame = useSelector((state) => state.game.currentGame);
@@ -42,6 +43,7 @@ const LeaderboardScreen = (props) => {
 
   return (
     <View style={styles.screen}>
+      <RoundHeader round={round} />
       <ScrollView contentContainerStyle={styles.leaderboardContainer}>
         {leaderboardData.map((data, index) => {
           {

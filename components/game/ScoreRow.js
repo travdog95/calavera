@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Platform } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import CustomActionButton from "../../components/CustomActionButton";
 import DefaultText from "../../components/UI/DefaultText";
+import Input from "../../components/UI/Input";
+import IncDecButton from "../../components/UI/IncDecButton";
 
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
@@ -84,23 +85,21 @@ const ScoreRow = (props) => {
           </CustomActionButton>
         </View>
         <View style={styles.scoreContainer}>
-          <CustomActionButton
-            style={styles.decrementButton}
+          <IncDecButton
+            incOrDec={"dec"}
+            style={styles.baseScoreButton}
             onPress={props.incOrDecValue.bind(this, "lower", props.playerIndex, 10, "baseScore")}
-          >
-            <Ionicons name="remove-outline" size={Defaults.fontSize} color="white" />
-          </CustomActionButton>
-          <View style={styles.scoreTextContainer}>
-            <DefaultText style={styles.bonusScore}>
-              {props.baseScores[props.playerIndex]}
-            </DefaultText>
-          </View>
-          <CustomActionButton
-            style={styles.incrementButton}
+          />
+          <Input
+            style={styles.scoreInput}
+            value={props.baseScores[props.playerIndex]}
+            editable={false}
+          />
+          <IncDecButton
+            incOrDec={"inc"}
+            style={styles.baseScoreButton}
             onPress={props.incOrDecValue.bind(this, "higher", props.playerIndex, 10, "baseScore")}
-          >
-            <Ionicons name="add-outline" size={Defaults.fontSize} color="white" />
-          </CustomActionButton>
+          />
         </View>
         <View style={styles.bonusButtonContainer}>
           <CustomActionButton
@@ -112,31 +111,22 @@ const ScoreRow = (props) => {
             <DefaultText style={styles.buttonText}>Bonus</DefaultText>
           </CustomActionButton>
         </View>
-
         <View style={styles.scoreContainer}>
-          <CustomActionButton
-            style={{
-              ...styles.decrementButton,
-              ...{ backgroundColor: Colors.theme.dark2 },
-            }}
+          <IncDecButton
+            incOrDec={"dec"}
+            style={styles.bonusScoreButton}
             onPress={props.incOrDecValue.bind(this, "lower", props.playerIndex, 10, "bonusScore")}
-          >
-            <Ionicons name="remove-outline" size={Defaults.fontSize} color="white" />
-          </CustomActionButton>
-          <View style={styles.scoreTextContainer}>
-            <DefaultText style={styles.bonusScore}>
-              {props.bonusScores[props.playerIndex]}
-            </DefaultText>
-          </View>
-          <CustomActionButton
-            style={{
-              ...styles.incrementButton,
-              ...{ backgroundColor: Colors.theme.dark2 },
-            }}
+          />
+          <Input
+            style={styles.scoreInput}
+            value={props.bonusScores[props.playerIndex]}
+            editable={false}
+          />
+          <IncDecButton
+            incOrDec={"inc"}
+            style={styles.bonusScoreButton}
             onPress={props.incOrDecValue.bind(this, "higher", props.playerIndex, 10, "bonusScore")}
-          >
-            <Ionicons name="add-outline" size={Defaults.fontSize} color="white" />
-          </CustomActionButton>
+          />
         </View>
       </View>
     </View>
@@ -158,8 +148,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 5,
-    paddingVertical: 3,
-    backgroundColor: Colors.theme.light1,
+    paddingVertical: 5,
+    backgroundColor: Colors.theme.dark2,
   },
 
   playerNameContainer: {
@@ -168,6 +158,7 @@ const styles = StyleSheet.create({
   playerName: {
     fontSize: Defaults.largeFontSize,
     fontWeight: "bold",
+    color: "white",
   },
   bonusButtonContainer: {
     alignItems: "center",
@@ -175,13 +166,14 @@ const styles = StyleSheet.create({
   bonusButton: {
     padding: 5,
     height: Defaults.isSmallScreen ? 30 : 35,
-    backgroundColor: Colors.theme.dark2,
+    backgroundColor: Colors.theme.main1,
   },
 
   roundScore: {
     textAlign: "right",
     fontSize: Defaults.largeFontSize,
     fontWeight: "bold",
+    color: "white",
   },
   bottomRow: {
     width: "100%",
@@ -199,44 +191,23 @@ const styles = StyleSheet.create({
     padding: 5,
     height: Defaults.isSmallScreen ? 30 : 35,
   },
-  baseScoreContainer: {
-    width: `${Defaults.scoreScreen.widths.baseScore}%`,
-  },
   scoreContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
   },
-  scoreTextContainer: {
+  scoreInput: {
     width: Defaults.isSmallScreen ? 35 : 45,
     height: Defaults.isSmallScreen ? 30 : 35,
-    borderTopWidth: 1,
-    borderColor: Colors.theme.grey4,
-    borderBottomWidth: 1,
-    paddingTop: Platform.OS === "android" ? 0 : 7,
-  },
-  bonusScore: {
-    width: "100%",
-    height: "100%",
-    fontSize: Defaults.fontSize,
     textAlign: "center",
-    textAlignVertical: "center",
+    color: "black",
+    fontSize: Defaults.fontSize,
   },
-  incrementButton: {
-    backgroundColor: Defaults.button.secondary,
-    borderBottomLeftRadius: 0,
-    borderTopLeftRadius: 0,
-    height: Defaults.isSmallScreen ? 30 : 35,
-    width: Defaults.isSmallScreen ? 25 : 35,
-    padding: 5,
+  baseScoreButton: {
+    backgroundColor: Colors.theme.light2,
   },
-  decrementButton: {
-    backgroundColor: Defaults.button.secondary,
-    borderBottomRightRadius: 0,
-    borderTopRightRadius: 0,
-    height: Defaults.isSmallScreen ? 30 : 35,
-    width: Defaults.isSmallScreen ? 25 : 35,
-    padding: 5,
+  bonusScoreButton: {
+    backgroundColor: Colors.theme.main1,
   },
   buttonText: {
     color: "white",

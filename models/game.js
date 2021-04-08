@@ -6,7 +6,7 @@ class Game {
     this.gameData = game.gameData;
     this.currentRound = game.currentRound;
     this.date = game.date;
-    this.status = game.status;
+    this.isActive = game.isActive;
     this.winner = game.winner;
     this.roundBonusesDetail = game.roundBonusesDetail;
   }

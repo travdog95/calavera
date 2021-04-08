@@ -20,6 +20,6 @@ export const savePlayerName = (playerId, playerName) => {
   return { type: SAVE_PLAYER_NAME, playerId, playerName };
 };
 
-export const updateRoundBonuses = (round, bonusData) => {
-  return { type: UPDATE_ROUND_BONUSES, round, bonusData };
+export const updateRoundBonuses = (round, playerId, bonusData) => {
+  return { type: UPDATE_ROUND_BONUSES, round, playerId, bonusData };
 };

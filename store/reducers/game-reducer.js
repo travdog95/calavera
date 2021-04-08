@@ -1,3 +1,4 @@
+import { startDetecting } from "react-native/Libraries/Utilities/PixelRatio";
 import * as actions from "../actions/game-actions";
 
 //initialize state
@@ -115,8 +116,13 @@ const gameReducer = (state = initialState, action) => {
         currentGame: { ...state.currentGame, players: newPlayers },
       };
     case actions.UPDATE_ROUND_BONUSES:
+      const round = action.round;
+
+      const newRoundBonusDetail = { ...state.currentGame.roundBonusesDetail };
+      newRoundBonusDetail[`r${round}`].playersBonusDetail[action.playerId] = action.bonusData;
       return {
         ...state,
+        currentGame: { ...state.currentGame, roundBonusesDetail: newRoundBonusDetail },
       };
     default:
       return state;

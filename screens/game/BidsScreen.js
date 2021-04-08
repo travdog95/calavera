@@ -8,6 +8,7 @@ import BidRow from "../../components/game/BidRow";
 import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
 import HeaderButton from "../../components/UI/HeaderButton";
 import DefaultText from "../../components/UI/DefaultText";
+import RoundHeader from "../../components/game/RoundHeader";
 
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
@@ -80,6 +81,7 @@ const BidsScreen = (props) => {
 
   return (
     <View style={styles.screen}>
+      <RoundHeader round={round} />
       <View style={styles.totalBidsContainer}>
         <DefaultText style={styles.totalBidsText}>Total bids: {totalBids}</DefaultText>
       </View>
@@ -105,7 +107,7 @@ export const screenOptions = (navData) => {
   const round = navData.route.params.round;
 
   return {
-    headerTitle: `Round ${round} Bids`,
+    headerTitle: `Bids`,
   };
 };
 
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.theme.light2,
   },
   totalBidsText: {
-    fontSize: Defaults.extraLargeFontSize,
+    fontSize: Defaults.largeFontSize,
     textAlign: "center",
     fontWeight: "bold",
   },
