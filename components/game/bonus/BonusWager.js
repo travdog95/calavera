@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
 
 import CustomActionButton from "../../CustomActionButton";
 import DefaultText from "../../UI/DefaultText";
@@ -25,7 +24,7 @@ const BonusWager = (props) => {
     <View style={styles.row}>
       <BonusName>Rascal wager:</BonusName>
       <BonusControl>
-        {Defaults.game.bonusScoreDefaults.wager.map((wagerValue) => {
+        {Defaults.game.wagerPirateValues.map((wagerValue) => {
           const backgroundColor =
             parseInt(wagerValue) === parseInt(selectedValue)
               ? Defaults.button.primary

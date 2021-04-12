@@ -46,12 +46,13 @@ export default {
     bonusScoreDefaults: {
       alliance1: 20,
       alliance2: 20,
-      wager: [0, 10, 20],
+      wager: null,
       normal14s: 10,
       black14: 20,
       pirates: 30,
       skullKing: 50,
     },
+    wagerPirateValues: [0, 10, 20],
   },
   setBids: {
     rowHeight: 50,

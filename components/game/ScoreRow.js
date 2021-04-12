@@ -151,7 +151,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     backgroundColor: Colors.theme.dark2,
   },
-
   playerNameContainer: {
     textAlign: "left",
   },

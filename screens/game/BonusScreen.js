@@ -5,13 +5,14 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import BonusAlliance from "../../components/game/bonus/BonusAlliance";
 import BonusWager from "../../components/game/bonus/BonusWager";
-import { updateRoundBonuses } from "../../store/actions/game-actions";
+import { updateRoundBonuses, updatePlayerData } from "../../store/actions/game-actions";
 import DefaultText from "../../components/UI/DefaultText";
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 import BonusMultiple from "../../components/game/bonus/BonusMultiple";
 import BonusBoolean from "../../components/game/bonus/BonusBoolean";
 import HeaderButton from "../../components/UI/HeaderButton";
+import Tko from "../../helpers/helperFunctions";
 
 const BonusScreen = (props) => {
   const game = useSelector((state) => state.game.currentGame);
@@ -26,16 +27,12 @@ const BonusScreen = (props) => {
 
   const getBonusItem = (bonusItemKey) => {
     const controlValue = playerBonusDetail[bonusItemKey];
-    const multiplier = roundBonusDetail[bonusItemKey].numAvailable === undefined ? 1 : controlValue;
 
-    const score = playerBonusDetail[bonusItemKey]
-      ? Defaults.game.bonusScoreDefaults[bonusItemKey] * multiplier
-      : 0;
     const newBonusItem = {
       isAvailable: roundBonusDetail[bonusItemKey].isAvailable,
       controlValue,
       numAvailable: roundBonusDetail[bonusItemKey].numAvailable ?? null,
-      score: bonusItemKey === "wager" ? playerBonusDetail[bonusItemKey] : score,
+      score: Tko.calcPlayerBonusItemScore(roundBonusDetail, playerBonusDetail, bonusItemKey),
     };
 
     return newBonusItem;
@@ -89,6 +86,7 @@ const BonusScreen = (props) => {
   };
 
   const updateBonusHandler = () => {
+    //Update bonusData
     const bonusData = {
       alliance1: bonusItems.alliance1.controlValue,
       alliance2: bonusItems.alliance2.controlValue,
@@ -103,6 +101,7 @@ const BonusScreen = (props) => {
 
     props.navigation.navigate("Scores", {
       round: round,
+      bonusesUpdated: true,
     });
   };
 

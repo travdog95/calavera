@@ -12,11 +12,13 @@ import { Provider } from "react-redux";
 import { DrawNavigator } from "./navigation/DrawerNavigator";
 import { AppTabNavigator } from "./navigation/TabNavigator";
 import gameReducer from "./store/reducers/game-reducer";
+import settingsReducer from "./store/reducers/settings-reducer";
 
 enableScreens(); //ensure react-native uses native underlying screen components. Should be called before you render your first screen
 
 const rootReducer = combineReducers({
   game: gameReducer,
+  settings: settingsReducer,
 });
 
 const store = createStore(rootReducer);

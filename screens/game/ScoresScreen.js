@@ -9,14 +9,18 @@ import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboa
 import HeaderButtonBids from "../../components/game/HeaderButtonBids";
 import HeaderButton from "../../components/UI/HeaderButton";
 import RoundHeader from "../../components/game/RoundHeader";
+import Tko from "../../helpers/helperFunctions";
 
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
 
 const ScoresScreen = (props) => {
   const game = useSelector((state) => state.game.currentGame);
+  const settings = useSelector((state) => state.settings);
+
   const players = game.players;
   const round = props.route.params.round;
+  const bonusesUpdated = props.route.params.bonusesUpdated;
   const roundPlayersDetail = game.gameData[round - 1];
   const finalRound = game.numRounds;
 
@@ -49,32 +53,27 @@ const ScoresScreen = (props) => {
     return initialBaseScores;
   };
 
-  const setInitialBonusScores = () => {
-    const initialBonusScores = [];
+  const calcBonusScore = (playerId) => {
+    const roundBonusDetail = game.roundBonusesDetail[`r${round}`];
+    const playerBonusDetail = roundBonusDetail.playersBonusDetail[playerId];
+    return Tko.calcPlayerRoundBonus(roundBonusDetail, playerBonusDetail);
+  };
+
+  const getBonusScores = () => {
+    console.log("getBonusScores");
+    const setBonusScores = [];
 
     roundPlayersDetail.forEach((roundPlayerDetail) => {
-      if (parseInt(roundPlayerDetail.score) === 0) {
-        let newBonusScore = 0;
-        //Determine bonuses
-        let allianceCounter = 0;
-        allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
-        allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
-
-        if (allianceCounter > 0) {
-          newBonusScore += allianceCounter * 20;
-        }
-
-        if (roundPlayerDetail.pointsWagered > 0) {
-          newBonusScore += roundPlayerDetail.pointsWagered;
-        }
-
-        initialBonusScores.push(newBonusScore.toString());
+      if (settings.useSimplifiedScoring) {
+        setBonusScores.push(roundPlayerDetail.bonusScore.toString());
       } else {
-        initialBonusScores.push(roundPlayerDetail.bonusScore.toString());
+        const newBonusScore = calcBonusScore(roundPlayerDetail.playerId);
+
+        setBonusScores.push(newBonusScore.toString());
       }
     });
 
-    return initialBonusScores;
+    return setBonusScores;
   };
 
   const setInitialScores = () => {
@@ -94,7 +93,7 @@ const ScoresScreen = (props) => {
   };
 
   const [baseScores, setBaseScores] = useState(setInitialBaseScores);
-  const [bonusScores, setBonusScores] = useState(setInitialBonusScores);
+  const [bonusScores, setBonusScores] = useState(getBonusScores);
   const [scores, setScores] = useState(setInitialScores);
 
   const updateBaseScoreState = (newBaseScore, bonusScore, playerIndex) => {
@@ -189,7 +188,9 @@ const ScoresScreen = (props) => {
           : parseInt(bonusScores[playerIndex]) + incOrDecValue;
 
       updateBonusScoreState(newBonusScore.toString(), baseScores[playerIndex], playerIndex);
-    } else if (input === "baseScore") {
+    }
+
+    if (input === "baseScore") {
       const newBaseScore =
         direction === "lower"
           ? parseInt(baseScores[playerIndex]) - incOrDecValue
@@ -199,28 +200,12 @@ const ScoresScreen = (props) => {
     }
   };
 
-  const calcBonusScore = (roundPlayerDetail) => {
-    let newBonusScore = 0;
+  console.log("Scores Screen");
 
-    if (roundPlayerDetail.score === 0) {
-      let allianceCounter = 0;
-      allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
-      allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
-
-      //Alliances
-      newBonusScore = 20 * allianceCounter;
-
-      //Wager
-      if (roundPlayerDetail.pointsWagered > 0) {
-        newBonusScore += roundPlayerDetail.pointsWagered;
-      }
-    } else {
-      newBonusScore = roundPlayerDetail.bonusScore;
-    }
-
-    return newBonusScore.toString();
-  };
-
+  if (bonusesUpdated) {
+    console.log("bonusesUpdated");
+    getBonusScores();
+  }
   useEffect(() => {
     props.navigation.setOptions({
       headerRight: () => (

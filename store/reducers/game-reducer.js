@@ -1,4 +1,3 @@
-import { startDetecting } from "react-native/Libraries/Utilities/PixelRatio";
 import * as actions from "../actions/game-actions";
 
 //initialize state

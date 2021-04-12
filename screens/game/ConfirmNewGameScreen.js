@@ -46,7 +46,7 @@ const ConfirmNewGameScreen = (props) => {
     const playersBonusDetail = {};
 
     players.forEach((player) => {
-      playersBonusDetail[player.id] = new PlayerBonusDetail(player.id);
+      playersBonusDetail[player.id] = new PlayerBonusDetail();
     });
 
     return playersBonusDetail;
