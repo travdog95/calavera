@@ -39,6 +39,7 @@ const ScoreBox = (props) => {
   const isAligned1Indicator = props.roundPlayerDetail.isAligned1 ? "*" : "";
   const isAligned2Indicator = props.roundPlayerDetail.isAligned2 ? "*" : "";
 
+  //ONly allow user to go to scores for current round and previous round
   const isPressable = scoreBoxRound !== currentRound ? false : true;
 
   return (
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderBottomWidth: 1,
     borderRightWidth: 1,
-    borderColor: Colors.theme.dark4,
+    borderColor: "black",
     height: Defaults.game.rowHeight,
   },
   topRowContainer: {
