@@ -5,16 +5,17 @@ import { useSelector } from "react-redux";
 import GameRoundRow from "./GameRoundRow";
 
 const GameRoundRows = (props) => {
-  const gameData = useSelector((state) => state.game.currentGame.gameData);
+  const game = useSelector((state) => state.game.currentGame);
 
   return (
     <View>
-      {gameData.map((roundPlayersDetail, index) => {
+      {Object.entries(game.roundData).map(([roundKey, playerData]) => {
         return (
           <GameRoundRow
-            key={index}
-            roundPlayersDetail={roundPlayersDetail}
+            key={roundKey}
+            roundPlayersDetail={playerData}
             roundPlayerDetailWidth={props.roundPlayerDetailWidth}
+            roundKey={roundKey}
           />
         );
       })}

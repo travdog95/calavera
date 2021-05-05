@@ -99,10 +99,7 @@ const BonusScreen = (props) => {
 
     dispatch(updateRoundBonuses(round, currentPlayerId, bonusData));
 
-    props.navigation.navigate("Scores", {
-      round: round,
-      bonusesUpdated: true,
-    });
+    props.navigation.goBack();
   };
 
   useEffect(() => {

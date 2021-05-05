@@ -9,6 +9,7 @@ import DefaultText from "../../components/UI/DefaultText";
 import Player from "../../models/player";
 import Game from "../../models/game";
 import RoundPlayerDetail from "../../models/roundPlayerDetail";
+import PlayerDetail from "../../models/playerDetail";
 import RoundBonusDetail from "../../models/roundBonusDetail";
 import PlayerBonusDetail from "../../models/playerBonusDetail";
 
@@ -57,7 +58,7 @@ const ConfirmNewGameScreen = (props) => {
     const players = createPlayersHandler(playerNames);
 
     //Init game data
-    const gameData = initGameData(players, numRounds);
+    const roundData = initRoundData(players, numRounds);
 
     const roundBonusesDetail = initRoundBonusesDetail(players);
 
@@ -66,11 +67,12 @@ const ConfirmNewGameScreen = (props) => {
       id: "g" + Math.floor(Math.random() * 10000000000).toString(),
       players,
       numRounds,
-      currentRound: 1,
-      gameData,
+      selectedRound: 1,
+      scoringRound: 1,
+      roundData,
       date: TKO.getCurrentDate(),
       isActive: true,
-      roundBonusesDetail,
+      // roundBonusesDetail,
     });
 
     //Load store with game data
@@ -103,6 +105,33 @@ const ConfirmNewGameScreen = (props) => {
     }
 
     return gameData;
+  };
+
+  const initPlayerData = (players) => {
+    const playerData = {};
+
+    players.forEach((player) => {
+      const key = player.id;
+
+      playerData[key] = new PlayerDetail();
+    });
+
+    return playerData;
+  };
+
+  const initRoundData = (players, numRounds) => {
+    //Init round data
+    const roundData = {};
+    let r = 1;
+    for (r; r <= numRounds; r++) {
+      const key = `r${r}`;
+
+      const playerData = initPlayerData(players);
+
+      roundData[key] = playerData;
+    }
+
+    return roundData;
   };
 
   return (

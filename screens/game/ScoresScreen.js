@@ -3,7 +3,12 @@ import { View, ScrollView, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
-import { updatePlayerData, setCurrentRound } from "../../store/actions/game-actions";
+import {
+  updatePlayerDetail,
+  setScoringRound,
+  setSelectedRound,
+  updateTotalScores,
+} from "../../store/actions/game-actions";
 import ScoreRow from "../../components/game/ScoreRow";
 import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
 import HeaderButtonBids from "../../components/game/HeaderButtonBids";
@@ -20,15 +25,17 @@ const ScoresScreen = (props) => {
 
   const players = game.players;
   const round = props.route.params.round;
-  const bonusesUpdated = props.route.params.bonusesUpdated;
-  const roundPlayersDetail = game.gameData[round - 1];
+  const roundKey = `r${round}`;
+  const roundDetail = game.roundData[roundKey];
+  // const roundBonusDetail = game.roundBonusesDetail[`r${round}`];
   const finalRound = game.numRounds;
 
   const dispatch = useDispatch();
 
   const calcBaseScore = (roundPlayerDetail) => {
     let newBaseScore = 0;
-    const multiplier = roundPlayerDetail.score < 0 ? -1 : 1;
+    const score = parseInt(roundPlayerDetail.baseScore) + parseInt(roundPlayerDetail.bonusScore);
+    const multiplier = score < 0 ? -1 : 1;
 
     if (parseInt(roundPlayerDetail.bid) === 0) {
       newBaseScore = round * 10 * multiplier;
@@ -42,52 +49,54 @@ const ScoresScreen = (props) => {
   const setInitialBaseScores = () => {
     const initialBaseScores = [];
 
-    roundPlayersDetail.forEach((roundPlayerDetail) => {
-      if (parseInt(roundPlayerDetail.score) === 0) {
-        initialBaseScores.push(calcBaseScore(roundPlayerDetail));
+    for (const [playerId, playerDetail] of Object.entries(roundDetail)) {
+      const score = parseInt(playerDetail.baseScore) + parseInt(playerDetail.bonusScore);
+
+      if (score === 0) {
+        initialBaseScores.push(calcBaseScore(playerDetail));
       } else {
-        initialBaseScores.push(roundPlayerDetail.baseScore.toString());
+        initialBaseScores.push(playerDetail.baseScore.toString());
       }
-    });
+    }
 
     return initialBaseScores;
   };
 
   const calcBonusScore = (playerId) => {
-    const roundBonusDetail = game.roundBonusesDetail[`r${round}`];
     const playerBonusDetail = roundBonusDetail.playersBonusDetail[playerId];
     return Tko.calcPlayerRoundBonus(roundBonusDetail, playerBonusDetail);
   };
 
   const getBonusScores = () => {
-    console.log("getBonusScores");
-    const setBonusScores = [];
+    const tempBonusScores = [];
 
-    roundPlayersDetail.forEach((roundPlayerDetail) => {
-      if (settings.useSimplifiedScoring) {
-        setBonusScores.push(roundPlayerDetail.bonusScore.toString());
-      } else {
-        const newBonusScore = calcBonusScore(roundPlayerDetail.playerId);
+    for (const [playerId, playerDetail] of Object.entries(roundDetail)) {
+      tempBonusScores.push(playerDetail.bonusScore.toString());
+      // if (parseInt(playerDetail.baseScore) + parseInt(playerDetail.bonusScore) === 0) {
+      //   tempBonusScores.push(playerDetail.bonusScore.toString());
+      // } else {
+      //   const newBonusScore = calcBonusScore(roundPlayerDetail.playerId);
+      //   tempBonusScores.push(newBonusScore.toString());
+      // }
+    }
 
-        setBonusScores.push(newBonusScore.toString());
-      }
-    });
-
-    return setBonusScores;
+    return tempBonusScores;
   };
 
   const setInitialScores = () => {
     const initialScores = [];
-
-    roundPlayersDetail.forEach((roundPlayerDetail, index) => {
-      if (parseInt(roundPlayerDetail.score) === 0) {
+    let index = 0;
+    for (const [playerId, playerDetail] of Object.entries(roundDetail)) {
+      const score = parseInt(playerDetail.baseScore) + parseInt(playerDetail.bonusScore);
+      if (score === 0) {
         const newScore = parseInt(baseScores[index]) + parseInt(bonusScores[index]);
 
         initialScores.push(newScore);
       } else {
-        initialScores.push(roundPlayerDetail.score);
+        initialScores.push(score);
       }
-    });
+      index++;
+    }
 
     return initialScores;
   };
@@ -146,36 +155,28 @@ const ScoresScreen = (props) => {
     setScores(newScores);
   };
 
-  // const updateScoresState = () => {
-  //   const newScores = [];
-  //   baseScores.forEach((baseScore, index) => {
-  //     const newBonusScore =
-  //       bonusScores[index] === "" ? 0 : parseInt(bonusScores[index]);
-  //     const newBaseScore = baseScore === "" ? 0 : parseInt(baseScore);
-  //     const newScore = newBonusScore + newBaseScore;
-  //     newScores.push(newScore);
-  //   });
-
-  //   setScores(newScores);
-  // };
-
   const updateScoresHandler = () => {
-    const playerData = [];
-
     players.map((player, index) => {
-      playerData.push({
-        playerId: player.id,
-        score: scores[index],
+      const playerDetail = {
         bonusScore: parseInt(bonusScores[index]),
         baseScore: parseInt(baseScores[index]),
-      });
+      };
+
+      dispatch(updatePlayerDetail(round, player.id, playerDetail));
     });
 
-    dispatch(updatePlayerData(round, playerData, "scores"));
-
-    if (round < finalRound) {
-      dispatch(setCurrentRound(round + 1));
+    //Increment scoringRound if it's not the last round and the user is updating scores in the scoring round
+    if (round < finalRound && round == game.scoringRound) {
+      dispatch(setScoringRound(round + 1));
+      dispatch(setSelectedRound(round + 1));
     }
+
+    //
+    if (game.selectedRound < game.scoringRound) {
+      dispatch(setSelectedRound(game.scoringRound));
+    }
+
+    dispatch(updateTotalScores(1));
 
     props.navigation.navigate("Game");
   };
@@ -200,12 +201,6 @@ const ScoresScreen = (props) => {
     }
   };
 
-  console.log("Scores Screen");
-
-  if (bonusesUpdated) {
-    console.log("bonusesUpdated");
-    getBonusScores();
-  }
   useEffect(() => {
     props.navigation.setOptions({
       headerRight: () => (
@@ -224,15 +219,18 @@ const ScoresScreen = (props) => {
       <RoundHeader round={round} />
       <ScrollView contentContainerStyle={styles.playerScoresContainer}>
         {players.map((player, index) => {
-          const playerDetail = roundPlayersDetail.filter((detail) => detail.playerId === player.id);
+          {
+            /* const playerDetail = roundPlayersDetail.filter((detail) => detail.playerId === player.id); */
+          }
+          const playerDetail = roundDetail[player.id];
           return (
             <ScoreRow
               key={player.id}
               round={round}
               playerIndex={index}
               player={player}
-              bid={playerDetail[0].bid}
-              roundPlayerDetail={playerDetail[0]}
+              bid={playerDetail.bid}
+              roundPlayerDetail={playerDetail}
               baseScores={baseScores}
               setBaseScores={updateBaseScoreState}
               bonusScores={bonusScores}
@@ -250,7 +248,7 @@ const ScoresScreen = (props) => {
 };
 
 export const screenOptions = (navData) => {
-  const round = navData.route.params.round;
+  // const round = navData.route.params.round;
 
   return {
     headerTitle: `Scores`,

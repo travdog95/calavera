@@ -3,7 +3,7 @@ import { View, ScrollView, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
-import { updatePlayerData } from "../../store/actions/game-actions";
+import { updatePlayerDetail } from "../../store/actions/game-actions";
 import BidRow from "../../components/game/BidRow";
 import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
 import HeaderButton from "../../components/UI/HeaderButton";
@@ -17,16 +17,16 @@ const BidsScreen = (props) => {
   const game = useSelector((state) => state.game.currentGame);
   const round = props.route.params.round;
   const players = game.players;
-  const roundPlayersDetail = game.gameData[round - 1];
+  const roundPlayersDetail = game.roundData[`r${round}`];
 
   const dispatch = useDispatch();
 
   const setInitialBids = () => {
     const initialBids = [];
 
-    roundPlayersDetail.forEach((detail) => {
-      initialBids.push(detail.bid.toString());
-    });
+    for (const [playerId, playerDetail] of Object.entries(roundPlayersDetail)) {
+      initialBids.push(playerDetail.bid.toString());
+    }
 
     return initialBids;
   };
@@ -48,13 +48,9 @@ const BidsScreen = (props) => {
   };
 
   const updateBidsHandler = () => {
-    const playerData = [];
-
     players.map((player, index) => {
-      playerData.push({ playerId: player.id, bid: bids[index] });
+      dispatch(updatePlayerDetail(round, player.id, { bid: bids[index] }));
     });
-
-    dispatch(updatePlayerData(round, playerData, "bids"));
 
     props.navigation.navigate("Scores", {
       round: round,
@@ -104,8 +100,6 @@ const BidsScreen = (props) => {
 };
 
 export const screenOptions = (navData) => {
-  const round = navData.route.params.round;
-
   return {
     headerTitle: `Bids`,
   };

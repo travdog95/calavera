@@ -3,8 +3,9 @@ class Game {
     this.id = game.id;
     this.players = game.players;
     this.numRounds = game.numRounds;
-    this.gameData = game.gameData;
-    this.currentRound = game.currentRound;
+    this.roundData = game.roundData;
+    this.scoringRound = game.scoringRound;
+    this.selectedRound = game.selectedRound;
     this.date = game.date;
     this.isActive = game.isActive;
     this.winner = game.winner;

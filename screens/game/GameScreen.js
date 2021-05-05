@@ -60,33 +60,11 @@ const GameScreen = (props) => {
             roundPlayerDetailWidth={roundPlayerDetailWidth}
           />
           <View style={styles.roundsContainer}>
-            <GameRounds numRounds={game.numRounds} currentRound={game.currentRound} />
+            <GameRounds />
             <GameRoundRows roundPlayerDetailWidth={roundPlayerDetailWidth} />
           </View>
         </ScrollView>
       </ScrollView>
-      {/* <Animatable.View
-        style={{
-          position: "absolute",
-          left: 15,
-          bottom: 15,
-          flexDirection: "row",
-        }}
-        animation={"slideInLeft"}
-      >
-        <CustomActionButton
-          style={styles.primaryButton}
-          onPress={() => {
-            props.navigation.navigate("Bids", {
-              round: game.currentRound,
-              players: game.players,
-              roundPlayersDetail: game.gameData[game.currentRound - 1],
-            });
-          }}
-        >
-          <Text style={styles.primaryButtonText}>Bids</Text>
-        </CustomActionButton>
-      </Animatable.View> */}
     </View>
   );
 };
@@ -99,7 +77,7 @@ export const screenOptions = () => {
     },
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <HeaderButtonBids />
+        <HeaderButtonBids screen={"GameScreen"} />
         <HeaderButtonScores />
         <HeaderButtonLeaderboard />
       </HeaderButtons>

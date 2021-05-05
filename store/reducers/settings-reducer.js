@@ -2,7 +2,7 @@ import * as actions from "../actions/settings-actions";
 
 //initialize state
 const initialState = {
-  useSimplifiedScoring: false,
+  useSimplifiedScoring: true,
 };
 
 const settingsReducer = (state = initialState, action) => {

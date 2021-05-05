@@ -7,6 +7,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 const HeaderButtonBids = (props) => {
   const navigation = useNavigation();
   const game = useSelector((state) => state.game.currentGame);
+  const round = props.screen === "GameScreen" ? game.scoringRound : game.selectedRound;
   return (
     <Item
       title="Bids"
@@ -14,7 +15,7 @@ const HeaderButtonBids = (props) => {
       iconName="hand-rock"
       onPress={() => {
         navigation.navigate("Bids", {
-          round: game.currentRound,
+          round: round,
         });
       }}
     />

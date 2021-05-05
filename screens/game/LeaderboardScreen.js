@@ -8,29 +8,17 @@ import RoundHeader from "../../components/game/RoundHeader";
 import Defaults from "../../constants/defaults";
 
 const LeaderboardScreen = (props) => {
-  const currentGame = useSelector((state) => state.game.currentGame);
+  const game = useSelector((state) => state.game.currentGame);
 
-  let round = currentGame.numRounds;
-  currentGame.gameData.some((roundPlayersDetail) => {
-    if (roundPlayersDetail[0].score === 0) {
-      round = roundPlayersDetail[0].round === 1 ? 1 : roundPlayersDetail[0].round - 1;
-      return true;
-    }
-  });
+  const leaderBoardRound = game.scoringRound === 1 ? 1 : game.scoringRound - 1;
+  const leaderBoardRoundKey = `r${leaderBoardRound}`;
 
   const unSortedLeaderboardData = [];
-  currentGame.players.forEach((player) => {
-    let playerTotalScore = 0;
-
-    currentGame.gameData.forEach((roundPlayersDetail) => {
-      roundPlayersDetail.forEach((roundPlayerDetail) => {
-        if (roundPlayerDetail.playerId === player.id) {
-          playerTotalScore += roundPlayerDetail.score;
-        }
-      });
+  game.players.forEach((player) => {
+    unSortedLeaderboardData.push({
+      player,
+      totalScore: game.roundData[leaderBoardRoundKey][player.id].totalScore,
     });
-
-    unSortedLeaderboardData.push({ player, totalScore: playerTotalScore });
   });
 
   const leaderboardData = unSortedLeaderboardData.sort(
@@ -43,7 +31,7 @@ const LeaderboardScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <RoundHeader round={round} />
+      <RoundHeader screen="LeaderboardScreen" round={leaderBoardRound} />
       <ScrollView contentContainerStyle={styles.leaderboardContainer}>
         {leaderboardData.map((data, index) => {
           {

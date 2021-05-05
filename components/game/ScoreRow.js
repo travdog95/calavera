@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
+import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import CustomActionButton from "../../components/CustomActionButton";
@@ -13,13 +14,16 @@ import Colors from "../../constants/colors";
 const ScoreRow = (props) => {
   const roundPlayerDetail = props.roundPlayerDetail;
   const navigation = useNavigation();
+  const settings = useSelector((state) => state.settings);
 
   let allianceCounter = 0;
   allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
   allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
 
   const initializeAchievedBid = () => {
-    return roundPlayerDetail.score < 0 ? false : true;
+    const score = parseInt(roundPlayerDetail.baseScore) + parseInt(roundPlayerDetail.bonusScore);
+
+    return score < 0 ? false : true;
   };
 
   const [achievedBid, setAchievedBid] = useState(initializeAchievedBid);
@@ -59,6 +63,22 @@ const ScoreRow = (props) => {
 
     setAchievedBid(gotBid);
   };
+
+  let bonusContent;
+  if (settings.useSimplifiedScoring) {
+    bonusContent = <DefaultText style={styles.bonusLabel}>Bonus:</DefaultText>;
+  } else {
+    bonusContent = (
+      <CustomActionButton
+        style={styles.bonusButton}
+        onPress={() => {
+          navigation.navigate("Bonus", { player: props.player });
+        }}
+      >
+        <DefaultText style={styles.buttonText}>Bonus</DefaultText>
+      </CustomActionButton>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -101,17 +121,9 @@ const ScoreRow = (props) => {
             onPress={props.incOrDecValue.bind(this, "higher", props.playerIndex, 10, "baseScore")}
           />
         </View>
-        <View style={styles.bonusButtonContainer}>
-          <CustomActionButton
-            style={styles.bonusButton}
-            onPress={() => {
-              navigation.navigate("Bonus", { player: props.player });
-            }}
-          >
-            <DefaultText style={styles.buttonText}>Bonus</DefaultText>
-          </CustomActionButton>
-        </View>
+        {/* <View style={styles.bonusButtonContainer}>{bonusContent}</View> */}
         <View style={styles.scoreContainer}>
+          {bonusContent}
           <IncDecButton
             incOrDec={"dec"}
             style={styles.bonusScoreButton}
@@ -155,7 +167,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   playerName: {
-    fontSize: Defaults.largeFontSize,
+    fontSize: Defaults.extraLargeFontSize,
     fontWeight: "bold",
     color: "white",
   },
@@ -167,10 +179,14 @@ const styles = StyleSheet.create({
     height: Defaults.isSmallScreen ? 30 : 35,
     backgroundColor: Colors.theme.main1,
   },
-
+  bonusLabel: {
+    fontWeight: "bold",
+    fontSize: Defaults.fontSize,
+    paddingRight: 10,
+  },
   roundScore: {
     textAlign: "right",
-    fontSize: Defaults.largeFontSize,
+    fontSize: Defaults.extraLargeFontSize,
     fontWeight: "bold",
     color: "white",
   },

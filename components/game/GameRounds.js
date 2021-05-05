@@ -7,24 +7,26 @@ import { setCurrentRound } from "../../store/actions/game-actions";
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
-const GameRounds = (props) => {
+const GameRounds = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const game = useSelector((state) => state.game.currentGame);
 
   //convert numRounds to array
   let rounds = [];
-  for (let r = 1; r <= props.numRounds; r++) {
+  for (let r = 1; r <= game.numRounds; r++) {
     rounds.push(r);
   }
 
   return (
     <View style={styles.row}>
       {rounds.map((round) => {
-        const content = props.currentRound === round ? `[${round}]` : round;
+        const content = game.scoringRound === round ? `[${round}]` : round;
         const roundBackgroundColor =
-          props.currentRound === round ? Colors.theme.light3 : Colors.theme.light1;
-        const isPressable = round !== game.currentRound ? false : true;
+          game.scoringRound === round ? Colors.theme.light3 : Colors.theme.light1;
+        let isPressable = false;
+        if (round === game.scoringRound) isPressable = true;
+        if (round + 1 === game.scoringRound) isPressable = true;
 
         return (
           <Pressable

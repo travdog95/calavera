@@ -18,84 +18,15 @@ const gameReducer = (state = initialState, action) => {
         currentGame: action.game,
         games: newGames,
       };
-    case actions.UPDATE_PLAYER_DATA:
-      const newGameData = [];
-      const gameData = state.currentGame.gameData;
-      const newPlayerDetails = action.playerData;
-      const roundToUpdate = action.roundToUpdate;
-
-      gameData.forEach((roundPlayerDetails) => {
-        //Check to see if round matches round to score
-        const newRoundPlayerDetails = [];
-
-        //Find the applicable round
-        if (parseInt(roundPlayerDetails[0].round) === parseInt(roundToUpdate)) {
-          //Iterate over existing round player details in game data to find correct data to update
-          roundPlayerDetails.forEach((roundPlayerDetail) => {
-            //Get the matching player detail data
-            const newPlayerDetail = newPlayerDetails.find(
-              (item) => item.playerId === roundPlayerDetail.playerId
-            );
-
-            //Update score, if passed in from action
-            if (action.methodType === "scores") {
-              roundPlayerDetail.bonusScore =
-                newPlayerDetail.bonusScore ?? roundPlayerDetail.bonusScore;
-              roundPlayerDetail.baseScore =
-                newPlayerDetail.baseScore ?? roundPlayerDetail.baseScore;
-
-              //Total score for the player in the current round
-              roundPlayerDetail.score =
-                parseInt(roundPlayerDetail.bonusScore) + parseInt(roundPlayerDetail.baseScore);
-
-              //Calculate totalScore
-              if (state.currentGame.currentRound === 1) {
-                roundPlayerDetail.totalScore = roundPlayerDetail.score;
-              } else {
-                newGameData.forEach((rpd) => {
-                  const prevRPD = rpd.find((item) => item.playerId === roundPlayerDetail.playerId);
-
-                  roundPlayerDetail.totalScore =
-                    parseInt(roundPlayerDetail.score) + parseInt(prevRPD.totalScore);
-                });
-              }
-            }
-
-            //Update bid, if passed in from action
-            if (action.methodType === "bids") {
-              roundPlayerDetail.bid = newPlayerDetail.bid;
-            }
-
-            if (action.methodType === "bonuses" && newPlayerDetail !== undefined) {
-              //update pointsWagered
-              if (newPlayerDetail.pointsWagered !== undefined) {
-                roundPlayerDetail.pointsWagered = newPlayerDetail.pointsWagered;
-              }
-
-              //update isAligned1
-              if (newPlayerDetail.isAligned1 !== undefined) {
-                roundPlayerDetail.isAligned1 = newPlayerDetail.isAligned1;
-              }
-
-              //update isAligned2
-              if (newPlayerDetail.isAligned2 !== undefined) {
-                roundPlayerDetail.isAligned2 = newPlayerDetail.isAligned2;
-              }
-            }
-
-            newRoundPlayerDetails.push(roundPlayerDetail);
-          });
-          newGameData.push(newRoundPlayerDetails);
-        } else {
-          newGameData.push(roundPlayerDetails);
-        }
-      });
-
-      return { ...state, currentGame: { ...state.currentGame, gameData: newGameData } };
-    case actions.SET_CURRENT_ROUND:
+    case actions.SET_SCORING_ROUND:
       return {
         ...state,
-        currentGame: { ...state.currentGame, currentRound: action.currentRound },
+        currentGame: { ...state.currentGame, scoringRound: action.scoringRound },
+      };
+    case actions.SET_SELECTED_ROUND:
+      return {
+        ...state,
+        currentGame: { ...state.currentGame, selectedRound: action.selectedRound },
       };
     case actions.SAVE_PLAYER_NAME:
       const newPlayers = [];
@@ -123,6 +54,59 @@ const gameReducer = (state = initialState, action) => {
         ...state,
         currentGame: { ...state.currentGame, roundBonusesDetail: newRoundBonusDetail },
       };
+    case actions.UPDATE_PLAYER_DETAIL:
+      const roundKey = `r${action.round}`;
+
+      const newRoundData = { ...state.currentGame.roundData };
+
+      //Merge playerDetail
+      const newPlayerData = { ...newRoundData[roundKey][action.playerId], ...action.playerDetail };
+
+      //Add new playerDetail to new roundData object
+      newRoundData[roundKey][action.playerId] = newPlayerData;
+
+      return { ...state, currentGame: { ...state.currentGame, roundData: newRoundData } };
+    case actions.UPDATE_TOTAL_SCORES:
+      const totalScoresRoundData = { ...state.currentGame.roundData };
+
+      //Iterate over each round
+      for (const [roundKey, roundDetail] of Object.entries(state.currentGame.roundData)) {
+        const round = parseInt(roundKey.substring(1));
+        let prevTotalScore = 0;
+        let totalScore = 0;
+        let prevRoundKey = "";
+        //Only score rounds that have been played
+        if (round < state.currentGame.scoringRound) {
+          //Iterate over each player
+          for (const [playerId, playerDetail] of Object.entries(roundDetail)) {
+            const newPlayerDetail = {};
+            const totalScoresPlayerDetail = {};
+
+            //Calculate total scores
+            totalScore = playerDetail.baseScore + playerDetail.bonusScore;
+            if (round === 1) {
+              totalScoresPlayerDetail = { totalScore };
+            } else {
+              prevRoundKey = `r${round - 1}`;
+              prevTotalScore = totalScoresRoundData[prevRoundKey][playerId].totalScore;
+              totalScoresPlayerDetail = {
+                totalScore: prevTotalScore + totalScore,
+              };
+            }
+
+            //Merge total score with the rest of the playerDetail object
+            newPlayerDetail = {
+              ...totalScoresRoundData[roundKey][playerId],
+              ...totalScoresPlayerDetail,
+            };
+
+            //Update roundData object with new playerDetail
+            totalScoresRoundData[roundKey][playerId] = newPlayerDetail;
+          }
+        }
+      }
+
+      return { ...state, currentGame: { ...state.currentGame, roundData: totalScoresRoundData } };
     default:
       return state;
   }
