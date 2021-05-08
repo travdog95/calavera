@@ -187,7 +187,7 @@ export const screenOptions = (navData) => {
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
+  screen: { flex: 1, backgroundColor: Colors.screenBackgroundColor },
   bonusRow: {
     width: "100%",
     backgroundColor: Colors.theme.grey3,

@@ -13,7 +13,9 @@ import ScoreRow from "../../components/game/ScoreRow";
 import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
 import HeaderButtonBids from "../../components/game/HeaderButtonBids";
 import HeaderButton from "../../components/UI/HeaderButton";
+import DefaultText from "../../components/UI/DefaultText";
 import RoundHeader from "../../components/game/RoundHeader";
+import CustomActionButton from "../../components/CustomActionButton";
 import Tko from "../../helpers/helperFunctions";
 
 import Defaults from "../../constants/defaults";
@@ -176,7 +178,7 @@ const ScoresScreen = (props) => {
       dispatch(setSelectedRound(game.scoringRound));
     }
 
-    dispatch(updateTotalScores(1));
+    dispatch(updateTotalScores(round));
 
     props.navigation.navigate("Game");
   };
@@ -201,18 +203,18 @@ const ScoresScreen = (props) => {
     }
   };
 
-  useEffect(() => {
-    props.navigation.setOptions({
-      headerRight: () => (
-        <HeaderButtons HeaderButtonComponent={HeaderButton}>
-          <HeaderButtonBids />
+  // useEffect(() => {
+  //   props.navigation.setOptions({
+  //     headerRight: () => (
+  //       <HeaderButtons HeaderButtonComponent={HeaderButton}>
+  //         <HeaderButtonBids />
 
-          <HeaderButtonLeaderboard />
-          <Item title="Save" iconName="save" onPress={updateScoresHandler} />
-        </HeaderButtons>
-      ),
-    });
-  }, [updateScoresHandler]);
+  //         <HeaderButtonLeaderboard />
+  //         {/* <Item title="Save" iconName="save" onPress={updateScoresHandler} /> */}
+  //       </HeaderButtons>
+  //     ),
+  //   });
+  // }, [updateScoresHandler]);
 
   return (
     <View style={styles.screen}>
@@ -243,6 +245,9 @@ const ScoresScreen = (props) => {
           );
         })}
       </ScrollView>
+      <CustomActionButton style={styles.primaryButton} onPress={updateScoresHandler}>
+        <DefaultText style={styles.primaryButtonText}>Save Scores</DefaultText>
+      </CustomActionButton>
     </View>
   );
 };
@@ -252,11 +257,18 @@ export const screenOptions = (navData) => {
 
   return {
     headerTitle: `Scores`,
+    headerRight: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <HeaderButtonBids />
+
+        <HeaderButtonLeaderboard />
+      </HeaderButtons>
+    ),
   };
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
+  screen: { flex: 1, backgroundColor: Colors.screenBackgroundColor },
   playerScoresContainer: {
     borderColor: "black",
     borderTopWidth: 1,
@@ -288,6 +300,16 @@ const styles = StyleSheet.create({
   score: {
     width: `${Defaults.scoreScreen.widths.roundScore}%`,
     textAlign: "center",
+    fontWeight: "bold",
+  },
+  primaryButton: {
+    backgroundColor: Defaults.button.primary,
+    margin: 5,
+  },
+
+  primaryButtonText: {
+    color: "white",
+    fontSize: Defaults.fontSize,
     fontWeight: "bold",
   },
 });

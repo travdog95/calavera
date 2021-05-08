@@ -9,6 +9,7 @@ import Input from "../../components/UI/Input";
 import { savePlayerName } from "../../store/actions/game-actions";
 
 import Defaults from "../../constants/defaults";
+import Colors from "../../constants/colors";
 
 const EditPlayerNamesScreen = (props) => {
   const [playerName, setPlayerName] = useState(props.route.params.playerName);
@@ -76,6 +77,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: Colors.screenBackgroundColor,
   },
   row: {
     alignItems: "center",

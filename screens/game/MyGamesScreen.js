@@ -11,6 +11,7 @@ import HeaderButton from "../../components/UI/HeaderButton";
 import DefaultText from "../../components/UI/DefaultText";
 
 import Defaults from "../../constants/defaults";
+import Colors from "../../constants/colors";
 
 const MyGamesScreen = (props) => {
   const games = useSelector((state) => state.game.games);
@@ -82,6 +83,7 @@ export const screenOptions = (navData) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    backgroundColor: Colors.screenBackgroundColor,
   },
   noGames: {
     flex: 1,

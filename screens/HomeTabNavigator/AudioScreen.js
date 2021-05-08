@@ -1,27 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Button } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Audio } from "expo-av";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
-import HeaderButton from "../../components/UI/HeaderButton";
-import CustomActionButton from "../../components/CustomActionButton";
 import Defaults from "../../constants/defaults";
+import Colors from "../../constants/colors";
+import AudioData from "../../data/audio";
+
+import AudioListItem from "../../components/audio/AudioListItem";
 
 const AudioScreen = (props) => {
   const [sound, setSound] = useState();
 
-  const playKraken = async () => {
-    const { sound } = await Audio.Sound.createAsync(require(`../../assets/audio/kraken.mp3`));
-    setSound(sound);
-
-    await sound.playAsync();
-  };
-
-  const playNobodyGetsIt = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require(`../../assets/audio/nobody-gets-it.mp3`)
-    );
+  const playAudio = async (audio) => {
+    const { sound } = await Audio.Sound.createAsync(audio.requireFunction);
     setSound(sound);
 
     await sound.playAsync();
@@ -38,17 +29,16 @@ const AudioScreen = (props) => {
   return (
     <View style={styles.screen}>
       <View style={styles.container}>
-        <CustomActionButton style={styles.primaryButton} onPress={playKraken}>
-          <Text style={styles.primaryButtonText}>
-            <Ionicons name="skull" size={18} color="white" />
-          </Text>
-        </CustomActionButton>
-
-        <CustomActionButton style={styles.primaryButton} onPress={playNobodyGetsIt}>
-          <Text style={styles.primaryButtonText}>
-            <MaterialIcons name="child-care" size={18} color="white" />
-          </Text>
-        </CustomActionButton>
+        {AudioData.map((audio) => {
+          return (
+            <AudioListItem
+              key={audio.fileName}
+              title={audio.text}
+              author={audio.author}
+              onPress={playAudio.bind(this, audio)}
+            />
+          );
+        })}
       </View>
     </View>
   );
@@ -65,11 +55,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: Colors.screenBackgroundColor,
   },
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flex: 1,
+    width: "100%",
   },
   primaryButton: {
     backgroundColor: Defaults.button.primary,

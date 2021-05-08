@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import MessagesScreen from "../screens/HomeTabNavigator/MessagesScreen";
 import { GameNavigator } from "./GameStackNavigator";
-import AudioScreen from "../screens/HomeTabNavigator/AudioScreen";
+import { AudioNavigator } from "./AudioStackNavigator";
 import FriendsScreen from "../screens/HomeTabNavigator/FriendsScreen";
 import StandingsScreen from "../screens/HomeTabNavigator/StandingsScreen";
 import ProfileScreen from "../screens/HomeTabNavigator/ProfileScreen";
@@ -43,7 +43,7 @@ export const AppTabNavigator = (props) => {
       }}
     >
       <Tab.Screen name="Games" component={GameNavigator} />
-      <Tab.Screen name="Audio" component={AudioScreen} />
+      <Tab.Screen name="Audio" component={AudioNavigator} />
       {/* <Tab.Screen name="Standings" component={StandingsScreen} /> */}
       {/* <Tab.Screen
         name="Messages"

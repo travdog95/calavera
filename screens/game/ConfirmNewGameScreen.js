@@ -17,6 +17,7 @@ import { initGame } from "../../store/actions/game-actions";
 
 import TKO from "../../helpers/helperFunctions";
 import Defaults from "../../constants/defaults";
+import Colors from "../../constants/colors";
 
 const ConfirmNewGameScreen = (props) => {
   const numRounds = props.route.params.numRounds;
@@ -189,6 +190,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: Colors.screenBackgroundColor,
   },
   messageContainer: {
     padding: 10,

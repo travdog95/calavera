@@ -22,11 +22,11 @@ const CreateGameScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
-  const [playerNames, setPlayerNames] = useState(["Travis", "Kimmo"]);
+  const [playerNames, setPlayerNames] = useState(["Travis", "Kimmo", "Dave", "Risa"]);
   // const [playerNames, setPlayerNames] = useState(["", "", "", ""]);
   const [isGameStartable, setIsGameStartable] = useState(true);
-  const [numRounds, setNumRounds] = useState("4");
-  const [numPlayers, setNumPlayers] = useState("2");
+  const [numRounds, setNumRounds] = useState("10");
+  const [numPlayers, setNumPlayers] = useState("4");
 
   const incOrDecRoundsHandler = (direction) => {
     const minNumRounds = 1;
@@ -166,7 +166,12 @@ export const screenOptions = (navData) => {
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, borderTopWidth: 1, borderColor: "black" },
+  screen: {
+    flex: 1,
+    borderTopWidth: 1,
+    borderColor: "black",
+    backgroundColor: Colors.screenBackgroundColor,
+  },
   row: {
     flexDirection: "row",
     alignItems: "center",

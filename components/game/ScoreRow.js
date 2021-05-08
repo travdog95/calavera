@@ -48,8 +48,7 @@ const ScoreRow = (props) => {
         newBonusScore = roundPlayerDetail.pointsWagered;
       }
     } else {
-      newBaseScore =
-        parseInt(roundPlayerDetail.bid) === 0 ? 10 * roundPlayerDetail.round * -1 : -10;
+      newBaseScore = parseInt(roundPlayerDetail.bid) === 0 ? 10 * props.round * -1 : -10;
 
       if (roundPlayerDetail.pointsWagered > 0) {
         newBonusScore -= roundPlayerDetail.pointsWagered;

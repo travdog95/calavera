@@ -25,6 +25,7 @@ import BonusScreen, { screenOptions as bonusScreenOptions } from "../screens/gam
 import LeaderboardScreen, {
   screenOptions as leaderboardScreenOptions,
 } from "../screens/game/LeaderboardScreen";
+import WinnerScreen, { screenOptions as winnerScreenOptions } from "../screens/game/WinnerScreen";
 
 import SettingsScreen, { screenOptions as settingsScreenOptions } from "../screens/SettingsScreen";
 
@@ -91,6 +92,11 @@ export const GameNavigator = (props) => {
         name="Bonus"
         component={BonusScreen}
         options={bonusScreenOptions}
+      />
+      <GameStackNavigator.Screen
+        name="Winner"
+        component={WinnerScreen}
+        options={winnerScreenOptions}
       />
     </GameStackNavigator.Navigator>
   );

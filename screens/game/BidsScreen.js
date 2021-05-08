@@ -8,6 +8,7 @@ import BidRow from "../../components/game/BidRow";
 import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
 import HeaderButton from "../../components/UI/HeaderButton";
 import DefaultText from "../../components/UI/DefaultText";
+import CustomActionButton from "../../components/CustomActionButton";
 import RoundHeader from "../../components/game/RoundHeader";
 
 import Defaults from "../../constants/defaults";
@@ -57,16 +58,16 @@ const BidsScreen = (props) => {
     });
   };
 
-  useEffect(() => {
-    props.navigation.setOptions({
-      headerRight: () => (
-        <HeaderButtons HeaderButtonComponent={HeaderButton}>
-          <HeaderButtonLeaderboard />
-          <Item title="Save" iconName="save" onPress={updateBidsHandler} />
-        </HeaderButtons>
-      ),
-    });
-  }, [updateBidsHandler]);
+  // useEffect(() => {
+  //   props.navigation.setOptions({
+  //     headerRight: () => (
+  //       <HeaderButtons HeaderButtonComponent={HeaderButton}>
+  //         <HeaderButtonLeaderboard />
+  //         {/* <Item title="Save" iconName="save" onPress={updateBidsHandler} /> */}
+  //       </HeaderButtons>
+  //     ),
+  //   });
+  // }, [updateBidsHandler]);
 
   const calcTotalBids = (total, bid) => {
     const newBid = bid === "" ? "0" : bid;
@@ -95,6 +96,9 @@ const BidsScreen = (props) => {
           );
         })}
       </ScrollView>
+      <CustomActionButton style={styles.primaryButton} onPress={updateBidsHandler}>
+        <DefaultText style={styles.primaryButtonText}>Save Bids</DefaultText>
+      </CustomActionButton>
     </View>
   );
 };
@@ -102,11 +106,16 @@ const BidsScreen = (props) => {
 export const screenOptions = (navData) => {
   return {
     headerTitle: `Bids`,
+    headerRight: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <HeaderButtonLeaderboard />
+      </HeaderButtons>
+    ),
   };
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
+  screen: { flex: 1, backgroundColor: Colors.screenBackgroundColor },
   totalBidsContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -119,6 +128,16 @@ const styles = StyleSheet.create({
   totalBidsText: {
     fontSize: Defaults.largeFontSize,
     textAlign: "center",
+    fontWeight: "bold",
+  },
+  primaryButton: {
+    backgroundColor: Defaults.button.primary,
+    margin: 5,
+  },
+
+  primaryButtonText: {
+    color: "white",
+    fontSize: Defaults.fontSize,
     fontWeight: "bold",
   },
 });

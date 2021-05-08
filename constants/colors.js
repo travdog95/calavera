@@ -13,6 +13,7 @@ export default {
   borderColor: "#E9E9E9",
   logoColor: "#bada55",
   listItemBg: "#354D58DA",
+  screenBackgroundColor: "white",
   theme: {
     dark4: "#03071e",
     dark3: "#370617",

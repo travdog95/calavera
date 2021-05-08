@@ -6,11 +6,28 @@ import DefaultText from "../../components/UI/DefaultText";
 import RoundHeader from "../../components/game/RoundHeader";
 
 import Defaults from "../../constants/defaults";
+import Colors from "../../constants/colors";
 
 const LeaderboardScreen = (props) => {
   const game = useSelector((state) => state.game.currentGame);
 
-  const leaderBoardRound = game.scoringRound === 1 ? 1 : game.scoringRound - 1;
+  let leaderBoardRound = game.scoringRound === 1 ? 1 : game.scoringRound - 1;
+
+  //Has final round been scored?
+  let hasFinalRoundBeenScored = true;
+  if (parseInt(game.scoringRound) === parseInt(game.numRounds)) {
+    //check to see if final round has scores
+    game.players.forEach((player) => {
+      const playerDetail = game.roundData[`r${game.numRounds}`][player.id];
+      if (parseInt(playerDetail.baseScore) + parseInt(playerDetail.bonusScore) === 0) {
+        hasFinalRoundBeenScored = false;
+      }
+    });
+
+    //If final round has been scored, then set leaderBoardRound to final round
+    leaderBoardRound = hasFinalRoundBeenScored ? game.numRounds : leaderBoardRound;
+  }
+
   const leaderBoardRoundKey = `r${leaderBoardRound}`;
 
   const unSortedLeaderboardData = [];
@@ -60,7 +77,12 @@ export const screenOptions = (navData) => {
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, alignItems: "center", justifyContent: "center" },
+  screen: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.screenBackgroundColor,
+  },
   leaderboardContainer: {
     width: "100%",
   },
@@ -69,15 +91,16 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomWidth: 1,
     borderColor: "black",
+    width: "100%",
   },
   playerName: {
-    width: "80%",
+    width: "70%",
     paddingLeft: 10,
     fontWeight: "bold",
     fontSize: Defaults.extraLargeFontSize,
   },
   score: {
-    width: "20%",
+    width: "30%",
     textAlign: "right",
     fontWeight: "bold",
     paddingHorizontal: 10,
