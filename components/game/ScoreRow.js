@@ -40,13 +40,13 @@ const ScoreRow = (props) => {
         newBaseScore = parseInt(roundPlayerDetail.bid) * 20;
       }
 
-      if (allianceCounter > 0) {
-        newBonusScore = allianceCounter * 20;
-      }
+      // if (allianceCounter > 0) {
+      //   newBonusScore = allianceCounter * 20;
+      // }
 
-      if (roundPlayerDetail.pointsWagered > 0) {
-        newBonusScore = roundPlayerDetail.pointsWagered;
-      }
+      // if (roundPlayerDetail.pointsWagered > 0) {
+      //   newBonusScore = roundPlayerDetail.pointsWagered;
+      // }
     } else {
       newBaseScore = parseInt(roundPlayerDetail.bid) === 0 ? 10 * props.round * -1 : -10;
 

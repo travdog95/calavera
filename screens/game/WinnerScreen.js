@@ -35,7 +35,10 @@ const WinnerScreen = (props) => {
   return (
     <View style={styles.screen}>
       <View>
-        <Text>I'm the winner!</Text>
+        <DefaultText style={styles.winner}>Travis wins again!</DefaultText>
+      </View>
+      <View>
+        <DefaultText style={styles.winner}>Was there ever any doubt?!</DefaultText>
       </View>
     </View>
   );
@@ -53,6 +56,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.screenBackgroundColor,
+  },
+  winner: {
+    fontSize: Defaults.extraLargeFontSize,
   },
 });
 

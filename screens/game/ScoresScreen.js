@@ -61,7 +61,7 @@ const ScoresScreen = (props) => {
       }
     }
 
-    return initialBaseScores;
+    setBaseScores(initialBaseScores);
   };
 
   const calcBonusScore = (playerId) => {
@@ -69,7 +69,7 @@ const ScoresScreen = (props) => {
     return Tko.calcPlayerRoundBonus(roundBonusDetail, playerBonusDetail);
   };
 
-  const getBonusScores = () => {
+  const setInitialBonusScores = () => {
     const tempBonusScores = [];
 
     for (const [playerId, playerDetail] of Object.entries(roundDetail)) {
@@ -82,7 +82,7 @@ const ScoresScreen = (props) => {
       // }
     }
 
-    return tempBonusScores;
+    setBonusScores(tempBonusScores);
   };
 
   const setInitialScores = () => {
@@ -100,12 +100,12 @@ const ScoresScreen = (props) => {
       index++;
     }
 
-    return initialScores;
+    setScores(initialScores);
   };
 
-  const [baseScores, setBaseScores] = useState(setInitialBaseScores);
-  const [bonusScores, setBonusScores] = useState(getBonusScores);
-  const [scores, setScores] = useState(setInitialScores);
+  const [baseScores, setBaseScores] = useState([]);
+  const [bonusScores, setBonusScores] = useState([]);
+  const [scores, setScores] = useState([]);
 
   const updateBaseScoreState = (newBaseScore, bonusScore, playerIndex) => {
     const newBaseScores = [];
@@ -202,6 +202,15 @@ const ScoresScreen = (props) => {
       updateBaseScoreState(newBaseScore.toString(), bonusScores[playerIndex], playerIndex);
     }
   };
+
+  useEffect(() => {
+    setInitialBaseScores();
+    setInitialBonusScores();
+  }, [game]);
+
+  useEffect(() => {
+    setInitialScores();
+  }, [baseScores, bonusScores]);
 
   // useEffect(() => {
   //   props.navigation.setOptions({

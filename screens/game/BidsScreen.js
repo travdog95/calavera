@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { useNavigation } from "@react-navigation/core";
 
 import { updatePlayerDetail } from "../../store/actions/game-actions";
 import BidRow from "../../components/game/BidRow";
@@ -20,6 +21,7 @@ const BidsScreen = (props) => {
   const players = game.players;
   const roundPlayersDetail = game.roundData[`r${round}`];
 
+  const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const setInitialBids = () => {
@@ -53,7 +55,7 @@ const BidsScreen = (props) => {
       dispatch(updatePlayerDetail(round, player.id, { bid: bids[index] }));
     });
 
-    props.navigation.navigate("Scores", {
+    navigation.navigate("Scores", {
       round: round,
     });
   };
