@@ -48,6 +48,14 @@ const MyGamesScreen = (props) => {
         >
           <Text style={styles.primaryButtonText}>Create Game</Text>
         </CustomActionButton>
+        <CustomActionButton
+          style={styles.primaryButton}
+          onPress={() => {
+            props.navigation.navigate("Test");
+          }}
+        >
+          <Text style={styles.primaryButtonText}>Test</Text>
+        </CustomActionButton>
       </Animatable.View>
     </View>
   );

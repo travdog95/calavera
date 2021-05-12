@@ -26,6 +26,7 @@ import LeaderboardScreen, {
   screenOptions as leaderboardScreenOptions,
 } from "../screens/game/LeaderboardScreen";
 import WinnerScreen, { screenOptions as winnerScreenOptions } from "../screens/game/WinnerScreen";
+import KeyboardAvoidingComponent from "../screens/TestKeyboard";
 
 import SettingsScreen, { screenOptions as settingsScreenOptions } from "../screens/SettingsScreen";
 
@@ -98,6 +99,7 @@ export const GameNavigator = (props) => {
         component={WinnerScreen}
         options={winnerScreenOptions}
       />
+      <GameStackNavigator.Screen name="Test" component={KeyboardAvoidingComponent} />
     </GameStackNavigator.Navigator>
   );
 };

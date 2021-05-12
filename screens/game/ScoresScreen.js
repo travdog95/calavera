@@ -62,6 +62,7 @@ const ScoresScreen = (props) => {
     }
 
     setBaseScores(initialBaseScores);
+    setBaseScoresInitialized(true);
   };
 
   const calcBonusScore = (playerId) => {
@@ -83,6 +84,7 @@ const ScoresScreen = (props) => {
     }
 
     setBonusScores(tempBonusScores);
+    setBonusScoresInitialized(true);
   };
 
   const setInitialScores = () => {
@@ -106,6 +108,8 @@ const ScoresScreen = (props) => {
   const [baseScores, setBaseScores] = useState([]);
   const [bonusScores, setBonusScores] = useState([]);
   const [scores, setScores] = useState([]);
+  const [baseScoresInitialized, setBaseScoresInitialized] = useState(false);
+  const [bonusScoresInitialized, setBonusScoresInitialized] = useState(false);
 
   const updateBaseScoreState = (newBaseScore, bonusScore, playerIndex) => {
     const newBaseScores = [];
@@ -203,14 +207,16 @@ const ScoresScreen = (props) => {
     }
   };
 
+  //Calculate base and bonus scores when game redux state changes
   useEffect(() => {
     setInitialBaseScores();
     setInitialBonusScores();
   }, [game]);
 
+  //
   useEffect(() => {
     setInitialScores();
-  }, [baseScores, bonusScores]);
+  }, [baseScoresInitialized, bonusScoresInitialized]);
 
   // useEffect(() => {
   //   props.navigation.setOptions({
@@ -230,9 +236,6 @@ const ScoresScreen = (props) => {
       <RoundHeader round={round} />
       <ScrollView contentContainerStyle={styles.playerScoresContainer}>
         {players.map((player, index) => {
-          {
-            /* const playerDetail = roundPlayersDetail.filter((detail) => detail.playerId === player.id); */
-          }
           const playerDetail = roundDetail[player.id];
           return (
             <ScoreRow

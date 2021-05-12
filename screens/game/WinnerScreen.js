@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, ImageBackground, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 
 import DefaultText from "../../components/UI/DefaultText";
@@ -31,15 +31,40 @@ const WinnerScreen = (props) => {
     }
   });
 
-  console.log(winners);
+  let winnerText = "";
+
+  if (winners.length === 1) {
+    winnerText = (
+      <View>
+        <DefaultText style={styles.text}>{winners[0].player.name} wins!</DefaultText>
+      </View>
+    );
+  }
+
+  if (winners.length > 1) {
+    winnerText = (
+      <View>
+        <View>
+          <DefaultText style={styles.text}>We have {winners.length} winners!!</DefaultText>
+        </View>
+        {winners.map((winner) => {
+          return (
+            <View key={winner.player.id}>
+              <DefaultText style={styles.text}>{winner.player.name} </DefaultText>
+            </View>
+          );
+        })}
+      </View>
+    );
+  }
   return (
     <View style={styles.screen}>
-      <View>
-        <DefaultText style={styles.winner}>Travis wins again!</DefaultText>
-      </View>
-      <View>
-        <DefaultText style={styles.winner}>Was there ever any doubt?!</DefaultText>
-      </View>
+      <ImageBackground
+        source={require("../../assets/gifs/fireworks.gif")}
+        style={styles.backgroundImage}
+      >
+        {winnerText}
+      </ImageBackground>
     </View>
   );
 };
@@ -53,12 +78,22 @@ export const screenOptions = (navData) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Colors.screenBackgroundColor,
+    flexDirection: "column",
+  },
+  container: {
+    padding: 10,
+  },
+  backgroundImage: { flex: 1, resizeMode: "cover", justifyContent: "center" },
+  text: {
+    fontSize: Defaults.extraLargeFontSize,
+    textAlign: "center",
+    color: "white",
+    fontWeight: "bold",
+    backgroundColor: "#000000a0",
   },
   winner: {
     fontSize: Defaults.extraLargeFontSize,
+    textAlign: "center",
   },
 });
 

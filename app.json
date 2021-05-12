@@ -19,6 +19,7 @@
       "bundleIdentifier": "com.travdog95.calavera"
     },
     "android": {
+      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/noun_Skull_9941.png",
         "backgroundColor": "#FFFFFF"

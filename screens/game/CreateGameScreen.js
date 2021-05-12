@@ -7,6 +7,8 @@ import {
   StyleSheet,
   Alert,
   Platform,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 
@@ -25,7 +27,7 @@ const CreateGameScreen = (props) => {
   const [playerNames, setPlayerNames] = useState(["Travis", "Kimmo"]);
   // const [playerNames, setPlayerNames] = useState(["", "", "", ""]);
   const [isGameStartable, setIsGameStartable] = useState(true);
-  const [numRounds, setNumRounds] = useState("3");
+  const [numRounds, setNumRounds] = useState("2");
   const [numPlayers, setNumPlayers] = useState("2");
 
   const incOrDecRoundsHandler = (direction) => {
@@ -113,6 +115,11 @@ const CreateGameScreen = (props) => {
   }
 
   return (
+    // <KeyboardAvoidingView
+    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   style={{ flex: 1 }}
+    // >
+    //   <TouchableWithoutFeedback>
     <View style={styles.screen}>
       <View style={styles.row}>
         <DefaultText style={styles.label}>How many rounds?</DefaultText>
@@ -156,6 +163,8 @@ const CreateGameScreen = (props) => {
         </Animatable.View>
       ) : null}
     </View>
+    //   </TouchableWithoutFeedback>
+    // </KeyboardAvoidingView>
   );
 };
 
@@ -169,7 +178,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     borderTopWidth: 1,
-    borderColor: "black",
     backgroundColor: Colors.screenBackgroundColor,
   },
   row: {
