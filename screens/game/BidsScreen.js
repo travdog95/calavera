@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { HeaderButtons } from "react-navigation-header-buttons";
 import { useNavigation } from "@react-navigation/core";
 
 import { updatePlayerDetail } from "../../store/actions/game-actions";
@@ -14,12 +14,14 @@ import RoundHeader from "../../components/game/RoundHeader";
 
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
+import TKO from "../../helpers/helperFunctions";
 
 const BidsScreen = (props) => {
   const game = useSelector((state) => state.game.currentGame);
   const round = props.route.params.round;
+  const roundKey = `r${round}`;
   const players = game.players;
-  const roundPlayersDetail = game.roundData[`r${round}`];
+  const roundPlayersDetail = game.roundData[roundKey];
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -52,7 +54,13 @@ const BidsScreen = (props) => {
 
   const updateBidsHandler = () => {
     players.map((player, index) => {
-      dispatch(updatePlayerDetail(round, player.id, { bid: bids[index] }));
+      //Check to see if baseScore is greater than zero
+      const baseScore =
+        game.roundData[roundKey][player.id].baseScore > 0
+          ? TKO.calcBaseScore(parseInt(bids[index]), parseInt(round))
+          : 0;
+
+      dispatch(updatePlayerDetail(round, player.id, { bid: bids[index], baseScore }));
     });
 
     navigation.navigate("Scores", {
@@ -77,10 +85,11 @@ const BidsScreen = (props) => {
   };
 
   const totalBids = bids.reduce(calcTotalBids, 0);
+  const headerText = `Round ${round}`;
 
   return (
     <View style={styles.screen}>
-      <RoundHeader round={round} />
+      <RoundHeader round={round} headerText={headerText} />
       <View style={styles.totalBidsContainer}>
         <DefaultText style={styles.totalBidsText}>Total bids: {totalBids}</DefaultText>
       </View>
@@ -98,9 +107,11 @@ const BidsScreen = (props) => {
           );
         })}
       </ScrollView>
-      <CustomActionButton style={styles.primaryButton} onPress={updateBidsHandler}>
-        <DefaultText style={styles.primaryButtonText}>Save Bids</DefaultText>
-      </CustomActionButton>
+      {game.isActive ? (
+        <CustomActionButton style={styles.primaryButton} onPress={updateBidsHandler}>
+          <DefaultText style={styles.primaryButtonText}>Save Bids</DefaultText>
+        </CustomActionButton>
+      ) : null}
     </View>
   );
 };

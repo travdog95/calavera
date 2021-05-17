@@ -69,7 +69,7 @@ const GameScreen = (props) => {
 
   let showCompleteGameButton = false;
 
-  if (parseInt(game.scoringRound) === parseInt(game.numRounds)) {
+  if (game.isActive && parseInt(game.scoringRound) === parseInt(game.numRounds)) {
     showCompleteGameButton = true;
     //check to see if final round has scores
     game.players.forEach((player) => {

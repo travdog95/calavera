@@ -9,6 +9,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 
@@ -115,56 +116,63 @@ const CreateGameScreen = (props) => {
   }
 
   return (
-    // <KeyboardAvoidingView
-    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
-    //   style={{ flex: 1 }}
-    // >
-    //   <TouchableWithoutFeedback>
-    <View style={styles.screen}>
-      <View style={styles.row}>
-        <DefaultText style={styles.label}>How many rounds?</DefaultText>
-        <View style={styles.numRoundsContainer}>
-          <IncDecButton incOrDec={"dec"} onPress={incOrDecRoundsHandler.bind(this, "lower")} />
-          <DefaultText style={styles.incDecValue}>{numRounds}</DefaultText>
-          <IncDecButton incOrDec={"inc"} onPress={incOrDecRoundsHandler.bind(this, "higher")} />
-        </View>
-      </View>
-      <View style={styles.row}>
-        <DefaultText style={styles.label}>How many Players?</DefaultText>
-        <View style={styles.numRoundsContainer}>
-          <IncDecButton incOrDec={"dec"} onPress={incOrDecNumPlayersHandler.bind(this, "lower")} />
-          <DefaultText style={styles.incDecValue}>{numPlayers}</DefaultText>
-          <IncDecButton incOrDec={"inc"} onPress={incOrDecNumPlayersHandler.bind(this, "higher")} />
-        </View>
-      </View>
-
-      <ScrollView>
-        <View style={styles.playerNamesContainer}>
-          {playerNames.map((playerName, index) => {
-            return (
-              <CreateGamePlayerRow
-                key={index}
-                playerNameIndex={index}
-                playerNames={playerNames}
-                setPlayerNames={updatePlayerNamesState}
+    <KeyboardAvoidingView
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={60}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.screen}>
+          <View style={styles.row}>
+            <DefaultText style={styles.label}>How many rounds?</DefaultText>
+            <View style={styles.numRoundsContainer}>
+              <IncDecButton incOrDec={"dec"} onPress={incOrDecRoundsHandler.bind(this, "lower")} />
+              <DefaultText style={styles.incDecValue}>{numRounds}</DefaultText>
+              <IncDecButton incOrDec={"inc"} onPress={incOrDecRoundsHandler.bind(this, "higher")} />
+            </View>
+          </View>
+          <View style={styles.row}>
+            <DefaultText style={styles.label}>How many Players?</DefaultText>
+            <View style={styles.numRoundsContainer}>
+              <IncDecButton
+                incOrDec={"dec"}
+                onPress={incOrDecNumPlayersHandler.bind(this, "lower")}
               />
-            );
-          })}
+              <DefaultText style={styles.incDecValue}>{numPlayers}</DefaultText>
+              <IncDecButton
+                incOrDec={"inc"}
+                onPress={incOrDecNumPlayersHandler.bind(this, "higher")}
+              />
+            </View>
+          </View>
+
+          <ScrollView contentContainerStyle={styles.scrollView}>
+            <View style={styles.playerNamesContainer}>
+              {playerNames.map((playerName, index) => {
+                return (
+                  <CreateGamePlayerRow
+                    key={index}
+                    playerNameIndex={index}
+                    playerNames={playerNames}
+                    setPlayerNames={updatePlayerNamesState}
+                  />
+                );
+              })}
+            </View>
+          </ScrollView>
+          {isGameStartable ? (
+            <Animatable.View
+              style={{ position: "absolute", right: 20, bottom: 20 }}
+              animation={"slideInRight"}
+            >
+              <CustomActionButton style={styles.primaryButton} onPress={confirmNewGameHandler}>
+                <Text style={styles.buttonText}>Start Game</Text>
+              </CustomActionButton>
+            </Animatable.View>
+          ) : null}
         </View>
-      </ScrollView>
-      {isGameStartable ? (
-        <Animatable.View
-          style={{ position: "absolute", right: 20, bottom: 20 }}
-          animation={"slideInRight"}
-        >
-          <CustomActionButton style={styles.primaryButton} onPress={confirmNewGameHandler}>
-            <Text style={styles.buttonText}>Start Game</Text>
-          </CustomActionButton>
-        </Animatable.View>
-      ) : null}
-    </View>
-    //   </TouchableWithoutFeedback>
-    // </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -218,6 +226,9 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontSize: Defaults.fontSize,
+  },
+  scrollView: {
+    paddingBottom: 30,
   },
 });
 

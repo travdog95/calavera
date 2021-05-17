@@ -2,6 +2,7 @@ import React from "react";
 import { Pressable, View, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
 import { initGame } from "../../store/actions/game-actions";
 
@@ -12,13 +13,34 @@ import Defaults from "../../constants/defaults";
 const GameRow = (props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const status = props.game.isActive ? "In progress" : "Completed";
+  const game = props.game;
+  const status = game.isActive ? "In progress" : "Completed";
+  const rowBackgroundColor = props.index % 2 === 0 ? Colors.theme.grey3 : "white";
+
+  let secondRow = null;
+  if (game.isActive === false) {
+    let winnerText = "Winner: ";
+
+    game.winner.forEach((winner, index) => {
+      if (game.winner.length > 1 && index !== 0) {
+        winnerText += `, `;
+      }
+
+      winnerText += `${winner.player.name} (${winner.totalScore})`;
+    });
+
+    secondRow = (
+      <View style={styles.secondRow}>
+        <DefaultText>{winnerText}</DefaultText>
+      </View>
+    );
+  }
 
   return (
     <Pressable
       style={({ pressed }) => [
         {
-          backgroundColor: pressed ? Colors.theme.light1 : "white",
+          backgroundColor: pressed ? Colors.theme.light1 : rowBackgroundColor,
         },
         styles.pressedWrapper,
       ]}
@@ -29,25 +51,31 @@ const GameRow = (props) => {
         navigation.navigate("Game");
       }}
     >
-      <View style={styles.row}>
-        <DefaultText style={styles.date}>{props.game.date}</DefaultText>
-        <DefaultText style={styles.players}>{props.game.players.length}</DefaultText>
-        <DefaultText style={styles.status}>{status}</DefaultText>
+      <View style={styles.gameContainer}>
+        <View style={styles.row}>
+          <Ionicons name={"skull"} size={16} color={"black"} />
+          <DefaultText style={styles.date}>{props.game.date}</DefaultText>
+          <DefaultText style={styles.players}>{props.game.players.length}</DefaultText>
+          <DefaultText style={styles.status}>{status}</DefaultText>
+        </View>
+        {secondRow}
       </View>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
+  gameContainer: {
+    padding: 3,
+  },
   row: {
     flex: 1,
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginVertical: 5,
-    padding: 5,
   },
+  secondRow: { alignItems: "center", justifyContent: "center" },
   date: {
     fontSize: Defaults.fontSize,
     width: "40%",
@@ -63,7 +91,6 @@ const styles = StyleSheet.create({
     width: "30%",
     textAlign: "right",
   },
-  pressedWrapper: {},
 });
 
 export default GameRow;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { HeaderButtons } from "react-navigation-header-buttons";
 
 import {
   updatePlayerDetail,
@@ -113,7 +113,6 @@ const ScoresScreen = (props) => {
 
   const updateBaseScoreState = (newBaseScore, bonusScore, playerIndex) => {
     const newBaseScores = [];
-    const newScores = [];
     let newBonusScore = 0;
 
     baseScores.forEach((baseScore, index) => {
@@ -124,20 +123,13 @@ const ScoresScreen = (props) => {
         newBaseScores.push(baseScore.toString());
         newBonusScore = bonusScores[index];
       }
-
-      const validatedBaseScore = newBaseScores[index] === "" ? 0 : parseInt(newBaseScores[index]);
-      const newScore = validatedBaseScore + parseInt(newBonusScore);
-      newScores.push(newScore);
     });
 
     setBaseScores(newBaseScores);
-
-    setScores(newScores);
   };
 
   const updateBonusScoreState = (newBonusScore, baseScore, playerIndex) => {
     const newBonusScores = [];
-    const newScores = [];
     let newBaseScore = 0;
 
     bonusScores.forEach((bonusScore, index) => {
@@ -148,17 +140,37 @@ const ScoresScreen = (props) => {
         newBonusScores.push(bonusScore);
         newBaseScore = baseScores[index];
       }
-
-      const validatedBonusScore =
-        newBonusScores[index] === "" ? 0 : parseInt(newBonusScores[index]);
-      const newScore = validatedBonusScore + parseInt(newBaseScore);
-      newScores.push(newScore);
     });
 
     setBonusScores(newBonusScores);
+  };
 
-    //update round score
+  const calcScores = () => {
+    const newScores = [];
+
+    baseScores.forEach((baseScore, index) => {
+      const newScore = parseInt(baseScore) + parseInt(bonusScores[index]);
+      newScores.push(newScore);
+    });
+
     setScores(newScores);
+  };
+
+  const validateScores = () => {
+    let isValid = true;
+    players.map((player, index) => {
+      const baseScore = parseInt(baseScores[index]);
+      const bonusScore = parseInt(bonusScores[index]);
+      const roundScore = baseScore + bonusScore;
+      if (roundScore === 0 || baseScore === 0) {
+        Alert.alert("Arrrrg!", "Scores must not be equal to 0!", [
+          { text: "OK", style: "destructive", cancelable: true },
+        ]);
+        isValid = false;
+      }
+    });
+
+    if (isValid) updateScoresHandler();
   };
 
   const updateScoresHandler = () => {
@@ -213,10 +225,15 @@ const ScoresScreen = (props) => {
     setInitialBonusScores();
   }, [game]);
 
-  //
+  //Calculate inital scores
   useEffect(() => {
     setInitialScores();
   }, [baseScoresInitialized, bonusScoresInitialized]);
+
+  //Calculate scores when baseScores or bonusScores state change
+  useEffect(() => {
+    calcScores();
+  }, [baseScores, bonusScores]);
 
   // useEffect(() => {
   //   props.navigation.setOptions({
@@ -231,9 +248,11 @@ const ScoresScreen = (props) => {
   //   });
   // }, [updateScoresHandler]);
 
+  const headerText = `Round ${round}`;
+
   return (
     <View style={styles.screen}>
-      <RoundHeader round={round} />
+      <RoundHeader round={round} headerText={headerText} />
       <ScrollView contentContainerStyle={styles.playerScoresContainer}>
         {players.map((player, index) => {
           const playerDetail = roundDetail[player.id];
@@ -257,9 +276,11 @@ const ScoresScreen = (props) => {
           );
         })}
       </ScrollView>
-      <CustomActionButton style={styles.primaryButton} onPress={updateScoresHandler}>
-        <DefaultText style={styles.primaryButtonText}>Save Scores</DefaultText>
-      </CustomActionButton>
+      {game.isActive ? (
+        <CustomActionButton style={styles.primaryButton} onPress={validateScores}>
+          <DefaultText style={styles.primaryButtonText}>Save Scores</DefaultText>
+        </CustomActionButton>
+      ) : null}
     </View>
   );
 };

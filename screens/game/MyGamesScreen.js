@@ -20,7 +20,7 @@ const MyGamesScreen = (props) => {
     <View style={styles.screen}>
       {_.isEmpty(currentGame) ? (
         <View style={styles.noGames}>
-          <DefaultText>No games!</DefaultText>
+          <DefaultText>No games!!</DefaultText>
         </View>
       ) : (
         <ScrollView>
@@ -29,7 +29,8 @@ const MyGamesScreen = (props) => {
             <DefaultText style={styles.playersLabel}># Players</DefaultText>
             <DefaultText style={styles.statusLabel}>Status</DefaultText>
           </View>
-          <GameRow game={currentGame} />
+          <GameRow game={currentGame} index={0} />
+          <GameRow game={currentGame} index={1} />
           {/* {games.map((game) => {
             if (game.id !== currentGame.id) return <GameRow key={game.id} game={game} />;
           })} */}
@@ -47,14 +48,6 @@ const MyGamesScreen = (props) => {
           }}
         >
           <Text style={styles.primaryButtonText}>Create Game</Text>
-        </CustomActionButton>
-        <CustomActionButton
-          style={styles.primaryButton}
-          onPress={() => {
-            props.navigation.navigate("Test");
-          }}
-        >
-          <Text style={styles.primaryButtonText}>Test</Text>
         </CustomActionButton>
       </Animatable.View>
     </View>

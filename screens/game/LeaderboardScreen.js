@@ -10,6 +10,7 @@ import Colors from "../../constants/colors";
 
 const LeaderboardScreen = (props) => {
   const game = useSelector((state) => state.game.currentGame);
+  const firstPlayer = game.players[0];
 
   let leaderBoardRound = game.scoringRound === 1 ? 1 : game.scoringRound - 1;
 
@@ -46,9 +47,13 @@ const LeaderboardScreen = (props) => {
     props.navigation.navigate("Game");
   };
 
+  let headerText = game.isActive ? `After Round ${leaderBoardRound}` : "Final Standings";
+
+  if (leaderBoardRound == 1 && game.roundData["r1"][firstPlayer.id].totalScore === 0)
+    headerText = "Round 1";
   return (
     <View style={styles.screen}>
-      <RoundHeader screen="LeaderboardScreen" round={leaderBoardRound} />
+      <RoundHeader screen="LeaderboardScreen" headerText={headerText} />
       <ScrollView contentContainerStyle={styles.leaderboardContainer}>
         {leaderboardData.map((data, index) => {
           {

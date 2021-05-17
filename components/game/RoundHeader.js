@@ -5,12 +5,10 @@ import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
 const RoundHeader = (props) => {
-  const headerText =
-    props.screen === "LeaderboardScreen" ? `After Round ${props.round}` : `Round ${props.round}`;
   return (
     <View style={styles.roundContainer}>
       <View>
-        <DefaultText style={styles.roundText}>{headerText}</DefaultText>
+        <DefaultText style={styles.roundText}>{props.headerText}</DefaultText>
       </View>
     </View>
   );

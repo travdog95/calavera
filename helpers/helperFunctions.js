@@ -71,4 +71,10 @@ export default {
 
     return playerBonusDetail[bonusItemKey] ? defaultScore * multiplier : 0;
   },
+
+  calcBaseScore(bid, round) {
+    if (bid === 0) return round * 10;
+
+    if (bid > 0) return bid * 20;
+  },
 };

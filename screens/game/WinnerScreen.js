@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, ImageBackground, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import DefaultText from "../../components/UI/DefaultText";
+import { completeCurrentGame } from "../../store/actions/game-actions";
 
 import Defaults from "../../constants/defaults";
-import Colors from "../../constants/colors";
 
 const WinnerScreen = (props) => {
   const game = useSelector((state) => state.game.currentGame);
+  const dispatch = useDispatch();
 
   const finalRoundKey = `r${game.numRounds}`;
 
@@ -32,7 +33,6 @@ const WinnerScreen = (props) => {
   });
 
   let winnerText = "";
-
   if (winners.length === 1) {
     winnerText = (
       <View>
@@ -57,6 +57,14 @@ const WinnerScreen = (props) => {
       </View>
     );
   }
+
+  const winnerNames = winners.map((winner) => winner.player.name);
+
+  //complete game
+  useEffect(() => {
+    dispatch(completeCurrentGame(winners));
+  }, []);
+
   return (
     <View style={styles.screen}>
       <ImageBackground

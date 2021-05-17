@@ -68,17 +68,18 @@ const gameReducer = (state = initialState, action) => {
       return { ...state, currentGame: { ...state.currentGame, roundData: newRoundData } };
     case actions.UPDATE_TOTAL_SCORES:
       const totalScoresRoundData = { ...state.currentGame.roundData };
+
+      const firstPlayer = state.currentGame.players[0];
+
       //Iterate over each round
       for (const [roundKey, roundDetail] of Object.entries(state.currentGame.roundData)) {
         const round = parseInt(roundKey.substring(1));
         let prevTotalScore = 0;
         let totalScore = 0;
         let prevRoundKey = "";
+
         //Only score rounds that have been played
-        if (
-          round < state.currentGame.scoringRound ||
-          action.round === parseInt(state.currentGame.numRounds)
-        ) {
+        if (roundDetail[firstPlayer.id].baseScore > 0) {
           //Iterate over each player
           for (const [playerId, playerDetail] of Object.entries(roundDetail)) {
             const newPlayerDetail = {};
@@ -95,6 +96,7 @@ const gameReducer = (state = initialState, action) => {
                 totalScore: prevTotalScore + totalScore,
               };
             }
+
             //Merge total score with the rest of the playerDetail object
             newPlayerDetail = {
               ...totalScoresRoundData[roundKey][playerId],
@@ -108,6 +110,19 @@ const gameReducer = (state = initialState, action) => {
       }
 
       return { ...state, currentGame: { ...state.currentGame, roundData: totalScoresRoundData } };
+    case actions.COMPLETE_CURRENT_GAME:
+      const winner = action.winner;
+      //Create new game
+      const newGame = { ...state.currentGame };
+
+      //Update winner and isActive
+      newGame.winner = winner;
+      newGame.isActive = false;
+
+      return {
+        ...state,
+        currentGame: newGame,
+      };
     default:
       return state;
   }

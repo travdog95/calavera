@@ -73,6 +73,7 @@ const ConfirmNewGameScreen = (props) => {
       roundData,
       date: TKO.getCurrentDate(),
       isActive: true,
+      gameType: "SkullKing",
       // roundBonusesDetail,
     });
 
