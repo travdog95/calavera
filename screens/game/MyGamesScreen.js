@@ -30,7 +30,6 @@ const MyGamesScreen = (props) => {
             <DefaultText style={styles.statusLabel}>Status</DefaultText>
           </View>
           <GameRow game={currentGame} index={0} />
-          <GameRow game={currentGame} index={1} />
           {/* {games.map((game) => {
             if (game.id !== currentGame.id) return <GameRow key={game.id} game={game} />;
           })} */}

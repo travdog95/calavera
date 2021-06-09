@@ -79,7 +79,7 @@ const gameReducer = (state = initialState, action) => {
         let prevRoundKey = "";
 
         //Only score rounds that have been played
-        if (roundDetail[firstPlayer.id].baseScore > 0) {
+        if (roundDetail[firstPlayer.id].baseScore !== 0) {
           //Iterate over each player
           for (const [playerId, playerDetail] of Object.entries(roundDetail)) {
             const newPlayerDetail = {};

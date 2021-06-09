@@ -26,10 +26,14 @@ const WinnerScreen = (props) => {
   );
 
   const winners = [];
+  let topScore = 0;
   leaderboardData.forEach((player, index) => {
-    if (index === 0 || player.totalScore === leaderboardData[index - 1].totalScore) {
+    if (index === 0) {
       winners.push(player);
+      topScore = player.totalScore;
     }
+
+    if (index !== 0 && parseInt(player.totalScore) === parseInt(topScore)) winners.push(player);
   });
 
   let winnerText = "";
