@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import _ from "lodash";
 
 import GameRow from "../../components/game/GameRow";
+import { loadGames, deleteGames } from "../../store/actions/game-actions";
+
 import CustomActionButton from "../../components/CustomActionButton";
 import HeaderButton from "../../components/UI/HeaderButton";
 import DefaultText from "../../components/UI/DefaultText";
@@ -16,9 +18,24 @@ import Colors from "../../constants/colors";
 const MyGamesScreen = (props) => {
   const games = useSelector((state) => state.game.games);
   const currentGame = useSelector((state) => state.game.currentGame);
+
+  const gamesObject = useSelector((state) => state.game.gamesObject);
+
+  console.log(gamesObject);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loadGames());
+  }, [dispatch]);
+
+  const deleteGameData = () => {
+    dispatch(deleteGames());
+  };
+
   return (
     <View style={styles.screen}>
-      {_.isEmpty(currentGame) ? (
+      {_.isEmpty(games) ? (
         <View style={styles.noGames}>
           <DefaultText>No games!!</DefaultText>
         </View>
@@ -29,10 +46,10 @@ const MyGamesScreen = (props) => {
             <DefaultText style={styles.playersLabel}># Players</DefaultText>
             <DefaultText style={styles.statusLabel}>Status</DefaultText>
           </View>
-          <GameRow game={currentGame} index={0} />
-          {/* {games.map((game) => {
-            if (game.id !== currentGame.id) return <GameRow key={game.id} game={game} />;
-          })} */}
+          {/* <GameRow game={currentGame} index={0} /> */}
+          {games.map((game) => {
+            return <GameRow key={game.id} game={game} />;
+          })}
         </ScrollView>
       )}
 
@@ -40,6 +57,10 @@ const MyGamesScreen = (props) => {
         style={{ position: "absolute", right: 20, bottom: 20 }}
         animation={"slideInRight"}
       >
+        <CustomActionButton style={styles.primaryButton} onPress={deleteGameData}>
+          <Text style={styles.primaryButtonText}>Delete Game Data</Text>
+        </CustomActionButton>
+
         <CustomActionButton
           style={styles.primaryButton}
           onPress={() => {

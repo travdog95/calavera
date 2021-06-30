@@ -1,22 +1,40 @@
 import * as actions from "../actions/game-actions";
+import Game from "../../models/game";
+import { updateGame } from "../../helpers/db";
 
 //initialize state
 const initialState = {
   games: [],
+  gamesObject: {},
   currentGame: {},
+  currentGameId: 0,
 };
 
 const gameReducer = (state = initialState, action) => {
   switch (action.type) {
-    case actions.INIT_GAME:
-      const newGames = state.games.some((game) => game.id === action.game.id)
-        ? state.games
-        : state.games.concat(action.game);
+    case actions.CREATE_GAME:
+      const newGame = new Game({
+        id: action.gameData.id,
+        players: action.gameData.players,
+        numRounds: action.gameData.numRounds,
+        selectedRound: action.gameData.selectedRound,
+        scoringRound: action.gameData.scoringRound,
+        roundData: action.gameData.roundData,
+        date: action.gameData.date,
+        isActive: action.gameData.isActive,
+        gameType: action.gameData.gameType,
+      });
+
+      const newGameId = `game${newGame.id}`;
+      // const newGames = {...state.games, newGameId: newGame};
+      const newGames = state.games.concat(newGame);
 
       return {
         ...state,
-        currentGame: action.game,
+        currentGame: newGame,
+        currentGameId: newGameId,
         games: newGames,
+        gamesObject: { ...state.games, newGameId: newGame },
       };
     case actions.SET_SCORING_ROUND:
       return {
@@ -41,9 +59,17 @@ const gameReducer = (state = initialState, action) => {
         newPlayers.push(newPlayer);
       });
 
+      const savePlayerNameCurrentGame = { ...state.currentGame, players: newPlayers };
+
+      updateGame(savePlayerNameCurrentGame)
+        .then((dbResult) => {
+          if (dbResult.rowsAffected !== 1) console.log("error saving game");
+        })
+        .catch((err) => console.log(err));
+
       return {
         ...state,
-        currentGame: { ...state.currentGame, players: newPlayers },
+        currentGame: savePlayerNameCurrentGame,
       };
     case actions.UPDATE_ROUND_BONUSES:
       const round = action.round;
@@ -113,16 +139,50 @@ const gameReducer = (state = initialState, action) => {
     case actions.COMPLETE_CURRENT_GAME:
       const winner = action.winner;
       //Create new game
-      const newGame = { ...state.currentGame };
+      const gameToComplete = { ...state.currentGame };
 
       //Update winner and isActive
-      newGame.winner = winner;
-      newGame.isActive = false;
+      gameToComplete.winner = winner;
+      gameToComplete.isActive = false;
+
+      updateGame(gameToComplete)
+        .then((dbResult) => {
+          if (dbResult.rowsAffected !== 1) console.log("error saving game");
+        })
+        .catch((err) => console.log(err));
 
       return {
         ...state,
-        currentGame: newGame,
+        currentGame: gameToComplete,
       };
+    case actions.LOAD_GAMES:
+      console.log("Load Games");
+      const loadedGamesObject = {};
+      const loadedGames = action.games.map((game) => {
+        const jsonGame = JSON.parse(game.game);
+        const loadedGameObjectId = `game${game.id}`;
+
+        const newLoadedGame = new Game({
+          id: game.id,
+          players: jsonGame.players,
+          numRounds: jsonGame.numRounds,
+          roundData: jsonGame.roundData,
+          scoringRound: jsonGame.scoringRound,
+          selectedRound: jsonGame.selectedRound,
+          date: jsonGame.date,
+          gameType: jsonGame.gameType,
+          isActive: jsonGame.isActive,
+          winner: jsonGame.winner,
+        });
+
+        loadedGamesObject[loadedGameObjectId] = newLoadedGame;
+
+        return newLoadedGame;
+      });
+
+      return { ...state, games: loadedGames, gamesObject: loadedGamesObject };
+    case actions.SET_CURRENT_GAME:
+      return { ...state, currentGame: action.game };
     default:
       return state;
   }

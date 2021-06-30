@@ -6,13 +6,24 @@ import { NavigationContainer } from "@react-navigation/native";
 import AppLoading from "expo-app-loading"; //Prolong loading screen until whatever you want load is loaded
 import * as Font from "expo-font"; //should be installed by default, but run expo install expo-font to be sure
 import { enableScreens } from "react-native-screens";
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
+import ReduxThunk from 'redux-thunk'
 
 import { DrawNavigator } from "./navigation/DrawerNavigator";
 import { AppTabNavigator } from "./navigation/TabNavigator";
 import gameReducer from "./store/reducers/game-reducer";
 import settingsReducer from "./store/reducers/settings-reducer";
+import { init } from "./helpers/db";
+
+init()
+  .then(() => {
+    console.log("Initialized database");
+  })
+  .catch((err) => {
+    console.log("Initializing db failed");
+    console.log(err);
+  });
 
 enableScreens(); //ensure react-native uses native underlying screen components. Should be called before you render your first screen
 
@@ -21,7 +32,7 @@ const rootReducer = combineReducers({
   settings: settingsReducer,
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const fetchFonts = () => {
   return Font.loadAsync({

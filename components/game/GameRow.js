@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
-import { initGame } from "../../store/actions/game-actions";
+import { setCurrentGame } from "../../store/actions/game-actions";
 
 import DefaultText from "../../components/UI/DefaultText";
 import Colors from "../../constants/colors";
@@ -46,7 +46,7 @@ const GameRow = (props) => {
       ]}
       onPress={() => {
         //Load store with game data
-        dispatch(initGame(props.game));
+        dispatch(setCurrentGame(props.game));
 
         navigation.navigate("Game");
       }}

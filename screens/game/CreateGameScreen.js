@@ -28,7 +28,7 @@ const CreateGameScreen = (props) => {
   const [playerNames, setPlayerNames] = useState(["", "", "", ""]);
   // const [playerNames, setPlayerNames] = useState(["", "", "", ""]);
   const [isGameStartable, setIsGameStartable] = useState(true);
-  const [numRounds, setNumRounds] = useState("10");
+  const [numRounds, setNumRounds] = useState("2");
   const [numPlayers, setNumPlayers] = useState("4");
 
   const incOrDecRoundsHandler = (direction) => {

@@ -17,6 +17,7 @@ import DefaultText from "../../components/UI/DefaultText";
 import RoundHeader from "../../components/game/RoundHeader";
 import CustomActionButton from "../../components/CustomActionButton";
 import Tko from "../../helpers/helperFunctions";
+import { updateGame } from "../../helpers/db";
 
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
@@ -198,6 +199,14 @@ const ScoresScreen = (props) => {
 
     props.navigation.navigate("Game");
   };
+
+  useEffect(() => {
+    updateGame(game)
+      .then((dbResult) => {
+        if (dbResult.rowsAffected !== 1) console.log("error saving game");
+      })
+      .catch((err) => console.log(err));
+  }, [game]);
 
   const incOrDecValue = (direction, playerIndex, incOrDecValue, input) => {
     if (input === "bonusScore") {

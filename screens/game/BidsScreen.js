@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons } from "react-navigation-header-buttons";
@@ -15,6 +15,7 @@ import RoundHeader from "../../components/game/RoundHeader";
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
 import TKO from "../../helpers/helperFunctions";
+import { updateGame } from "../../helpers/db";
 
 const BidsScreen = (props) => {
   const game = useSelector((state) => state.game.currentGame);
@@ -28,7 +29,6 @@ const BidsScreen = (props) => {
 
   const setInitialBids = () => {
     const initialBids = [];
-
     for (const [playerId, playerDetail] of Object.entries(roundPlayersDetail)) {
       initialBids.push(playerDetail.bid.toString());
     }
@@ -68,16 +68,13 @@ const BidsScreen = (props) => {
     });
   };
 
-  // useEffect(() => {
-  //   props.navigation.setOptions({
-  //     headerRight: () => (
-  //       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-  //         <HeaderButtonLeaderboard />
-  //         {/* <Item title="Save" iconName="save" onPress={updateBidsHandler} /> */}
-  //       </HeaderButtons>
-  //     ),
-  //   });
-  // }, [updateBidsHandler]);
+  useEffect(() => {
+    updateGame(game)
+      .then((dbResult) => {
+        if (dbResult.rowsAffected !== 1) console.log("error saving game");
+      })
+      .catch((err) => console.log(err));
+  }, [game]);
 
   const calcTotalBids = (total, bid) => {
     const newBid = bid === "" ? "0" : bid;

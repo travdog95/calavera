@@ -25,6 +25,7 @@ const GameScreen = (props) => {
   const [isGameOver, setIsGameOver] = useState(false);
 
   const game = useSelector((state) => state.game.currentGame);
+
   const navigation = useNavigation();
 
   //Calculate width of Round Player detail columns

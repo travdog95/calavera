@@ -13,7 +13,7 @@ import PlayerDetail from "../../models/playerDetail";
 import RoundBonusDetail from "../../models/roundBonusDetail";
 import PlayerBonusDetail from "../../models/playerBonusDetail";
 
-import { initGame } from "../../store/actions/game-actions";
+import { createGame } from "../../store/actions/game-actions";
 
 import TKO from "../../helpers/helperFunctions";
 import Defaults from "../../constants/defaults";
@@ -61,26 +61,12 @@ const ConfirmNewGameScreen = (props) => {
     //Init game data
     const roundData = initRoundData(players, numRounds);
 
-    const roundBonusesDetail = initRoundBonusesDetail(players);
-
-    //Create game
-    const game = new Game({
-      id: "g" + Math.floor(Math.random() * 10000000000).toString(),
-      players,
-      numRounds,
-      selectedRound: 1,
-      scoringRound: 1,
-      roundData,
-      date: TKO.getCurrentDate(),
-      isActive: true,
-      gameType: "SkullKing",
-      // roundBonusesDetail,
-    });
+    // const roundBonusesDetail = initRoundBonusesDetail(players);
 
     //Load store with game data
-    dispatch(initGame(game));
-
-    props.navigation.navigate("Game");
+    dispatch(
+      createGame(players, numRounds, 1, 1, roundData, TKO.getCurrentDate(), true, "SkullKing")
+    ).then(() => props.navigation.navigate("Game"));
   };
 
   const createPlayersHandler = (playerNames) => {
