@@ -15,7 +15,10 @@ const ScoreBox = (props) => {
 
   let wagerIndicator = "";
   let cellBackgroundColor = "";
-  const game = useSelector((state) => state.game.currentGame);
+  // const game = useSelector((state) => state.game.currentGame);
+  const currentGameId = useSelector((state) => state.game.currentGameId);
+  const game = useSelector((state) => state.game.games[currentGameId]);
+
   const currentRound = game.scoringRound;
   const scoreBoxRound = parseInt(props.round);
 

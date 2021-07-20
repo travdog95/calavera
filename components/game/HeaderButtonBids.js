@@ -6,7 +6,10 @@ import { FontAwesome5 } from "@expo/vector-icons";
 
 const HeaderButtonBids = (props) => {
   const navigation = useNavigation();
-  const game = useSelector((state) => state.game.currentGame);
+  // const game = useSelector((state) => state.game.currentGame);
+  const currentGameId = useSelector((state) => state.game.currentGameId);
+  const game = useSelector((state) => state.game.games[currentGameId]);
+
   const round = props.screen === "GameScreen" ? game.scoringRound : game.selectedRound;
   return (
     <Item

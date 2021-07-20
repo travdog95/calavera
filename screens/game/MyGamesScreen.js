@@ -17,11 +17,6 @@ import Colors from "../../constants/colors";
 
 const MyGamesScreen = (props) => {
   const games = useSelector((state) => state.game.games);
-  const currentGame = useSelector((state) => state.game.currentGame);
-
-  const gamesObject = useSelector((state) => state.game.gamesObject);
-
-  console.log(gamesObject);
 
   const dispatch = useDispatch();
 
@@ -46,9 +41,8 @@ const MyGamesScreen = (props) => {
             <DefaultText style={styles.playersLabel}># Players</DefaultText>
             <DefaultText style={styles.statusLabel}>Status</DefaultText>
           </View>
-          {/* <GameRow game={currentGame} index={0} /> */}
-          {games.map((game) => {
-            return <GameRow key={game.id} game={game} />;
+          {Object.entries(games).map(([gameId, game]) => {
+            return <GameRow key={gameId} game={game} />;
           })}
         </ScrollView>
       )}

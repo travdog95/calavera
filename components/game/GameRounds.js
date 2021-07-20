@@ -10,7 +10,10 @@ import Defaults from "../../constants/defaults";
 const GameRounds = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const game = useSelector((state) => state.game.currentGame);
+  const currentGameId = useSelector((state) => state.game.currentGameId);
+  const game = useSelector((state) => state.game.games[currentGameId]);
+
+  // const game = useSelector((state) => state.game.currentGame);
 
   //convert numRounds to array
   let rounds = [];

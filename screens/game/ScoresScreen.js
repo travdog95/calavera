@@ -23,7 +23,10 @@ import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
 
 const ScoresScreen = (props) => {
-  const game = useSelector((state) => state.game.currentGame);
+  // const game = useSelector((state) => state.game.currentGame);
+  const currentGameId = useSelector((state) => state.game.currentGameId);
+  const game = useSelector((state) => state.game.games[currentGameId]);
+
   const settings = useSelector((state) => state.settings);
 
   const players = game.players;

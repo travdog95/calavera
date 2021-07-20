@@ -10,7 +10,10 @@ import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
 const AddBonusScreen = (props) => {
-  const currentGame = useSelector((state) => state.game.currentGame);
+  // const currentGame = useSelector((state) => state.game.currentGame);
+  const currentGameId = useSelector((state) => state.game.currentGameId);
+  const currentGame = useSelector((state) => state.game.games[currentGameId]);
+
   const currentPlayerId = props.route.params.playerId;
   const currentPlayer = currentGame.players.filter((player) => player.id === currentPlayerId)[0];
   const eligiblePlayers = currentGame.players.filter((player) => player.id !== currentPlayerId);

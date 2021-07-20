@@ -20,7 +20,8 @@ export const createGame = (
   roundData,
   date,
   isActive,
-  gameType
+  gameType,
+  scoringType
 ) => {
   return async (dispatch) => {
     try {
@@ -34,6 +35,7 @@ export const createGame = (
         date,
         isActive,
         gameType,
+        scoringType,
       });
 
       //then dispatch reducer
@@ -49,6 +51,7 @@ export const createGame = (
           date,
           isActive,
           gameType,
+          scoringType,
         },
       });
     } catch (err) {

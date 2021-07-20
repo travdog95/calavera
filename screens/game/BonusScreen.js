@@ -15,7 +15,10 @@ import HeaderButton from "../../components/UI/HeaderButton";
 import Tko from "../../helpers/helperFunctions";
 
 const BonusScreen = (props) => {
-  const game = useSelector((state) => state.game.currentGame);
+  // const game = useSelector((state) => state.game.currentGame);
+  const currentGameId = useSelector((state) => state.game.currentGameId);
+  const game = useSelector((state) => state.game.games[currentGameId]);
+
   const currentPlayerId = props.route.params.player.id;
   const currentPlayer = game.players.filter((player) => player.id === currentPlayerId)[0];
   const round = game.currentRound;

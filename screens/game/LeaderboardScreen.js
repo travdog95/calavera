@@ -9,7 +9,10 @@ import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
 
 const LeaderboardScreen = (props) => {
-  const game = useSelector((state) => state.game.currentGame);
+  // const game = useSelector((state) => state.game.currentGame);
+  const currentGameId = useSelector((state) => state.game.currentGameId);
+  const game = useSelector((state) => state.game.games[currentGameId]);
+
   const firstPlayer = game.players[0];
 
   let leaderBoardRound = game.scoringRound === 1 ? 1 : game.scoringRound - 1;

@@ -22,6 +22,9 @@ import Colors from "../../constants/colors";
 const ConfirmNewGameScreen = (props) => {
   const numRounds = props.route.params.numRounds;
   const playerNames = props.route.params.playerNames;
+  const scoringType = props.route.params.scoringType;
+
+  console.log(scoringType);
 
   const dispatch = useDispatch();
 
@@ -65,7 +68,17 @@ const ConfirmNewGameScreen = (props) => {
 
     //Load store with game data
     dispatch(
-      createGame(players, numRounds, 1, 1, roundData, TKO.getCurrentDate(), true, "SkullKing")
+      createGame(
+        players,
+        numRounds,
+        1,
+        1,
+        roundData,
+        TKO.getCurrentDate(),
+        true,
+        "SkullKing",
+        scoringType
+      )
     ).then(() => props.navigation.navigate("Game"));
   };
 

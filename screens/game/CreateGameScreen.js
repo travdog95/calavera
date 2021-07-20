@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import SelectDropdown from "react-native-select-dropdown";
 import * as Animatable from "react-native-animatable";
 
 import CustomActionButton from "../../components/CustomActionButton";
@@ -21,6 +22,8 @@ import CreateGamePlayerRow from "../../components/game/CreateGamePlayerRow";
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
+const scoringTypes = ["Classic", "Rascal", "Rascal Enhanced"];
+
 const CreateGameScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -30,6 +33,7 @@ const CreateGameScreen = (props) => {
   const [isGameStartable, setIsGameStartable] = useState(true);
   const [numRounds, setNumRounds] = useState("2");
   const [numPlayers, setNumPlayers] = useState("4");
+  const [scoringType, setScoringType] = useState(scoringTypes[0]);
 
   const incOrDecRoundsHandler = (direction) => {
     const minNumRounds = 1;
@@ -95,6 +99,7 @@ const CreateGameScreen = (props) => {
     props.navigation.navigate("ConfirmNewGame", {
       playerNames,
       numRounds,
+      scoringType,
     });
   };
 
@@ -144,6 +149,26 @@ const CreateGameScreen = (props) => {
                 onPress={incOrDecNumPlayersHandler.bind(this, "higher")}
               />
             </View>
+          </View>
+          <View style={styles.row}>
+            <DefaultText style={styles.label}>Scoring System?</DefaultText>
+            <SelectDropdown
+              data={scoringTypes}
+              onSelect={(selectedItem, index) => {
+                setScoringType(selectedItem);
+              }}
+              defaultValue={scoringTypes[0]}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                // text represented after item is selected
+                // if data array is an array of objects then return selectedItem.property to render after item is selected
+                return selectedItem;
+              }}
+              rowTextForSelection={(item, index) => {
+                // text represented for each item in dropdown
+                // if data array is an array of objects then return item.property to represent item in dropdown
+                return item;
+              }}
+            />
           </View>
 
           <ScrollView contentContainerStyle={styles.scrollView}>

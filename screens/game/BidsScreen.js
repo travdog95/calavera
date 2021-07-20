@@ -18,7 +18,10 @@ import TKO from "../../helpers/helperFunctions";
 import { updateGame } from "../../helpers/db";
 
 const BidsScreen = (props) => {
-  const game = useSelector((state) => state.game.currentGame);
+  // const game = useSelector((state) => state.game.currentGame);
+  const currentGameId = useSelector((state) => state.game.currentGameId);
+  const game = useSelector((state) => state.game.games[currentGameId]);
+
   const round = props.route.params.round;
   const roundKey = `r${round}`;
   const players = game.players;
@@ -68,6 +71,7 @@ const BidsScreen = (props) => {
     });
   };
 
+  //Save game in SQLite DB
   useEffect(() => {
     updateGame(game)
       .then((dbResult) => {

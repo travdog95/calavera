@@ -4,15 +4,16 @@ import { updateGame } from "../../helpers/db";
 
 //initialize state
 const initialState = {
-  games: [],
-  gamesObject: {},
+  games: {},
   currentGame: {},
-  currentGameId: 0,
+  currentGameId: "",
 };
 
 const gameReducer = (state = initialState, action) => {
   switch (action.type) {
     case actions.CREATE_GAME:
+      const newGames = {};
+      //Create new game
       const newGame = new Game({
         id: action.gameData.id,
         players: action.gameData.players,
@@ -23,35 +24,65 @@ const gameReducer = (state = initialState, action) => {
         date: action.gameData.date,
         isActive: action.gameData.isActive,
         gameType: action.gameData.gameType,
+        scoringType: action.gameData.scoringType,
       });
 
       const newGameId = `game${newGame.id}`;
-      // const newGames = {...state.games, newGameId: newGame};
-      const newGames = state.games.concat(newGame);
+      newGames[newGameId] = newGame;
 
       return {
         ...state,
-        currentGame: newGame,
         currentGameId: newGameId,
-        games: newGames,
-        gamesObject: { ...state.games, newGameId: newGame },
+        games: { ...newGames, ...state.games },
       };
     case actions.SET_SCORING_ROUND:
+      console.log("scoring round", state.games[state.currentGameId].scoringRound);
+      //Update game json object
+      const setScoringRoundGame = {
+        ...state.games[state.currentGameId],
+        scoringRound: action.scoringRound,
+      };
+
+      //Save to database
+      updateGame(setScoringRoundGame)
+        .then((dbResult) => {
+          if (dbResult.rowsAffected !== 1) console.log("error saving game");
+        })
+        .catch((err) => console.log(err));
+
+      // //Update state store
+      // state.games[state.currentGameId] = setScoringRoundGame;
+
       return {
         ...state,
-        currentGame: { ...state.currentGame, scoringRound: action.scoringRound },
+        games: { ...state.games, [state.currentGameId]: setScoringRoundGame },
       };
     case actions.SET_SELECTED_ROUND:
+      const setSelectedRoundGame = {
+        ...state.games[state.currentGameId],
+        selectedRound: action.selectedRound,
+      };
+
+      //Save to database
+      updateGame(setSelectedRoundGame)
+        .then((dbResult) => {
+          if (dbResult.rowsAffected !== 1) console.log("error saving game");
+        })
+        .catch((err) => console.log(err));
+
+      // //Update state store
+      // state.games[state.currentGameId] = setSelectedRoundGame;
+
       return {
         ...state,
-        currentGame: { ...state.currentGame, selectedRound: action.selectedRound },
+        games: { ...state.games, [state.currentGameId]: setSelectedRoundGame },
       };
     case actions.SAVE_PLAYER_NAME:
       const newPlayers = [];
       const playerId = action.playerId;
       const playerName = action.playerName;
 
-      state.currentGame.players.forEach((player) => {
+      state.games[state.currentGameId].players.forEach((player) => {
         const newPlayer = {
           id: player.id,
           name: player.id === playerId ? playerName : player.name,
@@ -59,31 +90,38 @@ const gameReducer = (state = initialState, action) => {
         newPlayers.push(newPlayer);
       });
 
-      const savePlayerNameCurrentGame = { ...state.currentGame, players: newPlayers };
+      const savePlayerNameCurrentGame = {
+        ...state.games[state.currentGameId],
+        players: newPlayers,
+      };
 
+      //Save to database
       updateGame(savePlayerNameCurrentGame)
         .then((dbResult) => {
           if (dbResult.rowsAffected !== 1) console.log("error saving game");
         })
         .catch((err) => console.log(err));
 
+      //Update state store
+      state.games[state.currentGameId] = savePlayerNameCurrentGame;
+
       return {
         ...state,
-        currentGame: savePlayerNameCurrentGame,
+        games: { ...state.games },
       };
     case actions.UPDATE_ROUND_BONUSES:
       const round = action.round;
 
-      const newRoundBonusDetail = { ...state.currentGame.roundBonusesDetail };
+      const newRoundBonusDetail = { ...state.games[state.currentGameId].roundBonusesDetail };
       newRoundBonusDetail[`r${round}`].playersBonusDetail[action.playerId] = action.bonusData;
       return {
         ...state,
-        currentGame: { ...state.currentGame, roundBonusesDetail: newRoundBonusDetail },
+        games: { ...state.games[state.currentGameId], roundBonusesDetail: newRoundBonusDetail },
       };
     case actions.UPDATE_PLAYER_DETAIL:
       const roundKey = `r${action.round}`;
 
-      const newRoundData = { ...state.currentGame.roundData };
+      const newRoundData = { ...state.games[state.currentGameId].roundData };
 
       //Merge playerDetail
       const newPlayerData = { ...newRoundData[roundKey][action.playerId], ...action.playerDetail };
@@ -91,14 +129,24 @@ const gameReducer = (state = initialState, action) => {
       //Add new playerDetail to new roundData object
       newRoundData[roundKey][action.playerId] = newPlayerData;
 
-      return { ...state, currentGame: { ...state.currentGame, roundData: newRoundData } };
-    case actions.UPDATE_TOTAL_SCORES:
-      const totalScoresRoundData = { ...state.currentGame.roundData };
+      const updatedPlayerDetailGame = {
+        ...state.games[state.currentGameId],
+        roundData: newRoundData,
+      };
 
-      const firstPlayer = state.currentGame.players[0];
+      return {
+        ...state,
+        games: { ...state.games, [state.currentGameId]: updatedPlayerDetailGame },
+      };
+    case actions.UPDATE_TOTAL_SCORES:
+      const totalScoresRoundData = { ...state.games[state.currentGameId].roundData };
+
+      const firstPlayer = state.games[state.currentGameId].players[0];
 
       //Iterate over each round
-      for (const [roundKey, roundDetail] of Object.entries(state.currentGame.roundData)) {
+      for (const [roundKey, roundDetail] of Object.entries(
+        state.games[state.currentGameId].roundData
+      )) {
         const round = parseInt(roundKey.substring(1));
         let prevTotalScore = 0;
         let totalScore = 0;
@@ -135,11 +183,17 @@ const gameReducer = (state = initialState, action) => {
         }
       }
 
-      return { ...state, currentGame: { ...state.currentGame, roundData: totalScoresRoundData } };
+      const updatedScoresGame = {
+        ...state.games[state.currentGameId],
+        roundData: totalScoresRoundData,
+      };
+      //return { ...state, currentGame: { ...state.currentGame, roundData: totalScoresRoundData } };
+      return { ...state, games: { ...state.games, [state.currentGameId]: updatedScoresGame } };
+
     case actions.COMPLETE_CURRENT_GAME:
       const winner = action.winner;
       //Create new game
-      const gameToComplete = { ...state.currentGame };
+      const gameToComplete = { ...state.games[state.currentGameId] };
 
       //Update winner and isActive
       gameToComplete.winner = winner;
@@ -153,12 +207,13 @@ const gameReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        currentGame: gameToComplete,
+        games: { ...state.games, [state.currentGameId]: gameToComplete },
       };
     case actions.LOAD_GAMES:
       console.log("Load Games");
       const loadedGamesObject = {};
-      const loadedGames = action.games.map((game) => {
+
+      action.games.forEach((game) => {
         const jsonGame = JSON.parse(game.game);
         const loadedGameObjectId = `game${game.id}`;
 
@@ -176,13 +231,11 @@ const gameReducer = (state = initialState, action) => {
         });
 
         loadedGamesObject[loadedGameObjectId] = newLoadedGame;
-
-        return newLoadedGame;
       });
 
-      return { ...state, games: loadedGames, gamesObject: loadedGamesObject };
+      return { ...state, games: loadedGamesObject };
     case actions.SET_CURRENT_GAME:
-      return { ...state, currentGame: action.game };
+      return { ...state, currentGameId: `game${action.game.id}` };
     default:
       return state;
   }

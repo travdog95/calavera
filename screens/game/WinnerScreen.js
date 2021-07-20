@@ -8,7 +8,10 @@ import { completeCurrentGame } from "../../store/actions/game-actions";
 import Defaults from "../../constants/defaults";
 
 const WinnerScreen = (props) => {
-  const game = useSelector((state) => state.game.currentGame);
+  // const game = useSelector((state) => state.game.currentGame);
+  const currentGameId = useSelector((state) => state.game.currentGameId);
+  const game = useSelector((state) => state.game.games[currentGameId]);
+
   const dispatch = useDispatch();
 
   const finalRoundKey = `r${game.numRounds}`;

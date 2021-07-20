@@ -12,7 +12,9 @@ import BonusControl from "../../game/bonus/BonusControl";
 import BonusValue from "../../game/bonus/BonusValue";
 
 const BonusAlliance = (props) => {
-  const currentGame = useSelector((state) => state.game.currentGame);
+  // const currentGame = useSelector((state) => state.game.currentGame);
+  const currentGameId = useSelector((state) => state.game.currentGameId);
+  const currentGame = useSelector((state) => state.game.games[currentGameId]);
 
   const initShowClearButton = () => {
     return props.bonusItem.controlValue ? true : false;

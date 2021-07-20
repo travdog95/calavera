@@ -10,6 +10,7 @@ class Game {
     this.date = game.date;
     this.isActive = game.isActive;
     this.winner = game.winner;
+    this.scoringType = game.scoringType;
     // this.roundBonusesDetail = game.roundBonusesDetail;
   }
 }
