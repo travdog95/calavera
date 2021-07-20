@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, Button, ActivityIndicator, StyleSheet, Alert } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { useSelector } from "react-redux";
@@ -24,7 +24,8 @@ const GameScreen = (props) => {
   const [error, setError] = useState();
   const [isGameOver, setIsGameOver] = useState(false);
 
-  const game = useSelector((state) => state.game.currentGame);
+  const currentGameId = useSelector((state) => state.game.currentGameId);
+  const game = useSelector((state) => state.game.games[currentGameId]);
 
   const navigation = useNavigation();
 
