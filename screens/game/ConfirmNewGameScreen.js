@@ -24,8 +24,6 @@ const ConfirmNewGameScreen = (props) => {
   const playerNames = props.route.params.playerNames;
   const scoringType = props.route.params.scoringType;
 
-  console.log(scoringType);
-
   const dispatch = useDispatch();
 
   const backButtonHandler = () => {

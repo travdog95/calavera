@@ -1,12 +1,19 @@
 import React from "react";
 import { View, StyleSheet, Alert } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 import Input from "../UI/Input";
 import DefaultText from "../UI/DefaultText";
 import IncDecButton from "../UI/IncDecButton";
+import CustomActionButton from "../CustomActionButton";
 import Defaults from "../../constants/defaults";
+import Constants from "../../constants/constants";
+import Colors from "../../constants/colors";
 
 const BidRow = (props) => {
+  const scoringType = props.scoringType;
+  const isRascalEnhancedScoring = scoringType === Constants.scoringTypes[2] ? true : false;
+
   const numberInputHandler = (inputText) => {
     props.setBids(inputText.replace(/[^0-9]/g, ""), props.playerIndex);
   };
@@ -33,7 +40,7 @@ const BidRow = (props) => {
 
   return (
     <View style={styles.row}>
-      <View style={styles.playerNameContainer}>
+      <View style={{ width: isRascalEnhancedScoring ? "50%" : "70%", justifyContent: "center" }}>
         <DefaultText style={styles.playerName}>{props.player.name}</DefaultText>
       </View>
       <View style={styles.bidContainer}>
@@ -50,6 +57,16 @@ const BidRow = (props) => {
         />
         <IncDecButton incOrDec={"inc"} onPress={incOrDecValueHandler.bind(this, "higher")} />
       </View>
+      {isRascalEnhancedScoring ? (
+        <View style={styles.cannonContainer}>
+          <CustomActionButton style={{ padding: 5 }} onPress={() => {}}>
+            <FontAwesome5 name="hand-paper" size={24} color={Colors.theme.dark4} />
+          </CustomActionButton>
+          <CustomActionButton style={{ padding: 5 }} onPress={() => {}}>
+            <FontAwesome5 name="hand-rock" size={24} color={Colors.theme.grey3} />
+          </CustomActionButton>
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -65,7 +82,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   playerNameContainer: {
-    width: "70%",
     justifyContent: "center",
   },
   playerName: {
@@ -84,6 +100,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: Defaults.isSmallScreen ? 35 : 40,
     height: Defaults.isSmallScreen ? 30 : 35,
+  },
+  cannonContainer: {
+    flexDirection: "row",
+    width: "20%",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
 });
 

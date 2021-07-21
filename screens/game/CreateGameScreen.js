@@ -21,8 +21,7 @@ import CreateGamePlayerRow from "../../components/game/CreateGamePlayerRow";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
-
-const scoringTypes = ["Classic", "Rascal", "Rascal Enhanced"];
+import Constants from "../../constants/constants";
 
 const CreateGameScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +32,7 @@ const CreateGameScreen = (props) => {
   const [isGameStartable, setIsGameStartable] = useState(true);
   const [numRounds, setNumRounds] = useState("2");
   const [numPlayers, setNumPlayers] = useState("4");
-  const [scoringType, setScoringType] = useState(scoringTypes[0]);
+  const [scoringType, setScoringType] = useState(Constants.scoringTypes[0]);
 
   const incOrDecRoundsHandler = (direction) => {
     const minNumRounds = 1;
@@ -153,11 +152,11 @@ const CreateGameScreen = (props) => {
           <View style={styles.row}>
             <DefaultText style={styles.label}>Scoring System?</DefaultText>
             <SelectDropdown
-              data={scoringTypes}
+              data={Constants.scoringTypes}
               onSelect={(selectedItem, index) => {
                 setScoringType(selectedItem);
               }}
-              defaultValue={scoringTypes[0]}
+              defaultValue={Constants.scoringTypes[0]}
               buttonTextAfterSelection={(selectedItem, index) => {
                 // text represented after item is selected
                 // if data array is an array of objects then return selectedItem.property to render after item is selected

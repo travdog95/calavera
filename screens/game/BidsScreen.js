@@ -22,6 +22,8 @@ const BidsScreen = (props) => {
   const currentGameId = useSelector((state) => state.game.currentGameId);
   const game = useSelector((state) => state.game.games[currentGameId]);
 
+  console.log(game);
+
   const round = props.route.params.round;
   const roundKey = `r${round}`;
   const players = game.players;
@@ -39,8 +41,18 @@ const BidsScreen = (props) => {
     return initialBids;
   };
 
+  const setInitialCannonTypes = () => {
+    const initialCannonTypes = [];
+    for (const [playerId, playerDetail] of Object.entries(roundPlayersDetail)) {
+      initialCannonTypes.push(playerDetail.cannonType.toString());
+    }
+
+    return initialCannonTypes;
+  };
+
   //Local state
   const [bids, setBids] = useState(setInitialBids);
+  const [cannonTypes, setCannonTypes] = useState(setInitialCannonTypes);
 
   const updateBidsState = (newBid, index) => {
     let tempBids = [];
@@ -99,6 +111,7 @@ const BidsScreen = (props) => {
           return (
             <BidRow
               key={player.id}
+              scoringType={game.scoringType}
               player={player}
               round={round}
               playerIndex={index}

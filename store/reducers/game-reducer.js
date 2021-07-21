@@ -36,7 +36,6 @@ const gameReducer = (state = initialState, action) => {
         games: { ...newGames, ...state.games },
       };
     case actions.SET_SCORING_ROUND:
-      console.log("scoring round", state.games[state.currentGameId].scoringRound);
       //Update game json object
       const setScoringRoundGame = {
         ...state.games[state.currentGameId],
@@ -228,6 +227,7 @@ const gameReducer = (state = initialState, action) => {
           gameType: jsonGame.gameType,
           isActive: jsonGame.isActive,
           winner: jsonGame.winner,
+          scoringType: jsonGame.scoringType,
         });
 
         loadedGamesObject[loadedGameObjectId] = newLoadedGame;
