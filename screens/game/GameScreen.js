@@ -27,6 +27,9 @@ const GameScreen = (props) => {
   const currentGameId = useSelector((state) => state.game.currentGameId);
   const game = useSelector((state) => state.game.games[currentGameId]);
 
+  console.log("scoringRound", game.scoringRound);
+  console.log("selectedRound", game.selectedRound);
+
   const navigation = useNavigation();
 
   //Calculate width of Round Player detail columns

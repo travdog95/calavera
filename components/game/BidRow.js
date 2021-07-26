@@ -13,6 +13,10 @@ import Colors from "../../constants/colors";
 const BidRow = (props) => {
   const scoringType = props.scoringType;
   const isRascalEnhancedScoring = scoringType === Constants.scoringTypes[2] ? true : false;
+  const grapeshotColor =
+    parseInt(props.cannonTypes[props.playerIndex]) === 0 ? Colors.theme.dark4 : Colors.theme.grey3;
+  const cannonBallColor =
+    parseInt(props.cannonTypes[props.playerIndex]) === 1 ? Colors.theme.dark4 : Colors.theme.grey3;
 
   const numberInputHandler = (inputText) => {
     props.setBids(inputText.replace(/[^0-9]/g, ""), props.playerIndex);
@@ -32,6 +36,10 @@ const BidRow = (props) => {
     }
 
     props.setBids(newBid.toString(), props.playerIndex);
+  };
+
+  const cannonTypeHandler = (cannonType) => {
+    props.setCannonTypes(cannonType, props.playerIndex);
   };
 
   const resetInputHandler = () => {
@@ -59,11 +67,11 @@ const BidRow = (props) => {
       </View>
       {isRascalEnhancedScoring ? (
         <View style={styles.cannonContainer}>
-          <CustomActionButton style={{ padding: 5 }} onPress={() => {}}>
-            <FontAwesome5 name="hand-paper" size={24} color={Colors.theme.dark4} />
+          <CustomActionButton style={{ padding: 5 }} onPress={cannonTypeHandler.bind(this, 0)}>
+            <FontAwesome5 name="hand-paper" size={24} color={grapeshotColor} />
           </CustomActionButton>
-          <CustomActionButton style={{ padding: 5 }} onPress={() => {}}>
-            <FontAwesome5 name="hand-rock" size={24} color={Colors.theme.grey3} />
+          <CustomActionButton style={{ padding: 5 }} onPress={cannonTypeHandler.bind(this, 1)}>
+            <FontAwesome5 name="hand-rock" size={24} color={cannonBallColor} />
           </CustomActionButton>
         </View>
       ) : null}

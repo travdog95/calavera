@@ -8,7 +8,7 @@ import DefaultText from "../../components/UI/DefaultText";
 
 import Player from "../../models/player";
 import Game from "../../models/game";
-import RoundPlayerDetail from "../../models/roundPlayerDetail";
+// import RoundPlayerDetail from "../../models/roundPlayerDetail";
 import PlayerDetail from "../../models/playerDetail";
 import RoundBonusDetail from "../../models/roundBonusDetail";
 import PlayerBonusDetail from "../../models/playerBonusDetail";
@@ -91,20 +91,20 @@ const ConfirmNewGameScreen = (props) => {
     return players;
   };
 
-  const initGameData = (players, numRounds) => {
-    //Init game detail data
-    const gameData = [];
-    let r = 1;
-    for (r; r <= numRounds; r++) {
-      const roundData = [];
-      players.forEach((player) => {
-        roundData.push(new RoundPlayerDetail(player.id, r));
-      });
-      gameData.push(roundData);
-    }
+  // const initGameData = (players, numRounds) => {
+  //   //Init game detail data
+  //   const gameData = [];
+  //   let r = 1;
+  //   for (r; r <= numRounds; r++) {
+  //     const roundData = [];
+  //     players.forEach((player) => {
+  //       roundData.push(new RoundPlayerDetail(player.id, r));
+  //     });
+  //     gameData.push(roundData);
+  //   }
 
-    return gameData;
-  };
+  //   return gameData;
+  // };
 
   const initPlayerData = (players) => {
     const playerData = {};

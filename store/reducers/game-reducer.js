@@ -152,7 +152,8 @@ const gameReducer = (state = initialState, action) => {
         let prevRoundKey = "";
 
         //Only score rounds that have been played
-        if (roundDetail[firstPlayer.id].baseScore !== 0) {
+        if (round < state.games[state.currentGameId].scoringRound) {
+          // if (roundDetail[firstPlayer.id].baseScore !== 0) {
           //Iterate over each player
           for (const [playerId, playerDetail] of Object.entries(roundDetail)) {
             const newPlayerDetail = {};
@@ -186,7 +187,6 @@ const gameReducer = (state = initialState, action) => {
         ...state.games[state.currentGameId],
         roundData: totalScoresRoundData,
       };
-      //return { ...state, currentGame: { ...state.currentGame, roundData: totalScoresRoundData } };
       return { ...state, games: { ...state.games, [state.currentGameId]: updatedScoresGame } };
 
     case actions.COMPLETE_CURRENT_GAME:

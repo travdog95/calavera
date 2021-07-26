@@ -21,9 +21,9 @@ import { updateGame } from "../../helpers/db";
 
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
+import Constants from "../../constants/constants";
 
 const ScoresScreen = (props) => {
-  // const game = useSelector((state) => state.game.currentGame);
   const currentGameId = useSelector((state) => state.game.currentGameId);
   const game = useSelector((state) => state.game.games[currentGameId]);
 
@@ -31,6 +31,7 @@ const ScoresScreen = (props) => {
 
   const players = game.players;
   const round = props.route.params.round;
+  const numCards = round;
   const roundKey = `r${round}`;
   const roundDetail = game.roundData[roundKey];
   // const roundBonusDetail = game.roundBonusesDetail[`r${round}`];
@@ -43,13 +44,51 @@ const ScoresScreen = (props) => {
     const score = parseInt(roundPlayerDetail.baseScore) + parseInt(roundPlayerDetail.bonusScore);
     const multiplier = score < 0 ? -1 : 1;
 
-    if (parseInt(roundPlayerDetail.bid) === 0) {
-      newBaseScore = round * 10 * multiplier;
+    //Classic scoring
+    if (game.scoringType === Constants.scoringTypes[0]) {
+      if (parseInt(roundPlayerDetail.bid) === 0) {
+        newBaseScore = numCards * 10 * multiplier;
+      } else {
+        newBaseScore = multiplier === -1 ? -10 : parseInt(roundPlayerDetail.bid) * 20;
+      }
     } else {
-      newBaseScore = multiplier === -1 ? -10 : parseInt(roundPlayerDetail.bid) * 20;
+      //Rascal scoring
+      newBaseScore = calcRascalBaseScore(roundPlayerDetail.cannonType, roundPlayerDetail.accuracy);
     }
 
     return newBaseScore.toString();
+  };
+
+  const calcRascalBaseScore = (cannonType, accuracy) => {
+    const rascalEnhancedMultiplier = 1.5;
+    let newBaseScore = 0;
+
+    //Rascal scoring
+    if (game.scoringType === Constants.scoringTypes[1]) {
+      newBaseScore = 0;
+      if (accuracy == Constants.accuracy.directHit) newBaseScore = numCards * 10;
+
+      if (accuracy == Constants.accuracy.glancingBlow) newBaseScore = (numCards * 10) / 2;
+    }
+
+    //Rascal Enhanced Scoring
+    if (game.scoringType === Constants.scoringTypes[2]) {
+      newBaseScore = 0;
+
+      //Cannonball
+      if (cannonType == Constants.cannonType.cannonball) {
+        if (accuracy == Constants.accuracy.directHit)
+          newBaseScore = numCards * 10 * rascalEnhancedMultiplier;
+      }
+
+      //Grapeshot
+      if (cannonType == Constants.cannonType.grapeshot) {
+        if (accuracy == Constants.accuracy.directHit) newBaseScore = numCards * 10;
+        if (accuracy == Constants.accuracy.glancingBlow) newBaseScore = (numCards * 10) / 2;
+      }
+    }
+
+    return newBaseScore;
   };
 
   const setInitialBaseScores = () => {
@@ -109,9 +148,19 @@ const ScoresScreen = (props) => {
     setScores(initialScores);
   };
 
+  const setInitialAccuracies = () => {
+    const initialAccuracies = [];
+    for (const [playerId, playerDetail] of Object.entries(roundDetail)) {
+      initialAccuracies.push(playerDetail.accuracy);
+    }
+
+    return initialAccuracies;
+  };
+
   const [baseScores, setBaseScores] = useState([]);
   const [bonusScores, setBonusScores] = useState([]);
   const [scores, setScores] = useState([]);
+  const [accuracies, setAccuracies] = useState(setInitialAccuracies);
   const [baseScoresInitialized, setBaseScoresInitialized] = useState(false);
   const [bonusScoresInitialized, setBonusScoresInitialized] = useState(false);
 
@@ -149,7 +198,7 @@ const ScoresScreen = (props) => {
     setBonusScores(newBonusScores);
   };
 
-  const calcScores = () => {
+  const calcTotalScores = () => {
     const newScores = [];
 
     baseScores.forEach((baseScore, index) => {
@@ -162,17 +211,20 @@ const ScoresScreen = (props) => {
 
   const validateScores = () => {
     let isValid = true;
-    players.map((player, index) => {
-      const baseScore = parseInt(baseScores[index]);
-      const bonusScore = parseInt(bonusScores[index]);
-      const roundScore = baseScore + bonusScore;
-      if (roundScore === 0 || baseScore === 0) {
-        Alert.alert("Arrrrg!", "Scores must not be equal to 0!", [
-          { text: "OK", style: "destructive", cancelable: true },
-        ]);
-        isValid = false;
-      }
-    });
+
+    if (game.scoringType == Constants.scoringTypes[0]) {
+      players.map((player, index) => {
+        const baseScore = parseInt(baseScores[index]);
+        const bonusScore = parseInt(bonusScores[index]);
+        const roundScore = baseScore + bonusScore;
+        if (roundScore === 0 || baseScore === 0) {
+          Alert.alert("Arrrrg!", "Scores must not be equal to 0!", [
+            { text: "OK", style: "destructive", cancelable: true },
+          ]);
+          isValid = false;
+        }
+      });
+    }
 
     if (isValid) updateScoresHandler();
   };
@@ -182,6 +234,7 @@ const ScoresScreen = (props) => {
       const playerDetail = {
         bonusScore: parseInt(bonusScores[index]),
         baseScore: parseInt(baseScores[index]),
+        accuracy: parseInt(accuracies[index]),
       };
 
       dispatch(updatePlayerDetail(round, player.id, playerDetail));
@@ -201,6 +254,23 @@ const ScoresScreen = (props) => {
     dispatch(updateTotalScores(round));
 
     props.navigation.navigate("Game");
+  };
+
+  const updateAccuraciesState = (newAccuracy, playerIndex) => {
+    let tempAccuracies = [];
+    for (let i = 0; i < accuracies.length; i++) {
+      if (playerIndex === i) {
+        tempAccuracies.push(newAccuracy);
+      } else {
+        tempAccuracies.push(accuracies[i]);
+      }
+    }
+
+    const playerId = game.players[playerIndex].id;
+    const newBaseScore = calcRascalBaseScore(roundDetail[playerId].cannonType, newAccuracy);
+
+    updateBaseScoreState(newBaseScore.toString(), bonusScores[playerIndex], playerIndex);
+    setAccuracies(tempAccuracies);
   };
 
   useEffect(() => {
@@ -233,19 +303,27 @@ const ScoresScreen = (props) => {
 
   //Calculate base and bonus scores when game redux state changes
   useEffect(() => {
+    console.log("useEffect game");
     setInitialBaseScores();
     setInitialBonusScores();
   }, [game]);
 
   //Calculate inital scores
   useEffect(() => {
+    // console.log("useEffect baseScoresInitialized, bonusScoresInitialized");
+
     setInitialScores();
   }, [baseScoresInitialized, bonusScoresInitialized]);
 
   //Calculate scores when baseScores or bonusScores state change
   useEffect(() => {
-    calcScores();
+    // console.log("useEffect baseScores, bonusScores");
+    calcTotalScores();
   }, [baseScores, bonusScores]);
+
+  useEffect(() => {
+    // console.log("useEffect accuracies");
+  }, [accuracies]);
 
   // useEffect(() => {
   //   props.navigation.setOptions({
@@ -281,9 +359,10 @@ const ScoresScreen = (props) => {
               bonusScores={bonusScores}
               setBonusScores={updateBonusScoreState}
               scores={scores}
-              allianceIndicator={"*"}
               incOrDecValue={incOrDecValue}
-              calcBaseScore={calcBaseScore}
+              scoringType={game.scoringType}
+              accuracies={accuracies}
+              updateAccuraciesState={updateAccuraciesState}
             />
           );
         })}

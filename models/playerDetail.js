@@ -5,7 +5,8 @@ class PlayerDetail {
     baseScore = 0,
     bonusScore = 0,
     totalScore = 0,
-    cannonType = 0 //Rascal Enhanced scoring (0 - Grapeshot, 1 - Cannonball)
+    cannonType = 0, //0 - grapeshot, 1 - cannonball
+    accuracy = 0 //0 - direct hit, 1 - glancing blow, 2 - complete miss
   ) {
     this.bid = bid;
     this.bidAchieved = bidAchieved;
@@ -13,6 +14,7 @@ class PlayerDetail {
     this.bonusScore = bonusScore;
     this.totalScore = totalScore;
     this.cannonType = cannonType;
+    this.accuracy = accuracy;
   }
 }
 

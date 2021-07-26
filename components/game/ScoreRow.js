@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 import CustomActionButton from "../../components/CustomActionButton";
 import DefaultText from "../../components/UI/DefaultText";
@@ -10,15 +11,20 @@ import IncDecButton from "../../components/UI/IncDecButton";
 
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
+import Constants from "../../constants/constants";
 
 const ScoreRow = (props) => {
   const roundPlayerDetail = props.roundPlayerDetail;
   const navigation = useNavigation();
   const settings = useSelector((state) => state.settings);
 
-  let allianceCounter = 0;
-  allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
-  allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
+  const scoringType = props.scoringType;
+  const cannonTypeIconName =
+    parseInt(roundPlayerDetail.cannonType) === 0 ? "hand-paper" : "hand-rock";
+
+  // let allianceCounter = 0;
+  // allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
+  // allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
 
   const initializeAchievedBid = () => {
     const score = parseInt(roundPlayerDetail.baseScore) + parseInt(roundPlayerDetail.bonusScore);
@@ -39,14 +45,6 @@ const ScoreRow = (props) => {
       } else {
         newBaseScore = parseInt(roundPlayerDetail.bid) * 20;
       }
-
-      // if (allianceCounter > 0) {
-      //   newBonusScore = allianceCounter * 20;
-      // }
-
-      // if (roundPlayerDetail.pointsWagered > 0) {
-      //   newBonusScore = roundPlayerDetail.pointsWagered;
-      // }
     } else {
       newBaseScore = parseInt(roundPlayerDetail.bid) === 0 ? 10 * props.round * -1 : -10;
 
@@ -79,17 +77,15 @@ const ScoreRow = (props) => {
     );
   }
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.topRow}>
-        <View style={styles.playerNameContainer}>
-          <DefaultText style={styles.playerName}>{props.player.name}</DefaultText>
-        </View>
-        <View style={styles.roundScoreContainer}>
-          <DefaultText style={styles.roundScore}>{props.scores[props.playerIndex]}</DefaultText>
-        </View>
-      </View>
-      <View style={styles.bottomRow}>
+  let bidContent;
+  let scoreContent;
+  let labelRowContent;
+  let bottomRowContent;
+
+  //Classic Scoring
+  switch (scoringType) {
+    case Constants.scoringTypes[0]: //Classic
+      bidContent = (
         <View style={styles.bidContainer}>
           <CustomActionButton
             style={{
@@ -103,6 +99,9 @@ const ScoreRow = (props) => {
             <DefaultText style={styles.buttonText}>{props.bid}</DefaultText>
           </CustomActionButton>
         </View>
+      );
+
+      scoreContent = (
         <View style={styles.scoreContainer}>
           <IncDecButton
             incOrDec={"dec"}
@@ -120,9 +119,106 @@ const ScoreRow = (props) => {
             onPress={props.incOrDecValue.bind(this, "higher", props.playerIndex, 10, "baseScore")}
           />
         </View>
-        {/* <View style={styles.bonusButtonContainer}>{bonusContent}</View> */}
+      );
+      break;
+    case Constants.scoringTypes[1]: //Rascal
+      break;
+    case Constants.scoringTypes[2]: //Rascal Enhanced
+      labelRowContent = (
+        <View style={styles.row}>
+          <DefaultText>Bid</DefaultText>
+          <DefaultText>Score</DefaultText>
+          <DefaultText>Bonus</DefaultText>
+        </View>
+      );
+      bidContent = (
+        <View style={styles.bidContainer}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+          >
+            <FontAwesome5 name={cannonTypeIconName} size={24} color={Colors.theme.dark4} />
+            <DefaultText>{props.bid}</DefaultText>
+          </View>
+        </View>
+      );
+      scoreContent = (
+        <View>
+          <CustomActionButton
+            style={{
+              ...styles.bidButton,
+              ...{
+                backgroundColor:
+                  props.accuracies[props.playerIndex] == Constants.accuracy.directHit
+                    ? Colors.theme.light2
+                    : Colors.theme.grey4,
+              },
+            }}
+            onPress={props.updateAccuraciesState.bind(
+              this,
+              Constants.accuracy.directHit,
+              props.playerIndex
+            )}
+          >
+            <DefaultText style={styles.buttonText}>Hit</DefaultText>
+          </CustomActionButton>
+          {roundPlayerDetail.cannonType == Constants.cannonType.grapeshot ? (
+            <CustomActionButton
+              style={{
+                ...styles.bidButton,
+                ...{
+                  backgroundColor:
+                    props.accuracies[props.playerIndex] == Constants.accuracy.glancingBlow
+                      ? Colors.theme.light2
+                      : Colors.theme.grey4,
+                },
+              }}
+              onPress={props.updateAccuraciesState.bind(
+                this,
+                Constants.accuracy.glancingBlow,
+                props.playerIndex
+              )}
+            >
+              <DefaultText style={styles.buttonText}>Glancing Blow</DefaultText>
+            </CustomActionButton>
+          ) : null}
+          <CustomActionButton
+            style={{
+              ...styles.bidButton,
+              ...{
+                backgroundColor:
+                  props.accuracies[props.playerIndex] == Constants.accuracy.completeMiss
+                    ? Colors.theme.light2
+                    : Colors.theme.grey4,
+              },
+            }}
+            onPress={props.updateAccuraciesState.bind(
+              this,
+              Constants.accuracy.completeMiss,
+              props.playerIndex
+            )}
+          >
+            <DefaultText style={styles.buttonText}>Miss</DefaultText>
+          </CustomActionButton>
+        </View>
+      );
+      break;
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.topRow}>
+        <View style={styles.playerNameContainer}>
+          <DefaultText style={styles.playerName}>{props.player.name}</DefaultText>
+        </View>
+        <View style={styles.roundScoreContainer}>
+          <DefaultText style={styles.roundScore}>{props.scores[props.playerIndex]}</DefaultText>
+        </View>
+      </View>
+      {labelRowContent}
+      <View style={styles.row}>
+        {bidContent}
+        {scoreContent}
         <View style={styles.scoreContainer}>
-          {bonusContent}
           <IncDecButton
             incOrDec={"dec"}
             style={styles.bonusScoreButton}
@@ -189,7 +285,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
-  bottomRow: {
+  row: {
     width: "100%",
     flexDirection: "row",
     alignItems: "center",

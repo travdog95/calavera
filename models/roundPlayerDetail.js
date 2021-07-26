@@ -1,3 +1,4 @@
+// Deprecated
 class RoundPlayerDetail {
   constructor(
     playerId,

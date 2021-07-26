@@ -67,6 +67,19 @@ const BidsScreen = (props) => {
     setBids(tempBids);
   };
 
+  const updateCannonTypesState = (newCannonType, index) => {
+    let tempCannonTypes = [];
+    for (let i = 0; i < cannonTypes.length; i++) {
+      if (index === i) {
+        tempCannonTypes.push(newCannonType);
+      } else {
+        tempCannonTypes.push(cannonTypes[i]);
+      }
+    }
+
+    setCannonTypes(tempCannonTypes);
+  };
+
   const updateBidsHandler = () => {
     players.map((player, index) => {
       //Check to see if baseScore is greater than zero
@@ -75,7 +88,13 @@ const BidsScreen = (props) => {
           ? TKO.calcBaseScore(parseInt(bids[index]), parseInt(round))
           : 0;
 
-      dispatch(updatePlayerDetail(round, player.id, { bid: bids[index], baseScore }));
+      dispatch(
+        updatePlayerDetail(round, player.id, {
+          bid: bids[index],
+          baseScore,
+          cannonType: cannonTypes[index],
+        })
+      );
     });
 
     navigation.navigate("Scores", {
@@ -117,6 +136,8 @@ const BidsScreen = (props) => {
               playerIndex={index}
               bids={bids}
               setBids={updateBidsState}
+              cannonTypes={cannonTypes}
+              setCannonTypes={updateCannonTypesState}
             />
           );
         })}
