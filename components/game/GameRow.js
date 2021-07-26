@@ -9,6 +9,7 @@ import { setCurrentGame } from "../../store/actions/game-actions";
 import DefaultText from "../../components/UI/DefaultText";
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
+import TKO from "../../helpers/helperFunctions";
 
 const GameRow = (props) => {
   const dispatch = useDispatch();
@@ -16,6 +17,8 @@ const GameRow = (props) => {
   const game = props.game;
   const status = game.isActive ? "In progress" : "Completed";
   const rowBackgroundColor = props.index % 2 === 0 ? Colors.theme.grey3 : "white";
+  const gameDate = TKO.formatDate(props.game.date, "shortMonth");
+  const gameTime = TKO.formatTime(props.game.date);
 
   let secondRow = null;
   if (game.isActive === false) {
@@ -54,7 +57,12 @@ const GameRow = (props) => {
       <View style={styles.gameContainer}>
         <View style={styles.row}>
           <Ionicons name={"skull"} size={16} color={"black"} />
-          <DefaultText style={styles.date}>{props.game.date}</DefaultText>
+          <View style={styles.description}>
+            <DefaultText>{props.game.scoringType}</DefaultText>
+            <DefaultText style={styles.metaData}>
+              {gameDate} @ {gameTime}
+            </DefaultText>
+          </View>
           <DefaultText style={styles.players}>{props.game.players.length}</DefaultText>
           <DefaultText style={styles.status}>{status}</DefaultText>
         </View>
@@ -76,19 +84,19 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   secondRow: { alignItems: "center", justifyContent: "center" },
-  date: {
-    fontSize: Defaults.fontSize,
-    width: "40%",
+  description: { flex: 1, flexDirection: "column", width: "50%", paddingHorizontal: 5 },
+  metaData: {
+    fontSize: Defaults.smallFontSize,
   },
   players: {
     fontSize: Defaults.fontSize,
-    width: "20%",
+    width: "25%",
     textAlign: "center",
   },
   status: {
     fontSize: Defaults.fontSize,
     fontStyle: "italic",
-    width: "30%",
+    width: "25%",
     textAlign: "right",
   },
 });

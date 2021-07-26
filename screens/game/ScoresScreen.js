@@ -303,7 +303,6 @@ const ScoresScreen = (props) => {
 
   //Calculate base and bonus scores when game redux state changes
   useEffect(() => {
-    console.log("useEffect game");
     setInitialBaseScores();
     setInitialBonusScores();
   }, [game]);
@@ -320,10 +319,6 @@ const ScoresScreen = (props) => {
     // console.log("useEffect baseScores, bonusScores");
     calcTotalScores();
   }, [baseScores, bonusScores]);
-
-  useEffect(() => {
-    // console.log("useEffect accuracies");
-  }, [accuracies]);
 
   // useEffect(() => {
   //   props.navigation.setOptions({
@@ -404,33 +399,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: Colors.theme.light1,
   },
-  playerName: {
-    width: `${Defaults.scoreScreen.widths.playerName}%`,
-    paddingLeft: 5,
-    fontWeight: "bold",
-  },
-  bid: {
-    width: `${Defaults.scoreScreen.widths.bidButton + Defaults.scoreScreen.widths.baseScore}%`,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  bonus: {
-    width: `${
-      Defaults.scoreScreen.widths.bonusIndicators + Defaults.scoreScreen.widths.bonusScore
-    }%`,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  score: {
-    width: `${Defaults.scoreScreen.widths.roundScore}%`,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
   primaryButton: {
     backgroundColor: Defaults.button.primary,
     margin: 5,
   },
-
   primaryButtonText: {
     color: "white",
     fontSize: Defaults.fontSize,

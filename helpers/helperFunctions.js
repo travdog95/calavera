@@ -1,7 +1,7 @@
 import Defaults from "../constants/defaults";
 
 export default {
-  getCurrentDate: () => {
+  formatDate: (date = null, format = null) => {
     const months = [
       "January",
       "February",
@@ -31,18 +31,25 @@ export default {
       "Dec",
     ];
 
-    const date = new Date();
-    const month = shortMonths[date.getMonth()];
-    const day = date.getDate();
-    const year = date.getFullYear();
+    const tempDate = date === null ? new Date() : new Date(date);
 
-    return `${month} ${day}, ${year}`;
+    const month =
+      format === "shortMonth" ? shortMonths[tempDate.getMonth()] : months[tempDate.getMonth()];
+    const day = tempDate.getDate();
+    const year = tempDate.getFullYear();
+
+    return `${month} ${day}`;
   },
 
-  formatDate: () => {
-    let formattedDate = "";
+  formatTime: (date = null, format = null) => {
+    const tempDate = date === null ? new Date() : new Date(date);
 
-    return formattedDate;
+    const hours = tempDate.getHours() > 12 ? tempDate.getHours() - 12 : tempDate.getHours(); //Current Hours
+    const min = String(tempDate.getMinutes()).padStart(2, "0"); //Current Minutes
+    const sec = tempDate.getSeconds(); //Current Seconds
+    const amPm = tempDate.getHours() >= 12 ? "PM" : "AM";
+
+    return `${hours}:${min} ${amPm}`;
   },
 
   calcPlayerRoundBonus(roundBonusDetail, playerBonusDetail) {

@@ -22,8 +22,6 @@ const BidsScreen = (props) => {
   const currentGameId = useSelector((state) => state.game.currentGameId);
   const game = useSelector((state) => state.game.games[currentGameId]);
 
-  console.log(game);
-
   const round = props.route.params.round;
   const roundKey = `r${round}`;
   const players = game.players;

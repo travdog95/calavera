@@ -26,12 +26,16 @@ export default {
   },
   scoreScreen: {
     widths: {
-      playerName: 30,
-      bidButton: 9,
-      baseScore: 12,
-      bonusIndicators: 7,
-      bonusScore: 31,
-      roundScore: 11,
+      rascal: {
+        bidContainer: "25%",
+        scoreContainer: "40%",
+        bonusContainer: "35%",
+      },
+      classic: {
+        bidContainer: "15%",
+        scoreContainer: "50%",
+        bonusContainer: "35%",
+      },
     },
   },
   bonusScreen: {

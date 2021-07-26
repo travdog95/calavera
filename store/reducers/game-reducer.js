@@ -152,7 +152,10 @@ const gameReducer = (state = initialState, action) => {
         let prevRoundKey = "";
 
         //Only score rounds that have been played
-        if (round < state.games[state.currentGameId].scoringRound) {
+        if (
+          round < state.games[state.currentGameId].scoringRound ||
+          round === state.games[state.currentGameId].numRounds
+        ) {
           // if (roundDetail[firstPlayer.id].baseScore !== 0) {
           //Iterate over each player
           for (const [playerId, playerDetail] of Object.entries(roundDetail)) {

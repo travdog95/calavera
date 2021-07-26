@@ -22,10 +22,6 @@ const ScoreRow = (props) => {
   const cannonTypeIconName =
     parseInt(roundPlayerDetail.cannonType) === 0 ? "hand-paper" : "hand-rock";
 
-  // let allianceCounter = 0;
-  // allianceCounter = roundPlayerDetail.isAligned1 !== "" ? ++allianceCounter : allianceCounter;
-  // allianceCounter = roundPlayerDetail.isAligned2 !== "" ? ++allianceCounter : allianceCounter;
-
   const initializeAchievedBid = () => {
     const score = parseInt(roundPlayerDetail.baseScore) + parseInt(roundPlayerDetail.bonusScore);
 
@@ -77,32 +73,47 @@ const ScoreRow = (props) => {
     );
   }
 
+  const bidContainerWidth =
+    scoringType === Constants.scoringTypes[0]
+      ? Defaults.scoreScreen.widths.classic.bidContainer
+      : Defaults.scoreScreen.widths.rascal.bidContainer;
+  const scoreContainerWidth =
+    scoringType === Constants.scoringTypes[0]
+      ? Defaults.scoreScreen.widths.classic.scoreContainer
+      : Defaults.scoreScreen.widths.rascal.scoreContainer;
+  const bonusContainerWidth =
+    scoringType === Constants.scoringTypes[0]
+      ? Defaults.scoreScreen.widths.classic.bonusContainer
+      : Defaults.scoreScreen.widths.rascal.bonusContainer;
+
   let bidContent;
   let scoreContent;
-  let labelRowContent;
-  let bottomRowContent;
 
   //Classic Scoring
   switch (scoringType) {
     case Constants.scoringTypes[0]: //Classic
       bidContent = (
-        <View style={styles.bidContainer}>
-          <CustomActionButton
-            style={{
-              ...styles.bidButton,
-              ...{
-                backgroundColor: achievedBid ? Colors.theme.light2 : Colors.theme.grey7,
-              },
-            }}
-            onPress={achievedBidHandler.bind(this, !achievedBid)}
-          >
-            <DefaultText style={styles.buttonText}>{props.bid}</DefaultText>
-          </CustomActionButton>
+        <View style={{ ...styles.bidContainer, width: bidContainerWidth }}>
+          <View style={styles.bidButtonContainer}>
+            <CustomActionButton
+              style={{
+                ...styles.bidButton,
+                ...{
+                  backgroundColor: achievedBid ? Colors.theme.light2 : Colors.theme.grey7,
+                },
+              }}
+              onPress={achievedBidHandler.bind(this, !achievedBid)}
+            >
+              <DefaultText style={styles.buttonText}>{props.bid}</DefaultText>
+            </CustomActionButton>
+          </View>
         </View>
       );
 
       scoreContent = (
-        <View style={styles.scoreContainer}>
+        <View
+          style={{ ...styles.scoreContainer, justifyContent: "center", width: scoreContainerWidth }}
+        >
           <IncDecButton
             incOrDec={"dec"}
             style={styles.baseScoreButton}
@@ -122,27 +133,36 @@ const ScoreRow = (props) => {
       );
       break;
     case Constants.scoringTypes[1]: //Rascal
-      break;
     case Constants.scoringTypes[2]: //Rascal Enhanced
-      labelRowContent = (
-        <View style={styles.row}>
-          <DefaultText>Bid</DefaultText>
-          <DefaultText>Score</DefaultText>
-          <DefaultText>Bonus</DefaultText>
-        </View>
-      );
       bidContent = (
-        <View style={styles.bidContainer}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+        <View style={{ ...styles.bidContainer, width: bidContainerWidth }}>
+          {scoringType === Constants.scoringTypes[2] ? (
+            <FontAwesome5
+              name={cannonTypeIconName}
+              size={24}
+              color={Colors.theme.dark4}
+              style={{ textAlign: "center", width: "50%" }}
+            />
+          ) : null}
+          <DefaultText
+            style={{
+              fontSize: 24,
+              width: "50%",
+              textAlign: "center",
+            }}
           >
-            <FontAwesome5 name={cannonTypeIconName} size={24} color={Colors.theme.dark4} />
-            <DefaultText>{props.bid}</DefaultText>
-          </View>
+            {props.bid}
+          </DefaultText>
         </View>
       );
       scoreContent = (
-        <View>
+        <View
+          style={{
+            ...styles.scoreContainer,
+            justifyContent: "space-evenly",
+            width: scoreContainerWidth,
+          }}
+        >
           <CustomActionButton
             style={{
               ...styles.bidButton,
@@ -178,7 +198,7 @@ const ScoreRow = (props) => {
                 props.playerIndex
               )}
             >
-              <DefaultText style={styles.buttonText}>Glancing Blow</DefaultText>
+              <DefaultText style={styles.buttonText}>-1</DefaultText>
             </CustomActionButton>
           ) : null}
           <CustomActionButton
@@ -214,11 +234,19 @@ const ScoreRow = (props) => {
           <DefaultText style={styles.roundScore}>{props.scores[props.playerIndex]}</DefaultText>
         </View>
       </View>
-      {labelRowContent}
+      <View style={styles.row}>
+        <DefaultText style={{ ...styles.columnHeader, width: bidContainerWidth }}>Bid</DefaultText>
+        <DefaultText style={{ ...styles.columnHeader, width: scoreContainerWidth }}>
+          Score
+        </DefaultText>
+        <DefaultText style={{ ...styles.columnHeader, width: bonusContainerWidth }}>
+          Bonus
+        </DefaultText>
+      </View>
       <View style={styles.row}>
         {bidContent}
         {scoreContent}
-        <View style={styles.scoreContainer}>
+        <View style={{ ...styles.bonusContainer, width: bonusContainerWidth }}>
           <IncDecButton
             incOrDec={"dec"}
             style={styles.bonusScoreButton}
@@ -266,19 +294,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
-  bonusButtonContainer: {
-    alignItems: "center",
-  },
-  bonusButton: {
-    padding: 5,
-    height: Defaults.isSmallScreen ? 30 : 35,
-    backgroundColor: Colors.theme.main1,
-  },
-  bonusLabel: {
-    fontWeight: "bold",
-    fontSize: Defaults.fontSize,
-    paddingRight: 10,
-  },
+  // bonusButtonContainer: {
+  //   alignItems: "center",
+  // },
+  // bonusButton: {
+  //   padding: 5,
+  //   height: Defaults.isSmallScreen ? 30 : 35,
+  //   backgroundColor: Colors.theme.main1,
+  // },
+  // bonusLabel: {
+  //   fontWeight: "bold",
+  //   fontSize: Defaults.fontSize,
+  //   paddingRight: 10,
+  // },
   roundScore: {
     textAlign: "right",
     fontSize: Defaults.extraLargeFontSize,
@@ -290,18 +318,25 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 5,
-    paddingVertical: 3,
   },
-
   bidContainer: {
-    width: `${Defaults.scoreScreen.widths.bidButton}%`,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 4,
+  },
+  bidButtonContainer: {
+    width: 30,
   },
   bidButton: {
     padding: 5,
     height: Defaults.isSmallScreen ? 30 : 35,
   },
   scoreContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  bonusContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -322,6 +357,9 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontSize: Defaults.fontSize,
+    textAlign: "center",
+  },
+  columnHeader: {
     textAlign: "center",
   },
 });

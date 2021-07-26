@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,6 +19,7 @@ const MyGamesScreen = (props) => {
   const games = useSelector((state) => state.game.games);
 
   const dispatch = useDispatch();
+  let gameIndex = 0;
 
   useEffect(() => {
     dispatch(loadGames());
@@ -28,6 +29,13 @@ const MyGamesScreen = (props) => {
     dispatch(deleteGames());
   };
 
+  const confirmDeleteGameData = () => {
+    Alert.alert("Arrrrg!", "Are you sure?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Yes", style: "default", onPress: deleteGameData },
+    ]);
+    return;
+  };
   return (
     <View style={styles.screen}>
       {_.isEmpty(games) ? (
@@ -42,19 +50,23 @@ const MyGamesScreen = (props) => {
             <DefaultText style={styles.statusLabel}>Status</DefaultText>
           </View>
           {Object.entries(games).map(([gameId, game]) => {
-            return <GameRow key={gameId} game={game} />;
+            return <GameRow key={gameId} game={game} index={gameIndex++} />;
           })}
         </ScrollView>
       )}
 
       <Animatable.View
+        style={{ position: "absolute", left: 20, bottom: 20 }}
+        animation={"slideInRight"}
+      >
+        <CustomActionButton style={styles.primaryButton} onPress={confirmDeleteGameData}>
+          <Text style={styles.primaryButtonText}>Delete Game Data</Text>
+        </CustomActionButton>
+      </Animatable.View>
+      <Animatable.View
         style={{ position: "absolute", right: 20, bottom: 20 }}
         animation={"slideInRight"}
       >
-        <CustomActionButton style={styles.primaryButton} onPress={deleteGameData}>
-          <Text style={styles.primaryButtonText}>Delete Game Data</Text>
-        </CustomActionButton>
-
         <CustomActionButton
           style={styles.primaryButton}
           onPress={() => {
@@ -123,18 +135,18 @@ const styles = StyleSheet.create({
   },
   gameLabel: {
     fontSize: Defaults.fontSize,
-    width: "40%",
+    width: "50%",
     fontFamily: "open-sans-bold",
   },
   playersLabel: {
     fontSize: Defaults.fontSize,
-    width: "20%",
+    width: "25%",
     textAlign: "center",
     fontFamily: "open-sans-bold",
   },
   statusLabel: {
     fontSize: Defaults.fontSize,
-    width: "30%",
+    width: "25%",
     textAlign: "right",
     fontFamily: "open-sans-bold",
   },

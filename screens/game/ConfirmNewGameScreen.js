@@ -18,6 +18,7 @@ import { createGame } from "../../store/actions/game-actions";
 import TKO from "../../helpers/helperFunctions";
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
+import Constants from "../../constants/constants";
 
 const ConfirmNewGameScreen = (props) => {
   const numRounds = props.route.params.numRounds;
@@ -66,17 +67,7 @@ const ConfirmNewGameScreen = (props) => {
 
     //Load store with game data
     dispatch(
-      createGame(
-        players,
-        numRounds,
-        1,
-        1,
-        roundData,
-        TKO.getCurrentDate(),
-        true,
-        "SkullKing",
-        scoringType
-      )
+      createGame(players, numRounds, 1, 1, roundData, new Date(), true, "SkullKing", scoringType)
     ).then(() => props.navigation.navigate("Game"));
   };
 
@@ -113,6 +104,11 @@ const ConfirmNewGameScreen = (props) => {
       const key = player.id;
 
       playerData[key] = new PlayerDetail();
+
+      //Default to cannonType to cannonball for Rascal enhanced scoringType
+      if (scoringType === Constants.scoringTypes[2]) {
+        playerData[key].cannonType = 1;
+      }
     });
 
     return playerData;
