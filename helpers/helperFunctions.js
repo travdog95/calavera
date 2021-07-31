@@ -90,7 +90,7 @@ export default {
     let newBaseScore = 0;
 
     //Rascal scoring
-    if (scoringType === Constants.scoringTypes[1]) {
+    if (scoringType === Constants.scoringType.rascal) {
       newBaseScore = 0;
       if (accuracy == Constants.accuracy.directHit) newBaseScore = numCards * 10;
 
@@ -98,7 +98,7 @@ export default {
     }
 
     //Rascal Enhanced Scoring
-    if (scoringType === Constants.scoringTypes[2]) {
+    if (scoringType === Constants.scoringType.rascalEnhanced) {
       newBaseScore = 0;
 
       //Cannonball

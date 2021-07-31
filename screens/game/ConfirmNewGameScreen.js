@@ -117,7 +117,7 @@ const ConfirmNewGameScreen = (props) => {
       playerData[key] = new PlayerDetail();
 
       //Default to cannonType to cannonball for Rascal enhanced scoringType
-      if (scoringType === Constants.scoringTypes[2]) {
+      if (scoringType === Constants.scoringType.rascalEnhanced) {
         playerData[key].cannonType = 1;
       }
     });

@@ -74,15 +74,15 @@ const ScoreRow = (props) => {
   }
 
   const bidContainerWidth =
-    scoringType === Constants.scoringTypes[0]
+    scoringType === Constants.scoringType.classic
       ? Defaults.scoreScreen.widths.classic.bidContainer
       : Defaults.scoreScreen.widths.rascal.bidContainer;
   const scoreContainerWidth =
-    scoringType === Constants.scoringTypes[0]
+    scoringType === Constants.scoringType.classic
       ? Defaults.scoreScreen.widths.classic.scoreContainer
       : Defaults.scoreScreen.widths.rascal.scoreContainer;
   const bonusContainerWidth =
-    scoringType === Constants.scoringTypes[0]
+    scoringType === Constants.scoringType.classic
       ? Defaults.scoreScreen.widths.classic.bonusContainer
       : Defaults.scoreScreen.widths.rascal.bonusContainer;
 
@@ -91,7 +91,7 @@ const ScoreRow = (props) => {
 
   //Classic Scoring
   switch (scoringType) {
-    case Constants.scoringTypes[0]: //Classic
+    case Constants.scoringType.classic: //Classic
       bidContent = (
         <View style={{ ...styles.bidContainer, width: bidContainerWidth }}>
           <View style={styles.bidButtonContainer}>
@@ -132,11 +132,11 @@ const ScoreRow = (props) => {
         </View>
       );
       break;
-    case Constants.scoringTypes[1]: //Rascal
-    case Constants.scoringTypes[2]: //Rascal Enhanced
+    case Constants.scoringType.rascal: //Rascal
+    case Constants.scoringType.rascalEnhanced: //Rascal Enhanced
       bidContent = (
         <View style={{ ...styles.bidContainer, width: bidContainerWidth }}>
-          {scoringType === Constants.scoringTypes[2] ? (
+          {scoringType === Constants.scoringType.rascalEnhanced ? (
             <FontAwesome5
               name={cannonTypeIconName}
               size={24}

@@ -12,7 +12,8 @@ import Colors from "../../constants/colors";
 
 const BidRow = (props) => {
   const scoringType = props.scoringType;
-  const isRascalEnhancedScoring = scoringType === Constants.scoringTypes[2] ? true : false;
+  const isRascalEnhancedScoring =
+    scoringType === Constants.scoringType.rascalEnhanced ? true : false;
   const grapeshotColor =
     parseInt(props.cannonTypes[props.playerIndex]) === 0 ? Colors.theme.dark4 : Colors.theme.grey3;
   const cannonBallColor =

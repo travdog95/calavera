@@ -46,7 +46,7 @@ const ScoresScreen = (props) => {
     const multiplier = score < 0 ? -1 : 1;
 
     //Classic scoring
-    if (game.scoringType === Constants.scoringTypes[0]) {
+    if (game.scoringType === Constants.scoringType.classic) {
       if (parseInt(roundPlayerDetail.bid) === 0) {
         newBaseScore = numCards * 10 * multiplier;
       } else {
@@ -73,9 +73,9 @@ const ScoresScreen = (props) => {
       //If classic scoring type and score is zero
       //or scoring type is rascal or rascal enhanced
       if (
-        (game.scoringType === Constants.scoringTypes[0] && score === 0) ||
-        game.scoringType === Constants.scoringTypes[1] ||
-        game.scoringType === Constants.scoringTypes[2]
+        (game.scoringType === Constants.scoringType.classic && score === 0) ||
+        game.scoringType === Constants.scoringType.rascal ||
+        game.scoringType === Constants.scoringType.rascalEnhanced
       ) {
         initialBaseScores.push(calcBaseScore(playerDetail));
       } else {
@@ -191,7 +191,7 @@ const ScoresScreen = (props) => {
   const validateScores = () => {
     let isValid = true;
 
-    if (game.scoringType == Constants.scoringTypes[0]) {
+    if (game.scoringType == Constants.scoringType.classic) {
       players.map((player, index) => {
         const baseScore = parseInt(baseScores[index]);
         const bonusScore = parseInt(bonusScores[index]);
@@ -290,7 +290,7 @@ const ScoresScreen = (props) => {
 
   //Calculate base and bonus scores when game redux state changes
   useEffect(() => {
-    if (game.scoringType !== Constants.scoringTypes[0]) {
+    if (game.scoringType !== Constants.scoringType.classic) {
       setAccuracies(getAccuracies());
     }
     setInitialBaseScores();

@@ -9,6 +9,7 @@ import { setCurrentGame } from "../../store/actions/game-actions";
 import DefaultText from "../../components/UI/DefaultText";
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
+import Constants from "../../constants/constants";
 import TKO from "../../helpers/helperFunctions";
 
 const GameRow = (props) => {
@@ -58,7 +59,7 @@ const GameRow = (props) => {
         <View style={styles.row}>
           <Ionicons name={"skull"} size={16} color={"black"} />
           <View style={styles.description}>
-            <DefaultText>{props.game.scoringType}</DefaultText>
+            <DefaultText>{Constants.scoringTypes[props.game.scoringType]}</DefaultText>
             <DefaultText style={styles.metaData}>
               {gameDate} @ {gameTime}
             </DefaultText>

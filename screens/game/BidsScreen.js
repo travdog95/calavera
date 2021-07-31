@@ -85,7 +85,7 @@ const BidsScreen = (props) => {
       let accuracy = 0;
 
       //Classic scoring
-      if (game.scoringType === Constants.scoringTypes[0]) {
+      if (game.scoringType === Constants.scoringType.classic) {
         //Check to see if baseScore is greater than zero
         baseScore =
           game.roundData[roundKey][player.id].baseScore > 0

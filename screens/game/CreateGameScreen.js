@@ -32,7 +32,7 @@ const CreateGameScreen = (props) => {
   const [isGameStartable, setIsGameStartable] = useState(true);
   const [numRounds, setNumRounds] = useState("10");
   const [numPlayers, setNumPlayers] = useState("4");
-  const [scoringType, setScoringType] = useState(Constants.scoringTypes[2]);
+  const [scoringType, setScoringType] = useState(Constants.scoringType.rascalEnhanced);
 
   const incOrDecRoundsHandler = (direction) => {
     const minNumRounds = 1;
