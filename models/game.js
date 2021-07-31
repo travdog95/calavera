@@ -11,6 +11,7 @@ class Game {
     this.isActive = game.isActive;
     this.winner = game.winner;
     this.scoringType = game.scoringType;
+    this.isLastRoundScored = game.isLastRoundScored;
     // this.roundBonusesDetail = game.roundBonusesDetail;
   }
 }

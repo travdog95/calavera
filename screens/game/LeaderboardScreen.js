@@ -18,15 +18,16 @@ const LeaderboardScreen = (props) => {
   let leaderBoardRound = game.scoringRound === 1 ? 1 : game.scoringRound - 1;
 
   //Has final round been scored?
-  let hasFinalRoundBeenScored = true;
+  const hasFinalRoundBeenScored = game.isLastRoundScored;
+  // let hasFinalRoundBeenScored = true;
   if (parseInt(game.scoringRound) === parseInt(game.numRounds)) {
-    //check to see if final round has scores
-    game.players.forEach((player) => {
-      const playerDetail = game.roundData[`r${game.numRounds}`][player.id];
-      if (parseInt(playerDetail.baseScore) + parseInt(playerDetail.bonusScore) === 0) {
-        hasFinalRoundBeenScored = false;
-      }
-    });
+    //   //check to see if final round has scores
+    //   game.players.forEach((player) => {
+    //     const playerDetail = game.roundData[`r${game.numRounds}`][player.id];
+    //     if (parseInt(playerDetail.baseScore) + parseInt(playerDetail.bonusScore) === 0) {
+    //       hasFinalRoundBeenScored = false;
+    //     }
+    //   });
 
     //If final round has been scored, then set leaderBoardRound to final round
     leaderBoardRound = hasFinalRoundBeenScored ? game.numRounds : leaderBoardRound;
@@ -49,11 +50,10 @@ const LeaderboardScreen = (props) => {
   const backButtonHandler = () => {
     props.navigation.navigate("Game");
   };
-
   let headerText = game.isActive ? `After Round ${leaderBoardRound}` : "Final Standings";
 
-  if (leaderBoardRound == 1 && game.roundData["r1"][firstPlayer.id].totalScore === 0)
-    headerText = "Round 1";
+  if (game.scoringRound == 1) headerText = "Round 1";
+
   return (
     <View style={styles.screen}>
       <RoundHeader screen="LeaderboardScreen" headerText={headerText} />

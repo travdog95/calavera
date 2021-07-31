@@ -25,6 +25,7 @@ const gameReducer = (state = initialState, action) => {
         isActive: action.gameData.isActive,
         gameType: action.gameData.gameType,
         scoringType: action.gameData.scoringType,
+        isLastRoundScored: action.gameData.isLastRoundScored,
       });
 
       const newGameId = `game${newGame.id}`;
@@ -76,6 +77,25 @@ const gameReducer = (state = initialState, action) => {
         ...state,
         games: { ...state.games, [state.currentGameId]: setSelectedRoundGame },
       };
+    case actions.SET_IS_LAST_ROUND_SCORED:
+      //Update game json object
+      const setIsLastRoundScoredGame = {
+        ...state.games[state.currentGameId],
+        isLastRoundScored: action.isLastRoundScored,
+      };
+
+      //Save to database
+      updateGame(setIsLastRoundScoredGame)
+        .then((dbResult) => {
+          if (dbResult.rowsAffected !== 1) console.log("error saving game");
+        })
+        .catch((err) => console.log(err));
+
+      return {
+        ...state,
+        games: { ...state.games, [state.currentGameId]: setIsLastRoundScoredGame },
+      };
+
     case actions.SAVE_PLAYER_NAME:
       const newPlayers = [];
       const playerId = action.playerId;
@@ -150,11 +170,11 @@ const gameReducer = (state = initialState, action) => {
         let prevTotalScore = 0;
         let totalScore = 0;
         let prevRoundKey = "";
-
         //Only score rounds that have been played
         if (
           round < state.games[state.currentGameId].scoringRound ||
-          round === state.games[state.currentGameId].numRounds
+          (round == state.games[state.currentGameId].numRounds &&
+            state.games[state.currentGameId].isLastRoundScored)
         ) {
           // if (roundDetail[firstPlayer.id].baseScore !== 0) {
           //Iterate over each player
@@ -231,6 +251,7 @@ const gameReducer = (state = initialState, action) => {
           isActive: jsonGame.isActive,
           winner: jsonGame.winner,
           scoringType: jsonGame.scoringType,
+          isLastRoundScored: jsonGame.isLastRoundScored,
         });
 
         loadedGamesObject[loadedGameObjectId] = newLoadedGame;

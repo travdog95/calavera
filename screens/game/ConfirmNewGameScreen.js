@@ -67,7 +67,18 @@ const ConfirmNewGameScreen = (props) => {
 
     //Load store with game data
     dispatch(
-      createGame(players, numRounds, 1, 1, roundData, new Date(), true, "SkullKing", scoringType)
+      createGame(
+        players,
+        numRounds,
+        1,
+        1,
+        roundData,
+        new Date(),
+        true,
+        "SkullKing",
+        scoringType,
+        false
+      )
     ).then(() => props.navigation.navigate("Game"));
   };
 
@@ -131,6 +142,9 @@ const ConfirmNewGameScreen = (props) => {
 
   return (
     <View style={styles.screen}>
+      <View style={styles.header}>
+        <DefaultText style={styles.headerText}>{scoringType} Scoring</DefaultText>
+      </View>
       <View style={styles.messageContainer}>
         <DefaultText style={styles.message}>
           You are about to embark on a swashbuckling journey with{" "}
@@ -185,6 +199,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.screenBackgroundColor,
+  },
+  header: {
+    paddingTop: 20,
+  },
+  headerText: {
+    fontSize: Defaults.extraLargeFontSize,
   },
   messageContainer: {
     padding: 10,

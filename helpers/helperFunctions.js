@@ -1,4 +1,5 @@
 import Defaults from "../constants/defaults";
+import Constants from "../constants/constants";
 
 export default {
   formatDate: (date = null, format = null) => {
@@ -83,5 +84,36 @@ export default {
     if (bid === 0) return round * 10;
 
     if (bid > 0) return bid * 20;
+  },
+  calcRascalBaseScore(scoringType, numCards, cannonType, accuracy) {
+    const rascalEnhancedMultiplier = 1.5;
+    let newBaseScore = 0;
+
+    //Rascal scoring
+    if (scoringType === Constants.scoringTypes[1]) {
+      newBaseScore = 0;
+      if (accuracy == Constants.accuracy.directHit) newBaseScore = numCards * 10;
+
+      if (accuracy == Constants.accuracy.glancingBlow) newBaseScore = (numCards * 10) / 2;
+    }
+
+    //Rascal Enhanced Scoring
+    if (scoringType === Constants.scoringTypes[2]) {
+      newBaseScore = 0;
+
+      //Cannonball
+      if (cannonType == Constants.cannonType.cannonball) {
+        if (accuracy == Constants.accuracy.directHit)
+          newBaseScore = numCards * 10 * rascalEnhancedMultiplier;
+      }
+
+      //Grapeshot
+      if (cannonType == Constants.cannonType.grapeshot) {
+        if (accuracy == Constants.accuracy.directHit) newBaseScore = numCards * 10;
+        if (accuracy == Constants.accuracy.glancingBlow) newBaseScore = (numCards * 10) / 2;
+      }
+    }
+
+    return newBaseScore;
   },
 };

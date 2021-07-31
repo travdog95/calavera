@@ -9,6 +9,7 @@ export const COMPLETE_CURRENT_GAME = "COMPLETE_CURRENT_GAME";
 export const LOAD_GAMES = "LOAD_GAMES";
 export const DELETE_GAMES = "DELETE_GAMES";
 export const SET_CURRENT_GAME = "SET_CURRENT_GAME";
+export const SET_IS_LAST_ROUND_SCORED = "SET_IS_LAST_ROUND_SCORED";
 
 import { insertGame, fetchGames, deleteGameData } from "../../helpers/db";
 
@@ -21,7 +22,8 @@ export const createGame = (
   date,
   isActive,
   gameType,
-  scoringType
+  scoringType,
+  isLastRoundScored
 ) => {
   return async (dispatch) => {
     try {
@@ -36,6 +38,7 @@ export const createGame = (
         isActive,
         gameType,
         scoringType,
+        isLastRoundScored,
       });
 
       //then dispatch reducer
@@ -52,6 +55,7 @@ export const createGame = (
           isActive,
           gameType,
           scoringType,
+          isLastRoundScored,
         },
       });
     } catch (err) {
@@ -67,6 +71,10 @@ export const setScoringRound = (scoringRound) => {
 
 export const setSelectedRound = (selectedRound) => {
   return { type: SET_SELECTED_ROUND, selectedRound };
+};
+
+export const setIsLastRoundScored = (isLastRoundScored) => {
+  return { type: SET_IS_LAST_ROUND_SCORED, isLastRoundScored };
 };
 
 export const savePlayerName = (playerId, playerName) => {

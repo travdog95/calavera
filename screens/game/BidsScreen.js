@@ -14,6 +14,7 @@ import RoundHeader from "../../components/game/RoundHeader";
 
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
+import Constants from "../../constants/constants";
 import TKO from "../../helpers/helperFunctions";
 import { updateGame } from "../../helpers/db";
 
@@ -80,17 +81,37 @@ const BidsScreen = (props) => {
 
   const updateBidsHandler = () => {
     players.map((player, index) => {
-      //Check to see if baseScore is greater than zero
-      const baseScore =
-        game.roundData[roundKey][player.id].baseScore > 0
-          ? TKO.calcBaseScore(parseInt(bids[index]), parseInt(round))
-          : 0;
+      let baseScore = 0;
+      let accuracy = 0;
+
+      //Classic scoring
+      if (game.scoringType === Constants.scoringTypes[0]) {
+        //Check to see if baseScore is greater than zero
+        baseScore =
+          game.roundData[roundKey][player.id].baseScore > 0
+            ? TKO.calcBaseScore(parseInt(bids[index]), parseInt(round))
+            : 0;
+      } else {
+        accuracy =
+          cannonTypes[index] == Constants.cannonType.cannonball &&
+          game.roundData[roundKey][player.id].accuracy == Constants.accuracy.glancingBlow
+            ? Constants.accuracy.completeMiss
+            : game.roundData[roundKey][player.id].accuracy;
+        //Rascal and Rascal enhanced
+        baseScore = TKO.calcRascalBaseScore(
+          game.scoringType,
+          parseInt(round),
+          cannonTypes[index],
+          accuracy
+        );
+      }
 
       dispatch(
         updatePlayerDetail(round, player.id, {
           bid: bids[index],
           baseScore,
           cannonType: cannonTypes[index],
+          accuracy,
         })
       );
     });

@@ -198,7 +198,7 @@ const ScoreRow = (props) => {
                 props.playerIndex
               )}
             >
-              <DefaultText style={styles.buttonText}>-1</DefaultText>
+              <DefaultText style={styles.buttonText}>Half</DefaultText>
             </CustomActionButton>
           ) : null}
           <CustomActionButton

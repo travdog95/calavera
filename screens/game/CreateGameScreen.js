@@ -32,7 +32,7 @@ const CreateGameScreen = (props) => {
   const [isGameStartable, setIsGameStartable] = useState(true);
   const [numRounds, setNumRounds] = useState("10");
   const [numPlayers, setNumPlayers] = useState("4");
-  const [scoringType, setScoringType] = useState(Constants.scoringTypes[0]);
+  const [scoringType, setScoringType] = useState(Constants.scoringTypes[2]);
 
   const incOrDecRoundsHandler = (direction) => {
     const minNumRounds = 1;
@@ -156,7 +156,7 @@ const CreateGameScreen = (props) => {
               onSelect={(selectedItem, index) => {
                 setScoringType(selectedItem);
               }}
-              defaultValue={Constants.scoringTypes[0]}
+              defaultValueByIndex={Constants.scoringType.rascalEnhanced}
               buttonTextAfterSelection={(selectedItem, index) => {
                 // text represented after item is selected
                 // if data array is an array of objects then return selectedItem.property to render after item is selected

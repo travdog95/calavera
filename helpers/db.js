@@ -23,7 +23,6 @@ export const init = () => {
 
 export const insertGame = (game) => {
   const gameString = JSON.stringify(game);
-
   const promise = new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(

@@ -69,19 +69,6 @@ const GameScreen = (props) => {
     );
   }
 
-  let showCompleteGameButton = false;
-
-  if (game.isActive && parseInt(game.scoringRound) === parseInt(game.numRounds)) {
-    showCompleteGameButton = true;
-    //check to see if final round has scores
-    game.players.forEach((player) => {
-      const playerDetail = game.roundData[`r${game.numRounds}`][player.id];
-      if (parseInt(playerDetail.baseScore) + parseInt(playerDetail.bonusScore) === 0) {
-        showCompleteGameButton = false;
-      }
-    });
-  }
-
   return (
     <View style={styles.screen}>
       <ScrollView horizontal>
@@ -96,7 +83,7 @@ const GameScreen = (props) => {
           </View>
         </ScrollView>
       </ScrollView>
-      {showCompleteGameButton ? (
+      {game.isLastRoundScored ? (
         <CustomActionButton style={styles.primaryButton} onPress={confirmCompleteGame}>
           <DefaultText style={styles.primaryButtonText}>Complete Game</DefaultText>
         </CustomActionButton>
