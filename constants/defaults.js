@@ -41,6 +41,13 @@ export default {
   bonusScreen: {
     rowVerticalPadding: 8,
   },
+  myGamesScreen: {
+    widths: {
+      description: "45%",
+      players: "20%",
+      status: "35%",
+    },
+  },
   game: {
     rowHeight: 45,
     playerRowHeight: 40,

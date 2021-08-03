@@ -1,13 +1,12 @@
 import React from "react";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
-import * as Animatable from "react-native-animatable";
 import { useDispatch } from "react-redux";
 
+import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
 import CustomActionButton from "../../components/CustomActionButton";
 import DefaultText from "../../components/UI/DefaultText";
 
 import Player from "../../models/player";
-import Game from "../../models/game";
 // import RoundPlayerDetail from "../../models/roundPlayerDetail";
 import PlayerDetail from "../../models/playerDetail";
 import RoundBonusDetail from "../../models/roundBonusDetail";
@@ -15,7 +14,6 @@ import PlayerBonusDetail from "../../models/playerBonusDetail";
 
 import { createGame } from "../../store/actions/game-actions";
 
-import TKO from "../../helpers/helperFunctions";
 import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
 import Constants from "../../constants/constants";
@@ -26,10 +24,6 @@ const ConfirmNewGameScreen = (props) => {
   const scoringType = props.route.params.scoringType;
 
   const dispatch = useDispatch();
-
-  const backButtonHandler = () => {
-    props.navigation.navigate("CreateGame");
-  };
 
   const initRoundBonusesDetail = (players) => {
     const roundBonusesDetail = {};
@@ -143,7 +137,9 @@ const ConfirmNewGameScreen = (props) => {
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
-        <DefaultText style={styles.headerText}>{scoringType} Scoring</DefaultText>
+        <DefaultText style={styles.headerText}>
+          {Constants.scoringTypes[scoringType]} Scoring
+        </DefaultText>
       </View>
       <View style={styles.messageContainer}>
         <DefaultText style={styles.message}>
@@ -163,26 +159,9 @@ const ConfirmNewGameScreen = (props) => {
           );
         })}
       </ScrollView>
-      {/* <Animatable.View
-        style={{ position: "absolute", left: 20, bottom: 20 }}
-        animation={"slideInLeft"}
-      >
-        <CustomActionButton
-          style={styles.secondaryButton}
-          onPress={backButtonHandler}
-        >
-          <Text style={styles.primaryButtonText}>Back</Text>
-        </CustomActionButton>
-      </Animatable.View> */}
-
-      <Animatable.View
-        style={{ position: "absolute", right: 20, bottom: 20 }}
-        animation={"slideInRight"}
-      >
-        <CustomActionButton style={styles.primaryButton} onPress={confirmGameHandler}>
-          <Text style={styles.primaryButtonText}>Confirm Game</Text>
-        </CustomActionButton>
-      </Animatable.View>
+      <View style={styles.buttonContainer}>
+        <ScreenPrimaryButton onPress={confirmGameHandler} buttonText={"Let's Play!"} />
+      </View>
     </View>
   );
 };
@@ -196,8 +175,6 @@ export const screenOptions = (navData) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: Colors.screenBackgroundColor,
   },
   header: {
@@ -205,6 +182,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: Defaults.extraLargeFontSize,
+    textAlign: "center",
   },
   messageContainer: {
     padding: 10,
@@ -224,15 +202,10 @@ const styles = StyleSheet.create({
   playerName: {
     fontSize: Defaults.extraLargeFontSize,
   },
-  primaryButton: {
-    backgroundColor: Defaults.button.primary,
-  },
-  primaryButtonText: {
-    color: "white",
-    fontSize: Defaults.fontSize,
-  },
-  secondaryButton: {
-    backgroundColor: Defaults.button.cancel,
+  buttonContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 15,
   },
 });
+
 export default ConfirmNewGameScreen;

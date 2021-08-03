@@ -8,10 +8,11 @@ export const UPDATE_TOTAL_SCORES = "UPDATE_TOTAL_SCORES";
 export const COMPLETE_CURRENT_GAME = "COMPLETE_CURRENT_GAME";
 export const LOAD_GAMES = "LOAD_GAMES";
 export const DELETE_GAMES = "DELETE_GAMES";
+export const DELETE_GAME = "DELETE_GAME";
 export const SET_CURRENT_GAME = "SET_CURRENT_GAME";
 export const SET_IS_LAST_ROUND_SCORED = "SET_IS_LAST_ROUND_SCORED";
 
-import { insertGame, fetchGames, deleteGameData } from "../../helpers/db";
+import { insertGame, fetchGames, deleteGameData, deleteGameFromDB } from "../../helpers/db";
 
 export const createGame = (
   players,
@@ -116,6 +117,19 @@ export const deleteGames = () => {
       const dbResult = await deleteGameData();
       console.log("delete", dbResult);
       dispatch({ type: LOAD_GAMES, games: [] });
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  };
+};
+
+export const deleteGame = (gameId) => {
+  return async (dispatch) => {
+    try {
+      const dbResult = await deleteGameFromDB(gameId);
+      console.log("deleteGame", dbResult);
+      dispatch(loadGames());
     } catch (err) {
       console.log(err);
       throw err;

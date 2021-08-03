@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
-import * as Animatable from "react-native-animatable";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useSelector, useDispatch } from "react-redux";
 import _ from "lodash";
@@ -8,7 +7,8 @@ import _ from "lodash";
 import GameRow from "../../components/game/GameRow";
 import { loadGames, deleteGames } from "../../store/actions/game-actions";
 
-import CustomActionButton from "../../components/CustomActionButton";
+import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
+
 import HeaderButton from "../../components/UI/HeaderButton";
 import DefaultText from "../../components/UI/DefaultText";
 
@@ -38,44 +38,34 @@ const MyGamesScreen = (props) => {
   };
   return (
     <View style={styles.screen}>
+      <View style={styles.buttonContainer}>
+        <ScreenPrimaryButton
+          onPress={() => {
+            props.navigation.navigate("CreateGame");
+          }}
+          buttonText={"Create Game"}
+        />
+        {/* <ScreenPrimaryButton onPress={confirmDeleteGameData} buttonText={"Delete All Games"}> */}
+      </View>
       {_.isEmpty(games) ? (
         <View style={styles.noGames}>
           <DefaultText>No games!!</DefaultText>
         </View>
       ) : (
-        <ScrollView>
+        <View>
           <View style={styles.headerContainer}>
             <DefaultText style={styles.gameLabel}>Game</DefaultText>
             <DefaultText style={styles.playersLabel}># Players</DefaultText>
             <DefaultText style={styles.statusLabel}>Status</DefaultText>
           </View>
-          {Object.entries(games).map(([gameId, game]) => {
-            return <GameRow key={gameId} game={game} index={gameIndex++} />;
-          })}
-        </ScrollView>
-      )}
 
-      <Animatable.View
-        style={{ position: "absolute", left: 20, bottom: 20 }}
-        animation={"slideInRight"}
-      >
-        <CustomActionButton style={styles.primaryButton} onPress={confirmDeleteGameData}>
-          <Text style={styles.primaryButtonText}>Delete Game Data</Text>
-        </CustomActionButton>
-      </Animatable.View>
-      <Animatable.View
-        style={{ position: "absolute", right: 20, bottom: 20 }}
-        animation={"slideInRight"}
-      >
-        <CustomActionButton
-          style={styles.primaryButton}
-          onPress={() => {
-            props.navigation.navigate("CreateGame");
-          }}
-        >
-          <Text style={styles.primaryButtonText}>Create Game</Text>
-        </CustomActionButton>
-      </Animatable.View>
+          <ScrollView contentContainerStyle={styles.contentContainer}>
+            {Object.entries(games).map(([gameId, game]) => {
+              return <GameRow key={gameId} game={game} index={gameIndex++} />;
+            })}
+          </ScrollView>
+        </View>
+      )}
     </View>
   );
 };
@@ -117,36 +107,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  primaryButton: {
-    backgroundColor: Defaults.button.primary,
-  },
-  primaryButtonText: {
-    color: "white",
-    fontSize: Defaults.fontSize,
+  buttonContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 15,
   },
   headerContainer: {
-    flex: 1,
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginVertical: 5,
     padding: 5,
+    borderColor: Colors.theme.grey2,
+    borderBottomWidth: 1,
   },
+  contentContainer: {},
   gameLabel: {
     fontSize: Defaults.fontSize,
-    width: "50%",
+    width: Defaults.myGamesScreen.widths.description,
     fontFamily: "open-sans-bold",
   },
   playersLabel: {
     fontSize: Defaults.fontSize,
-    width: "25%",
+    width: Defaults.myGamesScreen.widths.players,
     textAlign: "center",
     fontFamily: "open-sans-bold",
   },
   statusLabel: {
     fontSize: Defaults.fontSize,
-    width: "25%",
+    width: Defaults.myGamesScreen.widths.status,
     textAlign: "right",
     fontFamily: "open-sans-bold",
   },

@@ -14,13 +14,11 @@ import ScoreRow from "../../components/game/ScoreRow";
 import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
 import HeaderButtonBids from "../../components/game/HeaderButtonBids";
 import HeaderButton from "../../components/UI/HeaderButton";
-import DefaultText from "../../components/UI/DefaultText";
 import RoundHeader from "../../components/game/RoundHeader";
-import CustomActionButton from "../../components/CustomActionButton";
+import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
 import TKO from "../../helpers/helperFunctions";
 import { updateGame } from "../../helpers/db";
 
-import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
 import Constants from "../../constants/constants";
 
@@ -353,9 +351,9 @@ const ScoresScreen = (props) => {
         })}
       </ScrollView>
       {game.isActive ? (
-        <CustomActionButton style={styles.primaryButton} onPress={validateScores}>
-          <DefaultText style={styles.primaryButtonText}>Save Scores</DefaultText>
-        </CustomActionButton>
+        <View style={styles.buttonContainer}>
+          <ScreenPrimaryButton onPress={validateScores} buttonText={"Save Scores"} />
+        </View>
       ) : null}
     </View>
   );
@@ -389,14 +387,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: Colors.theme.light1,
   },
-  primaryButton: {
-    backgroundColor: Defaults.button.primary,
-    margin: 5,
-  },
-  primaryButtonText: {
-    color: "white",
-    fontSize: Defaults.fontSize,
-    fontWeight: "bold",
+  buttonContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 15,
   },
 });
 

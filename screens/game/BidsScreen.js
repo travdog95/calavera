@@ -9,6 +9,8 @@ import BidRow from "../../components/game/BidRow";
 import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
 import HeaderButton from "../../components/UI/HeaderButton";
 import DefaultText from "../../components/UI/DefaultText";
+import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
+
 import CustomActionButton from "../../components/CustomActionButton";
 import RoundHeader from "../../components/game/RoundHeader";
 
@@ -162,9 +164,9 @@ const BidsScreen = (props) => {
         })}
       </ScrollView>
       {game.isActive ? (
-        <CustomActionButton style={styles.primaryButton} onPress={updateBidsHandler}>
-          <DefaultText style={styles.primaryButtonText}>Save Bids</DefaultText>
-        </CustomActionButton>
+        <View style={styles.buttonContainer}>
+          <ScreenPrimaryButton onPress={updateBidsHandler} buttonText={"Save Bids"} />
+        </View>
       ) : null}
     </View>
   );
@@ -197,15 +199,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
-  primaryButton: {
-    backgroundColor: Defaults.button.primary,
-    margin: 5,
-  },
-
-  primaryButtonText: {
-    color: "white",
-    fontSize: Defaults.fontSize,
-    fontWeight: "bold",
+  buttonContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 15,
   },
 });
 

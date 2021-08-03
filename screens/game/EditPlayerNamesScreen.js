@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TextInput } from "react-native";
-import * as Animatable from "react-native-animatable";
+import { View, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 
-import CustomActionButton from "../../components/CustomActionButton";
 import Input from "../../components/UI/Input";
+import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
 
 import { savePlayerName } from "../../store/actions/game-actions";
 
@@ -45,23 +44,9 @@ const EditPlayerNamesScreen = (props) => {
           value={playerName}
         />
       </View>
-      <Animatable.View
-        style={{ position: "absolute", left: 20, bottom: 20 }}
-        animation={"slideInLeft"}
-      >
-        <CustomActionButton style={styles.backButton} onPress={backButtonHandler}>
-          <Text style={styles.buttonText}>Back</Text>
-        </CustomActionButton>
-      </Animatable.View>
-
-      <Animatable.View
-        style={{ position: "absolute", right: 20, bottom: 20 }}
-        animation={"slideInRight"}
-      >
-        <CustomActionButton style={styles.primaryButton} onPress={savePlayerNamesHandler}>
-          <Text style={styles.buttonText}>Save Name</Text>
-        </CustomActionButton>
-      </Animatable.View>
+      <View style={styles.buttonContainer}>
+        <ScreenPrimaryButton onPress={savePlayerNamesHandler} buttonText={"Save Name"} />
+      </View>
     </View>
   );
 };
@@ -75,8 +60,6 @@ export const screenOptions = (navData) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: Colors.screenBackgroundColor,
   },
   row: {
@@ -84,22 +67,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
   },
+  buttonContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 15,
+  },
 
-  primaryButton: {
-    backgroundColor: Defaults.button.primary,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: Defaults.fontSize,
-  },
-  backButton: {
-    backgroundColor: Defaults.button.cancel,
-  },
   addPlayerInput: {
     fontFamily: "open-sans",
     fontSize: Defaults.largeFontSize,
+    marginTop: 15,
     padding: 5,
-    width: "80%",
+    width: "50%",
   },
 });
 

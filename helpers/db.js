@@ -79,6 +79,25 @@ export const deleteGameData = () => {
   return promise;
 };
 
+export const deleteGameFromDB = (gameId) => {
+  const promise = new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "DELETE from games WHERE id = (?);",
+        [gameId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, err) => {
+          reject(err);
+        }
+      );
+    });
+  });
+
+  return promise;
+};
+
 export const updateGame = (game) => {
   const gameString = JSON.stringify(game);
 

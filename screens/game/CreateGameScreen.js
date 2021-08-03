@@ -12,8 +12,8 @@ import {
   Keyboard,
 } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
-import * as Animatable from "react-native-animatable";
 
+import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
 import CustomActionButton from "../../components/CustomActionButton";
 import IncDecButton from "../../components/UI/IncDecButton";
 import DefaultText from "../../components/UI/DefaultText";
@@ -128,6 +128,28 @@ const CreateGameScreen = (props) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.screen}>
           <View style={styles.row}>
+            <DefaultText style={styles.label}>Scoring System?</DefaultText>
+            <SelectDropdown
+              data={Constants.scoringTypes}
+              onSelect={(selectedItem, index) => {
+                setScoringType(selectedItem);
+              }}
+              defaultValueByIndex={Constants.scoringType.rascalEnhanced}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                // text represented after item is selected
+                // if data array is an array of objects then return selectedItem.property to render after item is selected
+                return selectedItem;
+              }}
+              rowTextForSelection={(item, index) => {
+                // text represented for each item in dropdown
+                // if data array is an array of objects then return item.property to represent item in dropdown
+                return item;
+              }}
+              buttonTextStyle={styles.dropdownText}
+            />
+          </View>
+
+          <View style={styles.row}>
             <DefaultText style={styles.label}>How many rounds?</DefaultText>
             <View style={styles.numRoundsContainer}>
               <IncDecButton incOrDec={"dec"} onPress={incOrDecRoundsHandler.bind(this, "lower")} />
@@ -149,26 +171,6 @@ const CreateGameScreen = (props) => {
               />
             </View>
           </View>
-          <View style={styles.row}>
-            <DefaultText style={styles.label}>Scoring System?</DefaultText>
-            <SelectDropdown
-              data={Constants.scoringTypes}
-              onSelect={(selectedItem, index) => {
-                setScoringType(selectedItem);
-              }}
-              defaultValueByIndex={Constants.scoringType.rascalEnhanced}
-              buttonTextAfterSelection={(selectedItem, index) => {
-                // text represented after item is selected
-                // if data array is an array of objects then return selectedItem.property to render after item is selected
-                return selectedItem;
-              }}
-              rowTextForSelection={(item, index) => {
-                // text represented for each item in dropdown
-                // if data array is an array of objects then return item.property to represent item in dropdown
-                return item;
-              }}
-            />
-          </View>
 
           <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.playerNamesContainer}>
@@ -184,16 +186,11 @@ const CreateGameScreen = (props) => {
               })}
             </View>
           </ScrollView>
-          {isGameStartable ? (
-            <Animatable.View
-              style={{ position: "absolute", right: 20, bottom: 20 }}
-              animation={"slideInRight"}
-            >
-              <CustomActionButton style={styles.primaryButton} onPress={confirmNewGameHandler}>
-                <Text style={styles.buttonText}>Start Game</Text>
-              </CustomActionButton>
-            </Animatable.View>
-          ) : null}
+          <View style={styles.buttonContainer}>
+            {isGameStartable ? (
+              <ScreenPrimaryButton onPress={confirmNewGameHandler} buttonText={"Start Game"} />
+            ) : null}
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -202,7 +199,7 @@ const CreateGameScreen = (props) => {
 
 export const screenOptions = (navData) => {
   return {
-    headerTitle: "Create Game",
+    headerTitle: "Game Settings",
   };
 };
 
@@ -212,13 +209,17 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     backgroundColor: Colors.screenBackgroundColor,
   },
+  buttonContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 15,
+  },
   row: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
     borderBottomWidth: 1,
-    borderColor: "black",
+    borderColor: Colors.theme.grey2,
     padding: 5,
   },
   label: {
@@ -244,13 +245,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: "center",
   },
-  primaryButton: {
-    backgroundColor: Defaults.button.primary,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: Defaults.fontSize,
-  },
+  dropdownText: { fontSize: Defaults.largeFontSize },
   scrollView: {
     paddingBottom: 30,
   },

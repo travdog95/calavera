@@ -83,7 +83,7 @@ const GameScreen = (props) => {
           </View>
         </ScrollView>
       </ScrollView>
-      {game.isLastRoundScored ? (
+      {game.isLastRoundScored && game.isActive ? (
         <CustomActionButton style={styles.primaryButton} onPress={confirmCompleteGame}>
           <DefaultText style={styles.primaryButtonText}>Complete Game</DefaultText>
         </CustomActionButton>
