@@ -232,26 +232,30 @@ const gameReducer = (state = initialState, action) => {
         games: { ...state.games, [state.currentGameId]: gameToComplete },
       };
     case actions.LOAD_GAMES:
-      console.log("Load Games");
       const loadedGamesObject = {};
+      const parsedGames = action.games.map((game) => JSON.parse(game.game));
 
-      action.games.forEach((game) => {
-        const jsonGame = JSON.parse(game.game);
+      //Sort games by most recent date
+      const sortedGames = parsedGames.sort((a, b) => {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      });
+
+      sortedGames.forEach((game) => {
         const loadedGameObjectId = `game${game.id}`;
 
         const newLoadedGame = new Game({
           id: game.id,
-          players: jsonGame.players,
-          numRounds: jsonGame.numRounds,
-          roundData: jsonGame.roundData,
-          scoringRound: jsonGame.scoringRound,
-          selectedRound: jsonGame.selectedRound,
-          date: jsonGame.date,
-          gameType: jsonGame.gameType,
-          isActive: jsonGame.isActive,
-          winner: jsonGame.winner,
-          scoringType: jsonGame.scoringType,
-          isLastRoundScored: jsonGame.isLastRoundScored,
+          players: game.players,
+          numRounds: game.numRounds,
+          roundData: game.roundData,
+          scoringRound: game.scoringRound,
+          selectedRound: game.selectedRound,
+          date: game.date,
+          gameType: game.gameType,
+          isActive: game.isActive,
+          winner: game.winner,
+          scoringType: game.scoringType,
+          isLastRoundScored: game.isLastRoundScored,
         });
 
         loadedGamesObject[loadedGameObjectId] = newLoadedGame;
