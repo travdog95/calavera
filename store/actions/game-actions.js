@@ -11,6 +11,7 @@ export const DELETE_GAMES = "DELETE_GAMES";
 export const DELETE_GAME = "DELETE_GAME";
 export const SET_CURRENT_GAME = "SET_CURRENT_GAME";
 export const SET_IS_LAST_ROUND_SCORED = "SET_IS_LAST_ROUND_SCORED";
+export const UPDATE_NUM_CARDS_BY_ROUND = "UPDATE_NUM_CARDS_BY_ROUND";
 
 import { insertGame, fetchGames, deleteGameData, deleteGameFromDB } from "../../helpers/db";
 
@@ -24,7 +25,8 @@ export const createGame = (
   isActive,
   gameType,
   scoringType,
-  isLastRoundScored
+  isLastRoundScored,
+  numCardsByRound
 ) => {
   return async (dispatch) => {
     try {
@@ -40,6 +42,7 @@ export const createGame = (
         gameType,
         scoringType,
         isLastRoundScored,
+        numCardsByRound,
       });
 
       //then dispatch reducer
@@ -57,6 +60,7 @@ export const createGame = (
           gameType,
           scoringType,
           isLastRoundScored,
+          numCardsByRound,
         },
       });
     } catch (err) {
@@ -102,7 +106,6 @@ export const loadGames = () => {
   return async (dispatch) => {
     try {
       const dbResult = await fetchGames();
-
       dispatch({ type: LOAD_GAMES, games: dbResult.rows._array });
     } catch (err) {
       console.log(err);
@@ -115,7 +118,6 @@ export const deleteGames = () => {
   return async (dispatch) => {
     try {
       const dbResult = await deleteGameData();
-      console.log("delete", dbResult);
       dispatch({ type: LOAD_GAMES, games: [] });
     } catch (err) {
       console.log(err);
@@ -128,7 +130,6 @@ export const deleteGame = (gameId) => {
   return async (dispatch) => {
     try {
       const dbResult = await deleteGameFromDB(gameId);
-      console.log("deleteGame", dbResult);
       dispatch(loadGames());
     } catch (err) {
       console.log(err);
@@ -139,4 +140,8 @@ export const deleteGame = (gameId) => {
 
 export const setCurrentGame = (game) => {
   return { type: SET_CURRENT_GAME, game };
+};
+
+export const updateNumCardsByRound = (round, numCards) => {
+  return { type: UPDATE_NUM_CARDS_BY_ROUND, round, numCards };
 };

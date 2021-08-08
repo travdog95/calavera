@@ -9,7 +9,9 @@ import {
   setSelectedRound,
   setIsLastRoundScored,
   updateTotalScores,
+  updateNumCardsByRound,
 } from "../../store/actions/game-actions";
+import RoundNumCards from "../../components/game/RoundNumCards";
 import ScoreRow from "../../components/game/ScoreRow";
 import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
 import HeaderButtonBids from "../../components/game/HeaderButtonBids";
@@ -29,8 +31,7 @@ const ScoresScreen = (props) => {
   const settings = useSelector((state) => state.settings);
 
   const players = game.players;
-  const round = props.route.params.round;
-  const numCards = round;
+  const round = parseInt(props.route.params.round);
   const roundKey = `r${round}`;
   const roundDetail = game.roundData[roundKey];
   // const roundBonusDetail = game.roundBonusesDetail[`r${round}`];
@@ -38,29 +39,24 @@ const ScoresScreen = (props) => {
 
   const dispatch = useDispatch();
 
-  const calcBaseScore = (roundPlayerDetail) => {
+  const calcBaseScore = (baseScore, bonusScore, bid, accuracy, cannonType) => {
     let newBaseScore = 0;
-    const score = parseInt(roundPlayerDetail.baseScore) + parseInt(roundPlayerDetail.bonusScore);
+    const score = parseInt(baseScore) + parseInt(bonusScore);
     const multiplier = score < 0 ? -1 : 1;
 
     //Classic scoring
     if (game.scoringType === Constants.scoringType.classic) {
-      if (parseInt(roundPlayerDetail.bid) === 0) {
-        newBaseScore = numCards * 10 * multiplier;
+      if (parseInt(bid) === 0) {
+        newBaseScore = parseInt(numCards) * 10 * multiplier;
       } else {
-        newBaseScore = multiplier === -1 ? -10 : parseInt(roundPlayerDetail.bid) * 20;
+        newBaseScore = multiplier === -1 ? -10 : parseInt(bid) * 20;
       }
     } else {
       //Rascal scoring
-      newBaseScore = TKO.calcRascalBaseScore(
-        game.scoringType,
-        numCards,
-        roundPlayerDetail.cannonType,
-        roundPlayerDetail.accuracy
-      );
+      newBaseScore = TKO.calcRascalBaseScore(game.scoringType, numCards, cannonType, accuracy);
     }
 
-    return newBaseScore.toString();
+    return newBaseScore;
   };
 
   const setInitialBaseScores = () => {
@@ -75,7 +71,15 @@ const ScoresScreen = (props) => {
         game.scoringType === Constants.scoringType.rascal ||
         game.scoringType === Constants.scoringType.rascalEnhanced
       ) {
-        initialBaseScores.push(calcBaseScore(playerDetail));
+        initialBaseScores.push(
+          calcBaseScore(
+            playerDetail.baseScore,
+            playerDetail.bonusScore,
+            playerDetail.bid,
+            playerDetail.accuracy,
+            playerDetail.cannonType
+          ).toString()
+        );
       } else {
         initialBaseScores.push(playerDetail.baseScore.toString());
       }
@@ -140,6 +144,15 @@ const ScoresScreen = (props) => {
   const [accuracies, setAccuracies] = useState(getAccuracies);
   const [baseScoresInitialized, setBaseScoresInitialized] = useState(false);
   const [bonusScoresInitialized, setBonusScoresInitialized] = useState(false);
+  const [numCards, setNumCards] = useState(game.numCardsByRound[round - 1]);
+  const [numCardsChanged, setNumCardsChanged] = useState(false);
+
+  const updateNumCardsState = (numberOfCards) => {
+    //update local state
+    setNumCards(numberOfCards);
+
+    setNumCardsChanged(true);
+  };
 
   const updateBaseScoreState = (newBaseScore, bonusScore, playerIndex) => {
     const newBaseScores = [];
@@ -216,6 +229,8 @@ const ScoresScreen = (props) => {
 
       dispatch(updatePlayerDetail(round, player.id, playerDetail));
     });
+
+    dispatch(updateNumCardsByRound(round, numCards));
 
     //Increment scoringRound if it's not the last round and the user is updating scores in the scoring round
     if (round < finalRound && round == game.scoringRound) {
@@ -297,7 +312,7 @@ const ScoresScreen = (props) => {
 
   //Calculate inital scores
   useEffect(() => {
-    // console.log("useEffect baseScoresInitialized, bonusScoresInitialized");
+    //console.log("useEffect baseScoresInitialized, bonusScoresInitialized");
 
     setInitialScores();
   }, [baseScoresInitialized, bonusScoresInitialized]);
@@ -307,6 +322,29 @@ const ScoresScreen = (props) => {
     // console.log("useEffect baseScores, bonusScores");
     calcTotalScores();
   }, [baseScores, bonusScores]);
+
+  useEffect(() => {
+    //Calculate base scores based on selected values on screen
+    if (numCardsChanged) calcBaseScores();
+  }, [numCards, numCardsChanged]);
+
+  const calcBaseScores = () => {
+    const newBaseScores = [];
+    players.forEach((player, index) => {
+      const playerDetail = roundDetail[player.id];
+      newBaseScores.push(
+        calcBaseScore(
+          baseScores[index],
+          bonusScores[index],
+          playerDetail.bid,
+          accuracies[index],
+          playerDetail.cannonType
+        ).toString()
+      );
+    });
+
+    setBaseScores(newBaseScores);
+  };
 
   // useEffect(() => {
   //   props.navigation.setOptions({
@@ -326,6 +364,7 @@ const ScoresScreen = (props) => {
   return (
     <View style={styles.screen}>
       <RoundHeader round={round} headerText={headerText} />
+      <RoundNumCards numCards={numCards} setNumCards={updateNumCardsState} />
       <ScrollView contentContainerStyle={styles.playerScoresContainer}>
         {players.map((player, index) => {
           const playerDetail = roundDetail[player.id];
@@ -333,6 +372,7 @@ const ScoresScreen = (props) => {
             <ScoreRow
               key={player.id}
               round={round}
+              numCards={numCards}
               playerIndex={index}
               player={player}
               bid={playerDetail.bid}

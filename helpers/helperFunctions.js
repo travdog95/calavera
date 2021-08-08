@@ -1,5 +1,6 @@
 import Defaults from "../constants/defaults";
 import Constants from "../constants/constants";
+import { forEach } from "lodash";
 
 export default {
   formatDate: (date = null, format = null) => {
@@ -80,8 +81,8 @@ export default {
     return playerBonusDetail[bonusItemKey] ? defaultScore * multiplier : 0;
   },
 
-  calcBaseScore(bid, round) {
-    if (bid === 0) return round * 10;
+  calcBaseScore(bid, numCards) {
+    if (bid === 0) return numCards * 10;
 
     if (bid > 0) return bid * 20;
   },
@@ -115,5 +116,12 @@ export default {
     }
 
     return newBaseScore;
+  },
+  getPlayerIndexByPlayerId(playerId, players) {
+    players.forEach((player, index) => {
+      if (player.id == playerId) return index;
+    });
+
+    return null;
   },
 };

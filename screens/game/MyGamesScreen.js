@@ -45,7 +45,7 @@ const MyGamesScreen = (props) => {
           }}
           buttonText={"Create Game"}
         />
-        {/* <ScreenPrimaryButton onPress={confirmDeleteGameData} buttonText={"Delete All Games"}> */}
+        <ScreenPrimaryButton onPress={confirmDeleteGameData} buttonText={"Delete All Games"} />
       </View>
       {_.isEmpty(games) ? (
         <View style={styles.noGames}>

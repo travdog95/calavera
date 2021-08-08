@@ -1,9 +1,8 @@
 import React from "react";
-import { View, StyleSheet, ScrollView, Text } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useDispatch } from "react-redux";
 
 import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
-import CustomActionButton from "../../components/CustomActionButton";
 import DefaultText from "../../components/UI/DefaultText";
 
 import Player from "../../models/player";
@@ -50,12 +49,23 @@ const ConfirmNewGameScreen = (props) => {
     return playersBonusDetail;
   };
 
+  const initNumCardsByRound = (numRounds) => {
+    const numCards = [];
+
+    for (let r = 1; r <= parseInt(numRounds); r++) {
+      numCards.push(r);
+    }
+    return numCards;
+  };
+
   const confirmGameHandler = () => {
     //Create players
     const players = createPlayersHandler(playerNames);
 
     //Init game data
     const roundData = initRoundData(players, numRounds);
+
+    const numCardsByRound = initNumCardsByRound(numRounds);
 
     // const roundBonusesDetail = initRoundBonusesDetail(players);
 
@@ -71,7 +81,8 @@ const ConfirmNewGameScreen = (props) => {
         true,
         "SkullKing",
         scoringType,
-        false
+        false,
+        numCardsByRound
       )
     ).then(() => props.navigation.navigate("Game"));
   };

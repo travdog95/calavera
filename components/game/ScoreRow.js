@@ -18,7 +18,11 @@ const ScoreRow = (props) => {
   const navigation = useNavigation();
   const settings = useSelector((state) => state.settings);
 
+  const round = parseInt(props.round);
+  const numCards = parseInt(props.numCards);
   const scoringType = props.scoringType;
+  const isRascalScoring = scoringType !== Constants.scoringType.classic ? true : false;
+
   const cannonTypeIconName =
     parseInt(roundPlayerDetail.cannonType) === 0 ? "hand-paper" : "hand-rock";
 
@@ -37,12 +41,12 @@ const ScoreRow = (props) => {
 
     if (gotBid) {
       if (parseInt(roundPlayerDetail.bid) === 0) {
-        newBaseScore = props.round * 10;
+        newBaseScore = numCards * 10;
       } else {
         newBaseScore = parseInt(roundPlayerDetail.bid) * 20;
       }
     } else {
-      newBaseScore = parseInt(roundPlayerDetail.bid) === 0 ? 10 * props.round * -1 : -10;
+      newBaseScore = parseInt(roundPlayerDetail.bid) === 0 ? 10 * numCards * -1 : -10;
 
       if (roundPlayerDetail.pointsWagered > 0) {
         newBonusScore -= roundPlayerDetail.pointsWagered;
@@ -136,14 +140,6 @@ const ScoreRow = (props) => {
     case Constants.scoringType.rascalEnhanced: //Rascal Enhanced
       bidContent = (
         <View style={{ ...styles.bidContainer, width: bidContainerWidth }}>
-          {scoringType === Constants.scoringType.rascalEnhanced ? (
-            <FontAwesome5
-              name={cannonTypeIconName}
-              size={24}
-              color={Colors.theme.dark4}
-              style={{ textAlign: "center", width: "50%" }}
-            />
-          ) : null}
           <DefaultText
             style={{
               fontSize: 24,
@@ -153,6 +149,15 @@ const ScoreRow = (props) => {
           >
             {props.bid}
           </DefaultText>
+
+          {scoringType === Constants.scoringType.rascalEnhanced ? (
+            <FontAwesome5
+              name={cannonTypeIconName}
+              size={24}
+              color={Colors.theme.dark4}
+              style={{ textAlign: "center", width: "50%" }}
+            />
+          ) : null}
         </View>
       );
       scoreContent = (
@@ -224,6 +229,7 @@ const ScoreRow = (props) => {
       break;
   }
 
+  const bidLabel = isRascalScoring ? "Bid" : "Got Bid?";
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
@@ -235,7 +241,9 @@ const ScoreRow = (props) => {
         </View>
       </View>
       <View style={styles.row}>
-        <DefaultText style={{ ...styles.columnHeader, width: bidContainerWidth }}>Bid</DefaultText>
+        <DefaultText style={{ ...styles.columnHeader, width: bidContainerWidth }}>
+          {bidLabel}
+        </DefaultText>
         <DefaultText style={{ ...styles.columnHeader, width: scoreContainerWidth }}>
           Score
         </DefaultText>
@@ -290,8 +298,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   playerName: {
-    fontSize: Defaults.extraLargeFontSize,
-    fontWeight: "bold",
+    fontSize: Defaults.largeFontSize,
     color: "white",
   },
   // bonusButtonContainer: {
@@ -309,8 +316,7 @@ const styles = StyleSheet.create({
   // },
   roundScore: {
     textAlign: "right",
-    fontSize: Defaults.extraLargeFontSize,
-    fontWeight: "bold",
+    fontSize: Defaults.largeFontSize,
     color: "white",
   },
   row: {

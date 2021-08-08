@@ -9,6 +9,10 @@ import MyGamesScreen, {
 import CreateGameScreen, {
   screenOptions as createGameScreenOptions,
 } from "../screens/game/CreateGameScreen";
+import CardsByRoundScreen, {
+  screenOptions as cardsByRoundScreenOptions,
+} from "../screens/game/CardsByRoundScreen";
+
 import ConfirmNewGameScreen, {
   screenOptions as confirmNewGameScreenOptions,
 } from "../screens/game/ConfirmNewGameScreen";
@@ -59,6 +63,11 @@ export const GameNavigator = (props) => {
         name="CreateGame"
         component={CreateGameScreen}
         options={createGameScreenOptions}
+      />
+      <GameStackNavigator.Screen
+        name="CardsByRound"
+        component={CardsByRoundScreen}
+        options={cardsByRoundScreenOptions}
       />
       <GameStackNavigator.Screen
         name="ConfirmNewGame"

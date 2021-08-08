@@ -5,13 +5,14 @@ import { HeaderButtons } from "react-navigation-header-buttons";
 import { useNavigation } from "@react-navigation/core";
 
 import { updatePlayerDetail } from "../../store/actions/game-actions";
+
+import BidsHeader from "../../components/game/BidsHeader";
 import BidRow from "../../components/game/BidRow";
 import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
 import HeaderButton from "../../components/UI/HeaderButton";
 import DefaultText from "../../components/UI/DefaultText";
 import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
 
-import CustomActionButton from "../../components/CustomActionButton";
 import RoundHeader from "../../components/game/RoundHeader";
 
 import Defaults from "../../constants/defaults";
@@ -21,14 +22,14 @@ import TKO from "../../helpers/helperFunctions";
 import { updateGame } from "../../helpers/db";
 
 const BidsScreen = (props) => {
-  // const game = useSelector((state) => state.game.currentGame);
   const currentGameId = useSelector((state) => state.game.currentGameId);
   const game = useSelector((state) => state.game.games[currentGameId]);
 
-  const round = props.route.params.round;
+  const round = parseInt(props.route.params.round);
   const roundKey = `r${round}`;
   const players = game.players;
   const roundPlayersDetail = game.roundData[roundKey];
+  const numCards = game.numCardsByRound[round - 1];
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -91,7 +92,7 @@ const BidsScreen = (props) => {
         //Check to see if baseScore is greater than zero
         baseScore =
           game.roundData[roundKey][player.id].baseScore > 0
-            ? TKO.calcBaseScore(parseInt(bids[index]), parseInt(round))
+            ? TKO.calcBaseScore(parseInt(bids[index]), numCards)
             : 0;
       } else {
         accuracy =
@@ -99,10 +100,11 @@ const BidsScreen = (props) => {
           game.roundData[roundKey][player.id].accuracy == Constants.accuracy.glancingBlow
             ? Constants.accuracy.completeMiss
             : game.roundData[roundKey][player.id].accuracy;
+
         //Rascal and Rascal enhanced
         baseScore = TKO.calcRascalBaseScore(
           game.scoringType,
-          parseInt(round),
+          numCards,
           cannonTypes[index],
           accuracy
         );
@@ -146,6 +148,7 @@ const BidsScreen = (props) => {
       <View style={styles.totalBidsContainer}>
         <DefaultText style={styles.totalBidsText}>Total bids: {totalBids}</DefaultText>
       </View>
+      <BidsHeader scoringType={game.scoringType} />
       <ScrollView>
         {players.map((player, index) => {
           return (

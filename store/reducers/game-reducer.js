@@ -26,6 +26,7 @@ const gameReducer = (state = initialState, action) => {
         gameType: action.gameData.gameType,
         scoringType: action.gameData.scoringType,
         isLastRoundScored: action.gameData.isLastRoundScored,
+        numCardsByRound: action.gameData.numCardsByRound,
       });
 
       const newGameId = `game${newGame.id}`;
@@ -50,9 +51,6 @@ const gameReducer = (state = initialState, action) => {
         })
         .catch((err) => console.log(err));
 
-      // //Update state store
-      // state.games[state.currentGameId] = setScoringRoundGame;
-
       return {
         ...state,
         games: { ...state.games, [state.currentGameId]: setScoringRoundGame },
@@ -69,9 +67,6 @@ const gameReducer = (state = initialState, action) => {
           if (dbResult.rowsAffected !== 1) console.log("error saving game");
         })
         .catch((err) => console.log(err));
-
-      // //Update state store
-      // state.games[state.currentGameId] = setSelectedRoundGame;
 
       return {
         ...state,
@@ -95,7 +90,6 @@ const gameReducer = (state = initialState, action) => {
         ...state,
         games: { ...state.games, [state.currentGameId]: setIsLastRoundScoredGame },
       };
-
     case actions.SAVE_PLAYER_NAME:
       const newPlayers = [];
       const playerId = action.playerId;
@@ -211,7 +205,6 @@ const gameReducer = (state = initialState, action) => {
         roundData: totalScoresRoundData,
       };
       return { ...state, games: { ...state.games, [state.currentGameId]: updatedScoresGame } };
-
     case actions.COMPLETE_CURRENT_GAME:
       const winner = action.winner;
       //Create new game
@@ -233,7 +226,9 @@ const gameReducer = (state = initialState, action) => {
       };
     case actions.LOAD_GAMES:
       const loadedGamesObject = {};
-      const parsedGames = action.games.map((game) => JSON.parse(game.game));
+      const parsedGames = action.games.map((game) => {
+        return { ...JSON.parse(game.game), id: game.id };
+      });
 
       //Sort games by most recent date
       const sortedGames = parsedGames.sort((a, b) => {
@@ -256,6 +251,7 @@ const gameReducer = (state = initialState, action) => {
           winner: game.winner,
           scoringType: game.scoringType,
           isLastRoundScored: game.isLastRoundScored,
+          numCardsByRound: game.numCardsByRound,
         });
 
         loadedGamesObject[loadedGameObjectId] = newLoadedGame;
@@ -264,6 +260,34 @@ const gameReducer = (state = initialState, action) => {
       return { ...state, games: loadedGamesObject };
     case actions.SET_CURRENT_GAME:
       return { ...state, currentGameId: `game${action.game.id}` };
+    case actions.UPDATE_NUM_CARDS_BY_ROUND:
+      const numCardsByRound = [];
+      state.games[state.currentGameId].numCardsByRound.forEach((numCards, index) => {
+        if (index + 1 === parseInt(action.round)) {
+          numCardsByRound.push(parseInt(action.numCards));
+        } else {
+          numCardsByRound.push(numCards);
+        }
+      });
+
+      //Update game json object
+      const updateNumCardsByRoundGame = {
+        ...state.games[state.currentGameId],
+        numCardsByRound,
+      };
+
+      //Save to database
+      updateGame(updateNumCardsByRoundGame)
+        .then((dbResult) => {
+          if (dbResult.rowsAffected !== 1) console.log("error saving game");
+        })
+        .catch((err) => console.log(err));
+
+      return {
+        ...state,
+        games: { ...state.games, [state.currentGameId]: updateNumCardsByRoundGame },
+      };
+
     default:
       return state;
   }

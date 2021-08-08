@@ -20,13 +20,10 @@ import Defaults from "../../constants/defaults";
 
 const GameScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
-  const [isGameOver, setIsGameOver] = useState(false);
 
   const currentGameId = useSelector((state) => state.game.currentGameId);
   const game = useSelector((state) => state.game.games[currentGameId]);
-
   const navigation = useNavigation();
 
   //Calculate width of Round Player detail columns

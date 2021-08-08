@@ -3,6 +3,7 @@ import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("calavera.db");
 
 export const init = () => {
+  console.log("init");
   const promise = new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
@@ -22,6 +23,7 @@ export const init = () => {
 };
 
 export const insertGame = (game) => {
+  console.log("insertGame");
   const gameString = JSON.stringify(game);
   const promise = new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -42,6 +44,7 @@ export const insertGame = (game) => {
 };
 
 export const fetchGames = () => {
+  console.log("fetchGames");
   const promise = new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
@@ -61,6 +64,7 @@ export const fetchGames = () => {
 };
 
 export const deleteGameData = () => {
+  console.log("deleteGameData");
   const promise = new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
@@ -80,10 +84,11 @@ export const deleteGameData = () => {
 };
 
 export const deleteGameFromDB = (gameId) => {
+  console.log("deleteGameFromDB");
   const promise = new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        "DELETE from games WHERE id = (?);",
+        `DELETE from games WHERE id = ?;`,
         [gameId],
         (_, result) => {
           resolve(result);
@@ -99,6 +104,7 @@ export const deleteGameFromDB = (gameId) => {
 };
 
 export const updateGame = (game) => {
+  console.log("updateGame");
   const gameString = JSON.stringify(game);
 
   const promise = new Promise((resolve, reject) => {

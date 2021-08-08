@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   ScrollView,
   ActivityIndicator,
   StyleSheet,
@@ -11,28 +10,54 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import SelectDropdown from "react-native-select-dropdown";
 
 import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
-import CustomActionButton from "../../components/CustomActionButton";
 import IncDecButton from "../../components/UI/IncDecButton";
 import DefaultText from "../../components/UI/DefaultText";
+import CustomActionButton from "../../components/CustomActionButton";
 import CreateGamePlayerRow from "../../components/game/CreateGamePlayerRow";
+import CardsByRoundRow from "../../components/game/CardsByRoundRow";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 import Constants from "../../constants/constants";
 
 const CreateGameScreen = (props) => {
+  const navigation = useNavigation();
+
+  const initNumCardsByRound = (numRounds) => {
+    const numCards = [];
+
+    for (let r = 1; r <= parseInt(numRounds); r++) {
+      numCards.push(r);
+    }
+    return numCards;
+  };
+
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
   const [playerNames, setPlayerNames] = useState(["", "", "", ""]);
-  // const [playerNames, setPlayerNames] = useState(["", "", "", ""]);
   const [isGameStartable, setIsGameStartable] = useState(true);
   const [numRounds, setNumRounds] = useState("10");
   const [numPlayers, setNumPlayers] = useState("4");
   const [scoringType, setScoringType] = useState(Constants.scoringType.rascalEnhanced);
+  const [cardsByRound, setCardsByRound] = useState(initNumCardsByRound(numRounds));
+
+  const updateCardsByRoundState = (countCards, index) => {
+    let countCardsByRound = [];
+    for (let i = 0; i < cardsByRound.length; i++) {
+      if (index === i) {
+        countCardsByRound.push(countCards);
+      } else {
+        countCardsByRound.push(cardsByRound[i]);
+      }
+    }
+
+    setCardsByRound(countCardsByRound);
+  };
 
   const incOrDecRoundsHandler = (direction) => {
     const minNumRounds = 1;
@@ -95,13 +120,18 @@ const CreateGameScreen = (props) => {
   };
 
   const confirmNewGameHandler = () => {
-    props.navigation.navigate("ConfirmNewGame", {
+    navigation.navigate("ConfirmNewGame", {
       playerNames,
       numRounds,
       scoringType,
     });
   };
 
+  const cardsByRoundHandler = () => {
+    // navigation.navigate("CardsByRound", {
+    //   cardsByRound: [0, 1, 2, 3, 4],
+    // });
+  };
   // if (error) {
   //   return (
   //     <View style={styles.centered}>
@@ -132,7 +162,7 @@ const CreateGameScreen = (props) => {
             <SelectDropdown
               data={Constants.scoringTypes}
               onSelect={(selectedItem, index) => {
-                setScoringType(selectedItem);
+                setScoringType(index);
               }}
               defaultValueByIndex={Constants.scoringType.rascalEnhanced}
               buttonTextAfterSelection={(selectedItem, index) => {
@@ -148,10 +178,9 @@ const CreateGameScreen = (props) => {
               buttonTextStyle={styles.dropdownText}
             />
           </View>
-
           <View style={styles.row}>
             <DefaultText style={styles.label}>How many rounds?</DefaultText>
-            <View style={styles.numRoundsContainer}>
+            <View style={styles.dataContainer}>
               <IncDecButton incOrDec={"dec"} onPress={incOrDecRoundsHandler.bind(this, "lower")} />
               <DefaultText style={styles.incDecValue}>{numRounds}</DefaultText>
               <IncDecButton incOrDec={"inc"} onPress={incOrDecRoundsHandler.bind(this, "higher")} />
@@ -159,7 +188,7 @@ const CreateGameScreen = (props) => {
           </View>
           <View style={styles.row}>
             <DefaultText style={styles.label}>How many Players?</DefaultText>
-            <View style={styles.numRoundsContainer}>
+            <View style={styles.dataContainer}>
               <IncDecButton
                 incOrDec={"dec"}
                 onPress={incOrDecNumPlayersHandler.bind(this, "lower")}
@@ -171,7 +200,23 @@ const CreateGameScreen = (props) => {
               />
             </View>
           </View>
-
+          {/* <View style={styles.numRoundsContainer}>
+            <CustomActionButton style={styles.secondaryButton} onPress={cardsByRoundHandler}>
+              <DefaultText style={styles.secondaryButtonText}>Cards By Round</DefaultText>
+            </CustomActionButton>
+          </View> */}
+          {/* <View style={styles.cardsByRoundContainer}>
+                {cardsByRound.map((numCards, index) => {
+                  return (
+                    <CardsByRoundRow
+                      key={index}
+                      index={index}
+                      cardsByRound={cardsByRound}
+                      setCardsByRound={updateCardsByRoundState}
+                    />
+                  );
+                })}
+              </View> */}
           <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.playerNamesContainer}>
               {playerNames.map((playerName, index) => {
@@ -186,9 +231,13 @@ const CreateGameScreen = (props) => {
               })}
             </View>
           </ScrollView>
+
           <View style={styles.buttonContainer}>
             {isGameStartable ? (
-              <ScreenPrimaryButton onPress={confirmNewGameHandler} buttonText={"Start Game"} />
+              <ScreenPrimaryButton
+                onPress={confirmNewGameHandler}
+                buttonText={"Save Game Settings"}
+              />
             ) : null}
           </View>
         </View>
@@ -208,6 +257,8 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopWidth: 1,
     backgroundColor: Colors.screenBackgroundColor,
+    borderColor: "black",
+    borderWidth: 1,
   },
   buttonContainer: {
     paddingHorizontal: 15,
@@ -227,8 +278,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     paddingRight: 5,
   },
-  numRoundsContainer: {
+  dataContainer: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  numRoundsContainer: {
+    paddingTop: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   incDecValue: {
     fontFamily: "open-sans",
@@ -240,6 +299,13 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "ios" ? 3 : 0,
     borderColor: Colors.theme.grey4,
     borderWidth: 1,
+  },
+  secondaryButton: {
+    backgroundColor: Defaults.button.secondary,
+  },
+  secondaryButtonText: {
+    color: "white",
+    fontSize: Defaults.fontSize,
   },
   playerNamesContainer: {
     marginTop: 10,

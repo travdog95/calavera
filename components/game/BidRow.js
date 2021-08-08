@@ -12,12 +12,10 @@ import Colors from "../../constants/colors";
 
 const BidRow = (props) => {
   const scoringType = props.scoringType;
-  const isRascalEnhancedScoring =
-    scoringType === Constants.scoringType.rascalEnhanced ? true : false;
   const grapeshotColor =
-    parseInt(props.cannonTypes[props.playerIndex]) === 0 ? Colors.theme.dark4 : Colors.theme.grey3;
+    parseInt(props.cannonTypes[props.playerIndex]) === 0 ? Colors.theme.dark4 : Colors.theme.grey4;
   const cannonBallColor =
-    parseInt(props.cannonTypes[props.playerIndex]) === 1 ? Colors.theme.dark4 : Colors.theme.grey3;
+    parseInt(props.cannonTypes[props.playerIndex]) === 1 ? Colors.theme.dark4 : Colors.theme.grey4;
 
   const numberInputHandler = (inputText) => {
     props.setBids(inputText.replace(/[^0-9]/g, ""), props.playerIndex);
@@ -49,7 +47,7 @@ const BidRow = (props) => {
 
   return (
     <View style={styles.row}>
-      <View style={{ width: isRascalEnhancedScoring ? "50%" : "70%", justifyContent: "center" }}>
+      <View style={{ width: scoringType === Constants.scoringType.rascalEnhanced ? "40%" : "70%" }}>
         <DefaultText style={styles.playerName}>{props.player.name}</DefaultText>
       </View>
       <View style={styles.bidContainer}>
@@ -66,12 +64,12 @@ const BidRow = (props) => {
         />
         <IncDecButton incOrDec={"inc"} onPress={incOrDecValueHandler.bind(this, "higher")} />
       </View>
-      {isRascalEnhancedScoring ? (
+      {scoringType === Constants.scoringType.rascalEnhanced ? (
         <View style={styles.cannonContainer}>
-          <CustomActionButton style={{ padding: 5 }} onPress={cannonTypeHandler.bind(this, 0)}>
+          <CustomActionButton style={styles.cannonButton} onPress={cannonTypeHandler.bind(this, 0)}>
             <FontAwesome5 name="hand-paper" size={24} color={grapeshotColor} />
           </CustomActionButton>
-          <CustomActionButton style={{ padding: 5 }} onPress={cannonTypeHandler.bind(this, 1)}>
+          <CustomActionButton style={styles.cannonButton} onPress={cannonTypeHandler.bind(this, 1)}>
             <FontAwesome5 name="hand-rock" size={24} color={cannonBallColor} />
           </CustomActionButton>
         </View>
@@ -87,21 +85,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 5,
-    borderColor: "black",
+    borderColor: Colors.theme.grey2,
     borderBottomWidth: 1,
-  },
-  playerNameContainer: {
-    justifyContent: "center",
   },
   playerName: {
     fontSize: Defaults.largeFontSize,
-    fontWeight: "bold",
   },
   bidContainer: {
     width: "30%",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "center",
   },
   bid: {
     fontFamily: "open-sans",
@@ -112,9 +106,16 @@ const styles = StyleSheet.create({
   },
   cannonContainer: {
     flexDirection: "row",
-    width: "20%",
+    width: "30%",
     justifyContent: "flex-end",
     alignItems: "center",
+  },
+  cannonButton: {
+    padding: 5,
+    backgroundColor: Colors.theme.grey2,
+    borderColor: Colors.theme.grey4,
+    borderWidth: 1,
+    marginLeft: 5,
   },
 });
 
