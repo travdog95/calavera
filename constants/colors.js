@@ -14,6 +14,9 @@ export default {
   logoColor: "#bada55",
   listItemBg: "#354D58DA",
   screenBackgroundColor: "white",
+  mainColor: "#C2E3F3",
+  accentColor: "#e9ecef",
+  urlText: "blue",
   theme: {
     dark4: "#03071e",
     dark3: "#370617",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   ScrollView,
@@ -12,13 +12,15 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import SelectDropdown from "react-native-select-dropdown";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { BorderlessButton } from "react-native-gesture-handler";
+import { ModalResultType } from "react-native-use-modal";
 
+import { useHelpModal } from "../../components/UI/HelpModal";
 import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
 import IncDecButton from "../../components/UI/IncDecButton";
 import DefaultText from "../../components/UI/DefaultText";
-import CustomActionButton from "../../components/CustomActionButton";
 import CreateGamePlayerRow from "../../components/game/CreateGamePlayerRow";
-import CardsByRoundRow from "../../components/game/CardsByRoundRow";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
@@ -26,15 +28,6 @@ import Constants from "../../constants/constants";
 
 const CreateGameScreen = (props) => {
   const navigation = useNavigation();
-
-  const initNumCardsByRound = (numRounds) => {
-    const numCards = [];
-
-    for (let r = 1; r <= parseInt(numRounds); r++) {
-      numCards.push(r);
-    }
-    return numCards;
-  };
 
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -44,20 +37,23 @@ const CreateGameScreen = (props) => {
   const [numRounds, setNumRounds] = useState("10");
   const [numPlayers, setNumPlayers] = useState("4");
   const [scoringType, setScoringType] = useState(Constants.scoringType.rascalEnhanced);
-  const [cardsByRound, setCardsByRound] = useState(initNumCardsByRound(numRounds));
 
-  const updateCardsByRoundState = (countCards, index) => {
-    let countCardsByRound = [];
-    for (let i = 0; i < cardsByRound.length; i++) {
-      if (index === i) {
-        countCardsByRound.push(countCards);
-      } else {
-        countCardsByRound.push(cardsByRound[i]);
-      }
+  const helpModal = useHelpModal();
+
+  const handlePress = useCallback(async () => {
+    const result = await helpModal.show({
+      title: Constants.help.scoringSystem.title,
+      message: Constants.help.scoringSystem.helpText,
+      url: Constants.help.scoringSystem.url,
+      urlText: Constants.help.scoringSystem.urlText,
+    });
+
+    if (result.type === ModalResultType.CONFIRM) {
+      // handle confirm
+    } else {
+      // handle cancel
     }
-
-    setCardsByRound(countCardsByRound);
-  };
+  }, [helpModal]);
 
   const incOrDecRoundsHandler = (direction) => {
     const minNumRounds = 1;
@@ -127,11 +123,6 @@ const CreateGameScreen = (props) => {
     });
   };
 
-  const cardsByRoundHandler = () => {
-    // navigation.navigate("CardsByRound", {
-    //   cardsByRound: [0, 1, 2, 3, 4],
-    // });
-  };
   // if (error) {
   //   return (
   //     <View style={styles.centered}>
@@ -158,7 +149,12 @@ const CreateGameScreen = (props) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.screen}>
           <View style={styles.row}>
-            <DefaultText style={styles.label}>Scoring System?</DefaultText>
+            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+              <DefaultText style={styles.label}>Scoring System:</DefaultText>
+              <BorderlessButton onPress={handlePress}>
+                <Ionicons name="help-circle-outline" size={24} color="black" />
+              </BorderlessButton>
+            </View>
             <SelectDropdown
               data={Constants.scoringTypes}
               onSelect={(selectedItem, index) => {
@@ -175,11 +171,19 @@ const CreateGameScreen = (props) => {
                 // if data array is an array of objects then return item.property to represent item in dropdown
                 return item;
               }}
-              buttonTextStyle={styles.dropdownText}
+              buttonStyle={styles.dropdownBtnStyle}
+              buttonTextStyle={styles.dropdownBtnTxtStyle}
+              renderDropdownIcon={() => {
+                return <FontAwesome name="chevron-down" color={"#444"} size={18} />;
+              }}
+              dropdownIconPosition={"right"}
+              dropdownStyle={styles.dropdownDropdownStyle}
+              rowStyle={styles.dropdownRowStyle}
+              rowTextStyle={styles.dropdownRowTxtStyle}
             />
           </View>
           <View style={styles.row}>
-            <DefaultText style={styles.label}>How many rounds?</DefaultText>
+            <DefaultText style={styles.label}>Number of Rounds:</DefaultText>
             <View style={styles.dataContainer}>
               <IncDecButton incOrDec={"dec"} onPress={incOrDecRoundsHandler.bind(this, "lower")} />
               <DefaultText style={styles.incDecValue}>{numRounds}</DefaultText>
@@ -187,7 +191,7 @@ const CreateGameScreen = (props) => {
             </View>
           </View>
           <View style={styles.row}>
-            <DefaultText style={styles.label}>How many Players?</DefaultText>
+            <DefaultText style={styles.label}>Number of Players:</DefaultText>
             <View style={styles.dataContainer}>
               <IncDecButton
                 incOrDec={"dec"}
@@ -200,23 +204,6 @@ const CreateGameScreen = (props) => {
               />
             </View>
           </View>
-          {/* <View style={styles.numRoundsContainer}>
-            <CustomActionButton style={styles.secondaryButton} onPress={cardsByRoundHandler}>
-              <DefaultText style={styles.secondaryButtonText}>Cards By Round</DefaultText>
-            </CustomActionButton>
-          </View> */}
-          {/* <View style={styles.cardsByRoundContainer}>
-                {cardsByRound.map((numCards, index) => {
-                  return (
-                    <CardsByRoundRow
-                      key={index}
-                      index={index}
-                      cardsByRound={cardsByRound}
-                      setCardsByRound={updateCardsByRoundState}
-                    />
-                  );
-                })}
-              </View> */}
           <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.playerNamesContainer}>
               {playerNames.map((playerName, index) => {
@@ -300,21 +287,33 @@ const styles = StyleSheet.create({
     borderColor: Colors.theme.grey4,
     borderWidth: 1,
   },
-  secondaryButton: {
-    backgroundColor: Defaults.button.secondary,
-  },
-  secondaryButtonText: {
-    color: "white",
-    fontSize: Defaults.fontSize,
-  },
   playerNamesContainer: {
     marginTop: 10,
     alignItems: "center",
   },
-  dropdownText: { fontSize: Defaults.largeFontSize },
   scrollView: {
     paddingBottom: 30,
   },
+  header: {
+    width: "100%",
+    height: 40,
+    alignItems: "flex-end",
+    justifyContent: "center",
+  },
+  dropdownBtnStyle: {
+    height: 40,
+    backgroundColor: "#FFF",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#444",
+  },
+  dropdownBtnTxtStyle: { color: "#444", textAlign: "left" },
+  dropdownDropdownStyle: { backgroundColor: "#EFEFEF" },
+  dropdownRowStyle: {
+    backgroundColor: "#EFEFEF",
+    borderBottomColor: "#C5C5C5",
+  },
+  dropdownRowTxtStyle: { color: "#444", textAlign: "left" },
 });
 
 export default CreateGameScreen;

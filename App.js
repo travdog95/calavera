@@ -8,7 +8,8 @@ import * as Font from "expo-font"; //should be installed by default, but run exp
 import { enableScreens } from "react-native-screens";
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import ReduxThunk from 'redux-thunk'
+import ReduxThunk from "redux-thunk";
+import { ModalProvider } from "react-native-use-modal";
 
 import { DrawNavigator } from "./navigation/DrawerNavigator";
 import { AppTabNavigator } from "./navigation/TabNavigator";
@@ -56,12 +57,14 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <SafeAreaView style={styles.screen}>
-        <NavigationContainer>
-          <AppTabNavigator />
-        </NavigationContainer>
-        <StatusBar style="auto" />
-      </SafeAreaView>
+      <ModalProvider>
+        <SafeAreaView style={styles.screen}>
+          <NavigationContainer>
+            <AppTabNavigator />
+          </NavigationContainer>
+          <StatusBar style="auto" />
+        </SafeAreaView>
+      </ModalProvider>
     </Provider>
   );
 }
