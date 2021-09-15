@@ -51,8 +51,8 @@ export default {
   game: {
     rowHeight: 45,
     playerRowHeight: 40,
-    playerMinWidth: 80,
-    roundNumWidth: 35,
+    playerMinWidth: 85,
+    roundNumWidth: 60,
     roundPlayerDetailWidth: 90,
     bonusScoreDefaults: {
       alliance1: 20,

@@ -406,8 +406,7 @@ export const screenOptions = (navData) => {
     headerTitle: `Scores`,
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <HeaderButtonBids />
-
+        {/* <HeaderButtonBids /> */}
         <HeaderButtonLeaderboard />
       </HeaderButtons>
     ),

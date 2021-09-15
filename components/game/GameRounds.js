@@ -1,9 +1,12 @@
 import React from "react";
-import { Pressable, View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { IconButton } from "react-native-paper";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-import { setCurrentRound } from "../../store/actions/game-actions";
+import { setSelectedRound } from "../../store/actions/game-actions";
+import DefaultText from "../../components/UI/DefaultText";
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
@@ -12,8 +15,6 @@ const GameRounds = () => {
   const navigation = useNavigation();
   const currentGameId = useSelector((state) => state.game.currentGameId);
   const game = useSelector((state) => state.game.games[currentGameId]);
-
-  // const game = useSelector((state) => state.game.currentGame);
 
   //convert numRounds to array
   let rounds = [];
@@ -24,37 +25,43 @@ const GameRounds = () => {
   return (
     <View style={styles.row}>
       {rounds.map((round) => {
-        const content = game.scoringRound === round ? `[${round}]` : round;
-        const roundBackgroundColor =
-          game.scoringRound === round ? Colors.theme.light3 : Colors.theme.light1;
-        let isPressable = false;
-        if (round === game.scoringRound) isPressable = true;
-        if (round + 1 === game.scoringRound) isPressable = true;
+        let roundBackgroundColor = "";
+        if (round === game.scoringRound) {
+          roundBackgroundColor = Colors.theme.light3Shade;
+        } else {
+          roundBackgroundColor = round % 2 === 0 ? Colors.theme.grey2 : "white";
+        }
+
+        let icon = "";
+        if (round === game.scoringRound) icon = "play-box";
+        if (round < game.scoringRound) icon = "pencil";
 
         return (
-          <Pressable
-            key={round.toString()}
-            style={({ pressed }) => [
-              {
-                backgroundColor:
-                  pressed && isPressable ? Colors.theme.light2 : roundBackgroundColor,
-              },
-              styles.roundContainer,
-            ]}
-            onPress={() => {
-              //dispatch(setCurrentRound(round));
-
-              if (isPressable) {
-                navigation.navigate("Scores", {
-                  round: round,
-                });
-              }
-            }}
+          <View
+            key={round}
+            style={[styles.roundContainer, { backgroundColor: roundBackgroundColor }]}
           >
-            <View>
-              <Text style={styles.round}>{content}</Text>
+            <View style={styles.buttonContainer}>
+              {icon ? (
+                <IconButton
+                  onPress={() => {
+                    dispatch(setSelectedRound(round));
+
+                    navigation.navigate("Bids", {
+                      round: round,
+                    });
+                  }}
+                  color={Colors.theme.dark1}
+                  style={styles.button}
+                  icon={icon}
+                  size={30}
+                />
+              ) : null}
             </View>
-          </Pressable>
+            <View style={styles.labelContainer}>
+              <DefaultText style={styles.round}>{round}</DefaultText>
+            </View>
+          </View>
         );
       })}
     </View>
@@ -62,18 +69,25 @@ const GameRounds = () => {
 };
 
 const styles = StyleSheet.create({
-  row: {},
+  row: { backgroundColor: Colors.theme.light2 },
   roundContainer: {
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     borderBottomWidth: 1,
     borderRightWidth: 1,
     borderColor: "black",
-    width: Defaults.game.roundNumWidth,
     height: Defaults.game.rowHeight,
+    width: Defaults.game.roundNumWidth,
   },
+  labelContainer: { width: "50%", alignItems: "center" },
+  buttonContainer: { width: "50%", alignItems: "center" },
   round: {
     fontFamily: "open-sans-bold",
+    fontSize: 18,
+  },
+  button: {
+    padding: 1,
   },
 });
 

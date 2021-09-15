@@ -97,8 +97,8 @@ export const screenOptions = () => {
     },
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <HeaderButtonBids screen={"GameScreen"} />
-        <HeaderButtonScores />
+        {/* <HeaderButtonBids screen={"GameScreen"} />
+        <HeaderButtonScores /> */}
         <HeaderButtonLeaderboard />
       </HeaderButtons>
     ),
