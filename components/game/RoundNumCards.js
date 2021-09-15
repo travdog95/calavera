@@ -39,7 +39,7 @@ const RoundNumCards = (props) => {
         <IncDecButton
           incOrDec={"dec"}
           onPress={incOrDecValueHandler.bind(this, "lower")}
-          style={{ backgroundColor: Colors.theme.grey5 }}
+          style={{ backgroundColor: Colors.theme.light2 }}
         />
         <Input
           style={styles.numCards}
@@ -54,7 +54,7 @@ const RoundNumCards = (props) => {
         <IncDecButton
           incOrDec={"inc"}
           onPress={incOrDecValueHandler.bind(this, "higher")}
-          style={{ backgroundColor: Colors.theme.grey5 }}
+          style={{ backgroundColor: Colors.theme.light2 }}
         />
       </View>
     </View>
@@ -66,8 +66,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderColor: Colors.theme.grey2,
-    borderBottomWidth: 1,
+    // borderColor: Colors.theme.grey2,
+    // borderBottomWidth: 1,
     paddingVertical: 5,
   },
   label: {

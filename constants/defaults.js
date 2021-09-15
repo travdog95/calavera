@@ -27,8 +27,8 @@ export default {
   scoreScreen: {
     widths: {
       rascal: {
-        bidContainer: "25%",
-        scoreContainer: "40%",
+        bidContainer: "20%",
+        scoreContainer: "45%",
         bonusContainer: "35%",
       },
       classic: {
