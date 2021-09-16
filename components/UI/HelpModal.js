@@ -1,6 +1,6 @@
 import React from "react";
-import { View, StyleSheet, Linking, Text } from "react-native";
-import { Button, Paragraph, Title } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
+import { Button, Title } from "react-native-paper";
 import { createUseModal } from "react-native-use-modal";
 
 import Colors from "../../constants/colors";
@@ -12,20 +12,7 @@ export const useHelpModal = createUseModal(({ confirm, param }) => {
         <Title style={styles.title}>{param.title}</Title>
       </View>
       <View style={styles.paragraphContainer}>
-        <Paragraph>{param.message}</Paragraph>
-        {param.url ? (
-          <Button
-            onPress={() => {
-              Linking.openURL(param.url);
-            }}
-            uppercase={false}
-            style={styles.url}
-            compact={true}
-            labelStyle={styles.url}
-          >
-            <Text>{param.urlText}</Text>
-          </Button>
-        ) : null}
+        <View>{param.message}</View>
       </View>
       <View style={styles.buttonContainer}>
         <Button mode="contained" onPress={confirm} color={Colors.mainColor}>
@@ -55,10 +42,6 @@ const styles = StyleSheet.create({
   },
   paragraphContainer: {
     padding: 15,
-  },
-  url: {
-    color: Colors.urlText,
-    textDecorationLine: "underline",
   },
   buttonContainer: {
     flexDirection: "row",

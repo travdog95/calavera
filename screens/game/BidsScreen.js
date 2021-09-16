@@ -8,7 +8,7 @@ import { updatePlayerDetail } from "../../store/actions/game-actions";
 
 import BidsHeader from "../../components/game/BidsHeader";
 import BidRow from "../../components/game/BidRow";
-import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
+import HeaderButtonLeaderboard from "../../components/game/header-buttons/HeaderButtonLeaderboard";
 import HeaderButton from "../../components/UI/HeaderButton";
 import DefaultText from "../../components/UI/DefaultText";
 import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";

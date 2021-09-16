@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import {
   View,
   ScrollView,
@@ -12,14 +12,12 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import SelectDropdown from "react-native-select-dropdown";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
-import { BorderlessButton } from "react-native-gesture-handler";
-import { ModalResultType } from "react-native-use-modal";
+import { FontAwesome } from "@expo/vector-icons";
 
-import { useHelpModal } from "../../components/UI/HelpModal";
 import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
 import IncDecButton from "../../components/UI/IncDecButton";
 import DefaultText from "../../components/UI/DefaultText";
+import HelpButton from "../../components/UI/HelpButton";
 import CreateGamePlayerRow from "../../components/game/CreateGamePlayerRow";
 
 import Colors from "../../constants/colors";
@@ -37,23 +35,6 @@ const CreateGameScreen = (props) => {
   const [numRounds, setNumRounds] = useState("10");
   const [numPlayers, setNumPlayers] = useState("4");
   const [scoringType, setScoringType] = useState(Constants.scoringType.rascalEnhanced);
-
-  const helpModal = useHelpModal();
-
-  const handlePress = useCallback(async () => {
-    const result = await helpModal.show({
-      title: Constants.help.scoringSystem.title,
-      message: Constants.help.scoringSystem.helpText,
-      url: Constants.help.scoringSystem.url,
-      urlText: Constants.help.scoringSystem.urlText,
-    });
-
-    if (result.type === ModalResultType.CONFIRM) {
-      // handle confirm
-    } else {
-      // handle cancel
-    }
-  }, [helpModal]);
 
   const incOrDecRoundsHandler = (direction) => {
     const minNumRounds = 1;
@@ -151,9 +132,7 @@ const CreateGameScreen = (props) => {
           <View style={styles.row}>
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
               <DefaultText style={styles.label}>Scoring System:</DefaultText>
-              <BorderlessButton onPress={handlePress}>
-                <Ionicons name="help-circle-outline" size={24} color="black" />
-              </BorderlessButton>
+              <HelpButton helpKey="scoringSystem" />
             </View>
             <SelectDropdown
               data={Constants.scoringTypes}
