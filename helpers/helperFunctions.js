@@ -124,4 +124,10 @@ export default {
 
     return null;
   },
+  isUsingRascalScoring(scoringType) {
+    return parseInt(scoringType) === Constants.scoringType.rascal ||
+      parseInt(scoringType) === Constants.scoringType.rascalEnhanced
+      ? true
+      : false;
+  },
 };

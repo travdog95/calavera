@@ -4,8 +4,6 @@ import { Paragraph } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 
-import DefaultText from "../../components/UI/DefaultText";
-import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
 
 const ScorecardHelpText = (props) => {

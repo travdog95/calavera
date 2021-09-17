@@ -14,6 +14,7 @@ import {
 import RoundNumCards from "../../components/game/RoundNumCards";
 import ScoreRow from "../../components/game/ScoreRow";
 import HeaderButtonLeaderboard from "../../components/game/header-buttons/HeaderButtonLeaderboard";
+import HelpButton from "../../components/UI/HelpButton";
 import HeaderButtonBids from "../../components/game/header-buttons/HeaderButtonBids";
 import HeaderButton from "../../components/UI/HeaderButton";
 import RoundHeader from "../../components/game/RoundHeader";
@@ -407,6 +408,7 @@ export const screenOptions = (navData) => {
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         {/* <HeaderButtonBids /> */}
+        <HelpButton helpKey="scores" isInHeader={true} />
         <HeaderButtonLeaderboard />
       </HeaderButtons>
     ),

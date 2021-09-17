@@ -1,10 +1,9 @@
 import React from "react";
-import { View, StyleSheet, Linking, Text } from "react-native";
+import { View, StyleSheet, Linking } from "react-native";
 import { Paragraph, Button } from "react-native-paper";
 
-import DefaultText from "../../components/UI/DefaultText";
-import Defaults from "../../constants/defaults";
 import Colors from "../../constants/colors";
+import Constants from "../../constants/constants";
 
 const ScoringSystemHelpText = (props) => {
   return (
@@ -19,14 +18,14 @@ const ScoringSystemHelpText = (props) => {
       </Paragraph>
       <Button
         onPress={() => {
-          Linking.openURL("https://www.grandpabecksgames.com/rules-skull-king");
+          Linking.openURL(Constants.rulesUrl);
         }}
         uppercase={false}
         style={styles.url}
         compact={true}
         labelStyle={styles.url}
       >
-        Rules - Skull King
+        Skull King Rules
       </Button>
     </View>
   );
