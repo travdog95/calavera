@@ -17,6 +17,7 @@ import { BorderlessButton } from "react-native-gesture-handler";
 import { ModalResultType } from "react-native-use-modal";
 
 import { useHelpModal } from "../../components/UI/HelpModal";
+import ScoringSystemHelp from "../../components/UI/help_modals/ScoringSystemHelp";
 import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
 import IncDecButton from "../../components/UI/IncDecButton";
 import DefaultText from "../../components/UI/DefaultText";
@@ -43,7 +44,7 @@ const CreateGameScreen = (props) => {
   const handlePress = useCallback(async () => {
     const result = await helpModal.show({
       title: Constants.help.scoringSystem.title,
-      message: Constants.help.scoringSystem.helpText,
+      message: <ScoringSystemHelp />,
       url: Constants.help.scoringSystem.url,
       urlText: Constants.help.scoringSystem.urlText,
     });

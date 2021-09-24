@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, Button, ActivityIndicator, StyleSheet, Alert } from "react-native";
-import * as Animatable from "react-native-animatable";
 import { useSelector } from "react-redux";
 import { HeaderButtons } from "react-navigation-header-buttons";
 import { useNavigation } from "@react-navigation/core";
@@ -49,14 +48,10 @@ const GameScreen = (props) => {
     navigation.navigate("Winner");
   };
 
-  if (error) {
-    return (
-      <View style={styles.centered}>
-        <Text>An error occurred!</Text>
-        <Button title="Try again" onPress={loadProducts} color={Colors.theme.main3} />
-      </View>
-    );
-  }
+  // if (error) {
+  //   return (
+  //   );
+  // }
 
   if (isLoading) {
     return (
