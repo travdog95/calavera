@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Text, ScrollView, Button, ActivityIndicator, StyleSheet, Alert } from "react-native";
 import { useSelector } from "react-redux";
 import { HeaderButtons } from "react-navigation-header-buttons";
@@ -7,9 +7,10 @@ import { useNavigation } from "@react-navigation/core";
 import GamePlayersHeader from "../../components/game/GamePlayersHeader";
 import GameRounds from "../../components/game/GameRounds";
 import GameRoundRows from "../../components/game/GameRoundRows";
-import HeaderButtonLeaderboard from "../../components/game/HeaderButtonLeaderboard";
-import HeaderButtonBids from "../../components/game/HeaderButtonBids";
-import HeaderButtonScores from "../../components/game/HeaderButtonScores";
+import HeaderButtonLeaderboard from "../../components/game/header-buttons/HeaderButtonLeaderboard";
+import HelpButton from "../../components/UI/HelpButton";
+import HeaderButtonBids from "../../components/game/header-buttons/HeaderButtonBids";
+import HeaderButtonScores from "../../components/game/header-buttons/HeaderButtonScores";
 import HeaderButton from "../../components/UI/HeaderButton";
 import DefaultText from "../../components/UI/DefaultText";
 import CustomActionButton from "../../components/CustomActionButton";
@@ -92,8 +93,9 @@ export const screenOptions = () => {
     },
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <HeaderButtonBids screen={"GameScreen"} />
-        <HeaderButtonScores />
+        {/* <HeaderButtonBids screen={"GameScreen"} />
+        <HeaderButtonScores /> */}
+        <HelpButton helpKey="scorecard" isInHeader={true} />
         <HeaderButtonLeaderboard />
       </HeaderButtons>
     ),

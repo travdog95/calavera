@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 import CustomActionButton from "../../components/CustomActionButton";
 import DefaultText from "../../components/UI/DefaultText";
@@ -174,8 +175,8 @@ const ScoreRow = (props) => {
               ...{
                 backgroundColor:
                   props.accuracies[props.playerIndex] == Constants.accuracy.directHit
-                    ? Colors.theme.light2
-                    : Colors.theme.grey4,
+                    ? Colors.theme.main3
+                    : Colors.theme.grey5,
               },
             }}
             onPress={props.updateAccuraciesState.bind(
@@ -193,8 +194,8 @@ const ScoreRow = (props) => {
                 ...{
                   backgroundColor:
                     props.accuracies[props.playerIndex] == Constants.accuracy.glancingBlow
-                      ? Colors.theme.light2
-                      : Colors.theme.grey4,
+                      ? Colors.theme.main3
+                      : Colors.theme.grey5,
                 },
               }}
               onPress={props.updateAccuraciesState.bind(
@@ -212,8 +213,8 @@ const ScoreRow = (props) => {
               ...{
                 backgroundColor:
                   props.accuracies[props.playerIndex] == Constants.accuracy.completeMiss
-                    ? Colors.theme.light2
-                    : Colors.theme.grey4,
+                    ? Colors.theme.main3
+                    : Colors.theme.grey5,
               },
             }}
             onPress={props.updateAccuraciesState.bind(
@@ -232,46 +233,58 @@ const ScoreRow = (props) => {
   const bidLabel = isRascalScoring ? "Bid" : "Got Bid?";
   return (
     <View style={styles.container}>
-      <View style={styles.topRow}>
-        <View style={styles.playerNameContainer}>
-          <DefaultText style={styles.playerName}>{props.player.name}</DefaultText>
+      <LinearGradient
+        colors={["white", Colors.theme.grey3]}
+        start={{ x: 0, y: 0.4 }}
+        style={styles.linearGradient}
+      >
+        <View style={styles.topRow}>
+          <View style={styles.playerNameContainer}>
+            <DefaultText style={styles.playerName}>{props.player.name}</DefaultText>
+          </View>
+          <View style={styles.roundScoreContainer}>
+            <DefaultText style={styles.roundScore}>{props.scores[props.playerIndex]}</DefaultText>
+          </View>
         </View>
-        <View style={styles.roundScoreContainer}>
-          <DefaultText style={styles.roundScore}>{props.scores[props.playerIndex]}</DefaultText>
+        <View style={styles.row}>
+          <DefaultText style={{ ...styles.columnHeader, width: bidContainerWidth }}>
+            {bidLabel}
+          </DefaultText>
+          <DefaultText style={{ ...styles.columnHeader, width: scoreContainerWidth }}>
+            Score
+          </DefaultText>
+          <DefaultText style={{ ...styles.columnHeader, width: bonusContainerWidth }}>
+            Bonus
+          </DefaultText>
         </View>
-      </View>
-      <View style={styles.row}>
-        <DefaultText style={{ ...styles.columnHeader, width: bidContainerWidth }}>
-          {bidLabel}
-        </DefaultText>
-        <DefaultText style={{ ...styles.columnHeader, width: scoreContainerWidth }}>
-          Score
-        </DefaultText>
-        <DefaultText style={{ ...styles.columnHeader, width: bonusContainerWidth }}>
-          Bonus
-        </DefaultText>
-      </View>
-      <View style={styles.row}>
-        {bidContent}
-        {scoreContent}
-        <View style={{ ...styles.bonusContainer, width: bonusContainerWidth }}>
-          <IncDecButton
-            incOrDec={"dec"}
-            style={styles.bonusScoreButton}
-            onPress={props.incOrDecValue.bind(this, "lower", props.playerIndex, 10, "bonusScore")}
-          />
-          <Input
-            style={styles.scoreInput}
-            value={props.bonusScores[props.playerIndex]}
-            editable={false}
-          />
-          <IncDecButton
-            incOrDec={"inc"}
-            style={styles.bonusScoreButton}
-            onPress={props.incOrDecValue.bind(this, "higher", props.playerIndex, 10, "bonusScore")}
-          />
+        <View style={styles.row}>
+          {bidContent}
+          {scoreContent}
+          <View style={{ ...styles.bonusContainer, width: bonusContainerWidth }}>
+            <IncDecButton
+              incOrDec={"dec"}
+              style={styles.bonusScoreButton}
+              onPress={props.incOrDecValue.bind(this, "lower", props.playerIndex, 10, "bonusScore")}
+            />
+            <Input
+              style={styles.scoreInput}
+              value={props.bonusScores[props.playerIndex]}
+              editable={false}
+            />
+            <IncDecButton
+              incOrDec={"inc"}
+              style={styles.bonusScoreButton}
+              onPress={props.incOrDecValue.bind(
+                this,
+                "higher",
+                props.playerIndex,
+                10,
+                "bonusScore"
+              )}
+            />
+          </View>
         </View>
-      </View>
+      </LinearGradient>
     </View>
   );
 };
@@ -281,9 +294,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    borderColor: "black",
+    borderWidth: 1,
+    marginTop: 2,
+    marginHorizontal: 2,
+    borderRadius: 3,
+  },
+  linearGradient: {
+    borderRadius: 3,
+    height: "100%",
     width: "100%",
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
   },
   topRow: {
     width: "100%",
@@ -292,14 +312,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 5,
     paddingVertical: 5,
-    backgroundColor: Colors.theme.dark2,
+    // backgroundColor: Colors.theme.dark2,
   },
   playerNameContainer: {
     textAlign: "left",
   },
   playerName: {
     fontSize: Defaults.largeFontSize,
-    color: "white",
+    color: "black",
   },
   // bonusButtonContainer: {
   //   alignItems: "center",
@@ -317,7 +337,7 @@ const styles = StyleSheet.create({
   roundScore: {
     textAlign: "right",
     fontSize: Defaults.largeFontSize,
-    color: "white",
+    color: "black",
   },
   row: {
     width: "100%",
@@ -337,6 +357,7 @@ const styles = StyleSheet.create({
   bidButton: {
     padding: 5,
     height: Defaults.isSmallScreen ? 30 : 35,
+    width: Defaults.isSmallScreen ? 40 : 45,
   },
   scoreContainer: {
     flexDirection: "row",

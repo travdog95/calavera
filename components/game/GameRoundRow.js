@@ -43,6 +43,8 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     flex: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: "black",
   },
 });
 

@@ -20,7 +20,7 @@ const ScoreBox = (props) => {
   const game = useSelector((state) => state.game.games[currentGameId]);
 
   const currentRound = game.scoringRound;
-  const scoreBoxRound = parseInt(props.round);
+  const round = parseInt(props.round);
 
   let totalScoreStyle = {
     fontFamily: "open-sans-bold",
@@ -31,10 +31,10 @@ const ScoreBox = (props) => {
     totalScoreStyle.color = Colors.theme.main3;
   }
 
-  if (scoreBoxRound === currentRound) {
+  if (round === currentRound) {
     cellBackgroundColor = Colors.theme.light3Shade;
   } else {
-    cellBackgroundColor = scoreBoxRound % 2 === 0 ? Colors.theme.grey2 : "white";
+    cellBackgroundColor = round % 2 === 0 ? Colors.theme.grey2 : "white";
   }
 
   if (playerDetail.pointsWagered > 0) {
@@ -46,8 +46,8 @@ const ScoreBox = (props) => {
 
   //ONly allow user to go to scores for current round and previous round
   let isPressable = false;
-  if (scoreBoxRound === currentRound) isPressable = true;
-  if (scoreBoxRound < currentRound) isPressable = true;
+  // if (round === currentRound) isPressable = true;
+  // if (round < currentRound) isPressable = true;
 
   return (
     <View>
@@ -65,14 +65,14 @@ const ScoreBox = (props) => {
         ]}
         onPress={() => {
           //set current round
-          //dispatch(setCurrentRound(scoreBoxRound));
+          //dispatch(setCurrentRound(round));
 
           if (isPressable) {
-            dispatch(setSelectedRound(scoreBoxRound));
+            dispatch(setSelectedRound(round));
 
             //navigate to Scores screen
             navigation.navigate("Scores", {
-              round: scoreBoxRound,
+              round: round,
             });
           }
         }}
@@ -119,10 +119,9 @@ const styles = StyleSheet.create({
   roundContainer: {
     alignItems: "center",
     justifyContent: "center",
-    borderBottomWidth: 1,
     borderRightWidth: 1,
-    borderColor: "black",
-    height: Defaults.game.rowHeight,
+    borderRightColor: "black",
+    height: Defaults.game.rowHeight - 1,
   },
   topRowContainer: {
     flexDirection: "row",
