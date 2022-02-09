@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   },
   totalRowText: {
     fontSize: Defaults.extraLargeFontSize,
-    fontWeight: "bold",
+    fontFamily: Defaults.fontFamily.bold,
   },
 });
 

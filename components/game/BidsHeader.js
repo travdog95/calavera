@@ -36,19 +36,19 @@ const styles = StyleSheet.create({
   },
   playerLabel: {
     fontSize: Defaults.fontSize,
-    fontFamily: "open-sans-bold",
+    fontFamily: Defaults.fontFamily.bold,
   },
   bidLabel: {
     fontSize: Defaults.fontSize,
     width: "30%",
-    fontFamily: "open-sans-bold",
+    fontFamily: Defaults.fontFamily.bold,
     textAlign: "center",
   },
   accuracyLabel: {
     fontSize: Defaults.fontSize,
     width: "30%",
     textAlign: "right",
-    fontFamily: "open-sans-bold",
+    fontFamily: Defaults.fontFamily.bold,
   },
 });
 

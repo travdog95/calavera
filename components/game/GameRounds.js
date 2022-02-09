@@ -27,14 +27,19 @@ const GameRounds = () => {
       {rounds.map((round) => {
         let roundBackgroundColor = "";
         if (round === game.scoringRound) {
-          roundBackgroundColor = Colors.theme.light3Shade;
+          roundBackgroundColor = Colors.theme.lightShade;
         } else {
           roundBackgroundColor = round % 2 === 0 ? Colors.theme.grey2 : "white";
         }
 
         let icon = "";
-        if (round === game.scoringRound) icon = "play-box";
-        if (round < game.scoringRound) icon = "pencil";
+        if (parseInt(round) < parseInt(game.scoringRound) && game.isActive) icon = "pencil";
+        if (
+          parseInt(game.scoringRound) === parseInt(game.numRounds) &&
+          game.isLastRoundScored &&
+          game.isActive
+        )
+          icon = "pencil";
 
         return (
           <View
@@ -54,7 +59,7 @@ const GameRounds = () => {
                   color={Colors.theme.dark1}
                   style={styles.button}
                   icon={icon}
-                  size={30}
+                  size={26}
                 />
               ) : null}
             </View>
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
   labelContainer: { width: "50%", alignItems: "center" },
   buttonContainer: { width: "50%", alignItems: "center" },
   round: {
-    fontFamily: "open-sans-bold",
+    fontFamily: Defaults.fontFamily.bold,
     fontSize: 18,
   },
   button: {

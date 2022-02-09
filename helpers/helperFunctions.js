@@ -130,4 +130,21 @@ export default {
       ? true
       : false;
   },
+  calcRoundPlayerDetailWidth(numPlayers) {
+    let width = 0;
+
+    width = Math.floor((Defaults.windowWidth - Defaults.game.roundNumWidth) / numPlayers);
+
+    return width < Defaults.game.playerMinWidth ? Defaults.game.playerMinWidth : width;
+  },
+  getScoringTypeItems() {
+    const scoringTypeItems = [];
+
+    let i = 0;
+    Constants.scoringTypes.forEach((scoringType) => {
+      scoringTypeItems.push({ label: scoringType, value: i++ });
+    });
+
+    return scoringTypeItems;
+  },
 };

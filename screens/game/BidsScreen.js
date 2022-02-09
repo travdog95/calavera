@@ -3,6 +3,7 @@ import { View, ScrollView, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons } from "react-navigation-header-buttons";
 import { useNavigation } from "@react-navigation/core";
+import { useKeepAwake } from "expo-keep-awake";
 
 import { updatePlayerDetail } from "../../store/actions/game-actions";
 
@@ -23,6 +24,8 @@ import TKO from "../../helpers/helperFunctions";
 import { updateGame } from "../../helpers/db";
 
 const BidsScreen = (props) => {
+  useKeepAwake();
+
   const currentGameId = useSelector((state) => state.game.currentGameId);
   const game = useSelector((state) => state.game.games[currentGameId]);
 
@@ -123,6 +126,7 @@ const BidsScreen = (props) => {
 
     navigation.navigate("Scores", {
       round: round,
+      totalBids: totalBids,
     });
   };
 
@@ -145,10 +149,7 @@ const BidsScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <RoundHeader round={round} headerText={headerText} />
-      <View style={styles.totalBidsContainer}>
-        <DefaultText style={styles.totalBidsText}>Total bids: {totalBids}</DefaultText>
-      </View>
+      <RoundHeader round={round} headerText={headerText} totalBids={totalBids} showBids={true} />
       <BidsHeader scoringType={game.scoringType} />
       <ScrollView>
         {players.map((player, index) => {
@@ -190,20 +191,6 @@ export const screenOptions = (navData) => {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: Colors.screenBackgroundColor },
-  totalBidsContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 5,
-    borderColor: "black",
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    backgroundColor: Colors.theme.light2,
-  },
-  totalBidsText: {
-    fontSize: Defaults.largeFontSize,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
   buttonContainer: {
     paddingHorizontal: 15,
     paddingTop: 15,

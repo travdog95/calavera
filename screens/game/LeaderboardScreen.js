@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet, Image } from "react-native";
 import { useSelector } from "react-redux";
 
 import DefaultText from "../../components/UI/DefaultText";
@@ -54,22 +54,59 @@ const LeaderboardScreen = (props) => {
 
   if (game.scoringRound == 1) headerText = "Round 1";
 
+  let previousScore = 0;
+  let rank = 0;
+
   return (
     <View style={styles.screen}>
       <RoundHeader screen="LeaderboardScreen" headerText={headerText} />
+      <View style={styles.header}>
+        <DefaultText style={styles.rankLabel}>Rank</DefaultText>
+        <DefaultText style={styles.playerLabel}>Player</DefaultText>
+        <DefaultText style={styles.scoreLabel}>Score</DefaultText>
+      </View>
       <ScrollView contentContainerStyle={styles.leaderboardContainer}>
         {leaderboardData.map((data, index) => {
           {
             /* const rowBackgroundColor = index % 2 === 0 ? Colors.theme.grey2 : "white"; */
           }
           const rowBackgroundColor = "white";
+          if (previousScore !== parseInt(data.totalScore)) {
+            rank = index + 1;
+          }
+          previousScore = data.totalScore;
+
+          //Everyone is in first before the game begins
+          if (game.scoringRound == 1) rank = 1;
+
+          const rowFontSize = rank === 1 ? Defaults.extraLargeFontSize : Defaults.largeFontSize;
+
           return (
             <View
               key={index}
               style={{ ...styles.rowContainer, ...{ backgroundColor: rowBackgroundColor } }}
             >
-              <DefaultText style={styles.playerName}>{data.player.name}</DefaultText>
-              <DefaultText style={styles.score}>{data.totalScore}</DefaultText>
+              {rank === 1 ? (
+                <View style={[styles.rank, { alignItems: "center", justifyContent: "center" }]}>
+                  <Image
+                    source={require("../../assets/adaptive-icon.png")}
+                    style={{
+                      width: 35,
+                      height: 35,
+                    }}
+                  />
+                </View>
+              ) : (
+                <DefaultText style={{ ...styles.rank, ...{ fontSize: rowFontSize } }}>
+                  {rank}
+                </DefaultText>
+              )}
+              <DefaultText style={{ ...styles.playerName, ...{ fontSize: rowFontSize } }}>
+                {data.player.name}
+              </DefaultText>
+              <DefaultText style={{ ...styles.score, ...{ fontSize: rowFontSize } }}>
+                {data.totalScore}
+              </DefaultText>
             </View>
           );
         })}
@@ -96,23 +133,52 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 5,
     borderBottomWidth: 1,
-    borderColor: "black",
+    borderColor: Colors.theme.grey2,
     width: "100%",
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    borderColor: "black",
+    borderBottomWidth: 1,
+    paddingVertical: 5,
+  },
+  rankLabel: {
+    width: Defaults.leaderboardScreen.widths.rank,
+    textAlign: "center",
+    fontFamily: Defaults.fontFamily.bold,
+    fontSize: Defaults.largeFontSize,
+  },
+  playerLabel: {
+    width: Defaults.leaderboardScreen.widths.player,
+    textAlign: "left",
+    fontFamily: Defaults.fontFamily.bold,
+    fontSize: Defaults.largeFontSize,
+    paddingLeft: 5,
+  },
+  scoreLabel: {
+    width: Defaults.leaderboardScreen.widths.score,
+    textAlign: "center",
+    fontFamily: Defaults.fontFamily.bold,
+    fontSize: Defaults.largeFontSize,
+  },
   playerName: {
-    width: "70%",
-    paddingLeft: 10,
-    fontWeight: "bold",
-    fontSize: Defaults.extraLargeFontSize,
+    width: Defaults.leaderboardScreen.widths.player,
+    paddingLeft: 5,
   },
   score: {
-    width: "30%",
-    textAlign: "right",
-    fontWeight: "bold",
-    paddingHorizontal: 10,
-    fontSize: Defaults.extraLargeFontSize,
+    width: Defaults.leaderboardScreen.widths.score,
+    textAlign: "center",
+  },
+  rank: {
+    width: Defaults.leaderboardScreen.widths.rank,
+    textAlign: "center",
   },
   backButton: {
     backgroundColor: Defaults.button.cancel,

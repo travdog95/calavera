@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
 
   addPlayerInput: {
-    fontFamily: "open-sans",
+    fontFamily: Defaults.fontFamily.regular,
     fontSize: Defaults.largeFontSize,
     marginTop: 15,
     padding: 5,

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, ScrollView, StyleSheet, Button } from "react-native";
-import * as Animatable from "react-native-animatable";
+//import * as Animatable from "react-native-animatable";
 import { useDispatch, useSelector } from "react-redux";
 
 import { updatePlayerData } from "../../store/actions/game-actions";
@@ -143,23 +143,23 @@ const AddBonusScreen = (props) => {
           </DefaultText>
         </View>
       )}
-      <Animatable.View
+      {/* <Animatable.View
         style={{ position: "absolute", left: 20, bottom: 20 }}
         animation={"slideInLeft"}
-      >
-        <CustomActionButton style={styles.backButton} onPress={backButtonHandler}>
-          <DefaultText style={styles.buttonText}>Back</DefaultText>
-        </CustomActionButton>
-      </Animatable.View>
+      > */}
+      <CustomActionButton style={styles.backButton} onPress={backButtonHandler}>
+        <DefaultText style={styles.buttonText}>Back</DefaultText>
+      </CustomActionButton>
+      {/* </Animatable.View> */}
 
-      <Animatable.View
+      {/* <Animatable.View
         style={{ position: "absolute", right: 20, bottom: 20 }}
         animation={"slideInRight"}
-      >
-        <CustomActionButton style={styles.primaryButton} onPress={updateBonusHandler}>
-          <DefaultText style={styles.buttonText}>Save bonus</DefaultText>
-        </CustomActionButton>
-      </Animatable.View>
+      > */}
+      <CustomActionButton style={styles.primaryButton} onPress={updateBonusHandler}>
+        <DefaultText style={styles.buttonText}>Save bonus</DefaultText>
+      </CustomActionButton>
+      {/* </Animatable.View> */}
     </View>
   );
 };

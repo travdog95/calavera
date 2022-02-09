@@ -39,7 +39,7 @@ const RoundNumCards = (props) => {
         <IncDecButton
           incOrDec={"dec"}
           onPress={incOrDecValueHandler.bind(this, "lower")}
-          style={{ backgroundColor: Colors.theme.light2 }}
+          // style={{ backgroundColor: Colors.theme.light2 }}
         />
         <Input
           style={styles.numCards}
@@ -54,7 +54,7 @@ const RoundNumCards = (props) => {
         <IncDecButton
           incOrDec={"inc"}
           onPress={incOrDecValueHandler.bind(this, "higher")}
-          style={{ backgroundColor: Colors.theme.light2 }}
+          // style={{ backgroundColor: Colors.theme.light2 }}
         />
       </View>
     </View>
@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   label: {
-    fontSize: Defaults.largeFontSize,
+    fontSize: Defaults.mediumFontSize,
+    marginHorizontal: 2,
   },
   numCardsContainer: {
     width: "30%",
@@ -80,8 +81,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   numCards: {
-    fontFamily: "open-sans",
-    fontSize: Defaults.largeFontSize,
+    fontFamily: Defaults.fontFamily.regular,
+    fontSize: Defaults.mediumFontSize,
     textAlign: "center",
     width: Defaults.isSmallScreen ? 35 : 40,
     height: Defaults.isSmallScreen ? 30 : 35,

@@ -22,30 +22,31 @@ import ScoresScreen, { screenOptions as scoresScreenOptions } from "../screens/g
 import EditPlayerNamesScreen, {
   screenOptions as editPlayerNamesScreenOptions,
 } from "../screens/game/EditPlayerNamesScreen";
-import AddBonusScreen, {
-  screenOptions as addBonusScreenOptions,
-} from "../screens/game/AddBonusScreen";
-import BonusScreen, { screenOptions as bonusScreenOptions } from "../screens/game/BonusScreen";
+// import AddBonusScreen, {
+//   screenOptions as addBonusScreenOptions,
+// } from "../screens/game/AddBonusScreen";
+// import BonusScreen, { screenOptions as bonusScreenOptions } from "../screens/game/BonusScreen";
 import LeaderboardScreen, {
   screenOptions as leaderboardScreenOptions,
 } from "../screens/game/LeaderboardScreen";
 import WinnerScreen, { screenOptions as winnerScreenOptions } from "../screens/game/WinnerScreen";
 
-import SettingsScreen, { screenOptions as settingsScreenOptions } from "../screens/SettingsScreen";
+// import SettingsScreen, { screenOptions as settingsScreenOptions } from "../screens/SettingsScreen";
 
 import Colors from "../constants/colors";
+import Defaults from "../constants/defaults";
 
 const defaultNavOptions = {
   headerStyle: {
-    backgroundColor: Platform.OS === "android" ? Colors.theme.dark4 : "",
+    backgroundColor: Platform.OS === "android" ? Colors.theme.grey9 : "",
   },
   headerTitleStyle: {
-    fontFamily: "open-sans-bold",
+    fontFamily: Defaults.fontFamily.bold,
   },
   headerBackTitleStyle: {
-    fontFamily: "open-sans",
+    fontFamily: Defaults.fontFamily.regular,
   },
-  headerTintColor: Platform.OS === "android" ? "white" : Colors.theme.dark4,
+  headerTintColor: Platform.OS === "android" ? "white" : Colors.theme.grey9,
 };
 
 const GameStackNavigator = createStackNavigator();
@@ -97,11 +98,11 @@ export const GameNavigator = (props) => {
         component={AddBonusScreen}
         options={addBonusScreenOptions}
       /> */}
-      <GameStackNavigator.Screen
+      {/* <GameStackNavigator.Screen
         name="Bonus"
         component={BonusScreen}
         options={bonusScreenOptions}
-      />
+      /> */}
       <GameStackNavigator.Screen
         name="Winner"
         component={WinnerScreen}
@@ -111,16 +112,16 @@ export const GameNavigator = (props) => {
   );
 };
 
-const SettingsStackNavigator = createStackNavigator();
+// const SettingsStackNavigator = createStackNavigator();
 
-export const SettingsNavigator = (props) => {
-  return (
-    <SettingsStackNavigator.Navigator screenOptions={defaultNavOptions}>
-      <SettingsStackNavigator.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={settingsScreenOptions}
-      />
-    </SettingsStackNavigator.Navigator>
-  );
-};
+// export const SettingsNavigator = (props) => {
+//   return (
+//     <SettingsStackNavigator.Navigator screenOptions={defaultNavOptions}>
+//       <SettingsStackNavigator.Screen
+//         name="Settings"
+//         component={SettingsScreen}
+//         options={settingsScreenOptions}
+//       />
+//     </SettingsStackNavigator.Navigator>
+//   );
+// };

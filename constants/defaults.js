@@ -1,5 +1,6 @@
 import { Dimensions } from "react-native";
 import Colors from "./colors";
+import Constants from "./constants";
 
 const smallScreenWidth = 340;
 const windowWidth = Math.floor(Dimensions.get("window").width);
@@ -11,11 +12,17 @@ export default {
   windowHeight,
   smallScreenWidth,
   isSmallScreen,
-  smallFontSize: isSmallScreen ? 8 : 12,
+  fontFamily: {
+    regular: "fira-sans",
+    bold: "fira-sans-bold",
+    light: "fira-sans-light",
+  },
+  extraSmallFontSize: isSmallScreen ? 8 : 12,
+  smallFontSize: isSmallScreen ? 10 : 14,
   fontSize: isSmallScreen ? 12 : 16,
+  mediumFontSize: isSmallScreen ? 14 : 18,
   largeFontSize: isSmallScreen ? 16 : 20,
-  extraLargeFontSize: isSmallScreen ? 22 : 28,
-  emphasis: { fontWeight: "bold" },
+  extraLargeFontSize: isSmallScreen ? 20 : 24,
   button: {
     primary: Colors.theme.dark1,
     secondary: Colors.theme.main1,
@@ -32,8 +39,8 @@ export default {
         bonusContainer: "35%",
       },
       classic: {
-        bidContainer: "15%",
-        scoreContainer: "50%",
+        bidContainer: "25%",
+        scoreContainer: "40%",
         bonusContainer: "35%",
       },
     },
@@ -64,6 +71,16 @@ export default {
       skullKing: 50,
     },
     wagerPirateValues: [0, 10, 20],
+    numRounds: 10,
+    numPlayers: 4,
+    scoringType: Constants.scoringType.classic,
+  },
+  leaderboardScreen: {
+    widths: {
+      rank: "18%",
+      player: "67%",
+      score: "15%",
+    },
   },
   setBids: {
     rowHeight: 50,

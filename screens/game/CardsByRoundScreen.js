@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   totalBidsText: {
     fontSize: Defaults.largeFontSize,
     textAlign: "center",
-    fontWeight: "bold",
+    fontFamily: Defaults.fontFamily.bold,
   },
   buttonContainer: {
     paddingHorizontal: 15,

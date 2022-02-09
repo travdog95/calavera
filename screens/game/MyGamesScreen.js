@@ -1,15 +1,11 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { StyleSheet, View, ScrollView, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import _ from "lodash";
 
 import GameRow from "../../components/game/GameRow";
 import { loadGames, deleteGames } from "../../store/actions/game-actions";
-
 import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
-
-import HeaderButton from "../../components/UI/HeaderButton";
 import DefaultText from "../../components/UI/DefaultText";
 
 import Defaults from "../../constants/defaults";
@@ -36,6 +32,7 @@ const MyGamesScreen = (props) => {
     ]);
     return;
   };
+
   return (
     <View style={styles.screen}>
       <View style={styles.buttonContainer}>
@@ -43,7 +40,7 @@ const MyGamesScreen = (props) => {
           onPress={() => {
             props.navigation.navigate("CreateGame");
           }}
-          buttonText={"Create Game"}
+          buttonText={"New Game"}
         />
         <ScreenPrimaryButton onPress={confirmDeleteGameData} buttonText={"Delete All Games"} />
       </View>
@@ -52,7 +49,7 @@ const MyGamesScreen = (props) => {
           <DefaultText>No games!!</DefaultText>
         </View>
       ) : (
-        <View>
+        <View style={{ flex: 1 }}>
           <View style={styles.headerContainer}>
             <DefaultText style={styles.gameLabel}>Game</DefaultText>
             <DefaultText style={styles.playersLabel}># Players</DefaultText>
@@ -120,23 +117,23 @@ const styles = StyleSheet.create({
     borderColor: Colors.theme.grey2,
     borderBottomWidth: 1,
   },
-  contentContainer: {},
+  contentContainer: { flexGrow: 1 },
   gameLabel: {
     fontSize: Defaults.fontSize,
     width: Defaults.myGamesScreen.widths.description,
-    fontFamily: "open-sans-bold",
+    fontFamily: Defaults.fontFamily.bold,
   },
   playersLabel: {
     fontSize: Defaults.fontSize,
     width: Defaults.myGamesScreen.widths.players,
     textAlign: "center",
-    fontFamily: "open-sans-bold",
+    fontFamily: Defaults.fontFamily.bold,
   },
   statusLabel: {
     fontSize: Defaults.fontSize,
     width: Defaults.myGamesScreen.widths.status,
     textAlign: "right",
-    fontFamily: "open-sans-bold",
+    fontFamily: Defaults.fontFamily.bold,
   },
 });
 

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Button, ActivityIndicator, StyleSheet, Alert } 
 import { useSelector } from "react-redux";
 import { HeaderButtons } from "react-navigation-header-buttons";
 import { useNavigation } from "@react-navigation/core";
+import { useKeepAwake } from "expo-keep-awake";
 
 import GamePlayersHeader from "../../components/game/GamePlayersHeader";
 import GameRounds from "../../components/game/GameRounds";
@@ -12,13 +13,15 @@ import HelpButton from "../../components/UI/HelpButton";
 import HeaderButtonBids from "../../components/game/header-buttons/HeaderButtonBids";
 import HeaderButtonScores from "../../components/game/header-buttons/HeaderButtonScores";
 import HeaderButton from "../../components/UI/HeaderButton";
-import DefaultText from "../../components/UI/DefaultText";
-import CustomActionButton from "../../components/CustomActionButton";
+import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
+import TKO from "../../helpers/helperFunctions";
 
 const GameScreen = (props) => {
+  useKeepAwake();
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
 
@@ -26,16 +29,7 @@ const GameScreen = (props) => {
   const game = useSelector((state) => state.game.games[currentGameId]);
   const navigation = useNavigation();
 
-  //Calculate width of Round Player detail columns
-  const calcRoundPlayerDetailWidth = () => {
-    let width = 0;
-
-    width = Math.floor((Defaults.windowWidth - Defaults.game.roundNumWidth) / game.players.length);
-
-    return width < Defaults.game.playerMinWidth ? Defaults.game.playerMinWidth : width;
-  };
-
-  const roundPlayerDetailWidth = calcRoundPlayerDetailWidth();
+  const roundPlayerDetailWidth = TKO.calcRoundPlayerDetailWidth(game.players.length);
 
   const confirmCompleteGame = () => {
     Alert.alert("Arrrrg!", "Complete game and declare the winner?", [
@@ -51,7 +45,7 @@ const GameScreen = (props) => {
 
   if (error) {
     return (
-      <View style={styles.centered}>
+      <View>
         <Text>An error occurred!</Text>
         <Button title="Try again" onPress={loadProducts} color={Colors.theme.main3} />
       </View>
@@ -60,7 +54,7 @@ const GameScreen = (props) => {
 
   if (isLoading) {
     return (
-      <View style={styles.centered}>
+      <View>
         <ActivityIndicator size="large" color={Colors.theme.main3} />
       </View>
     );
@@ -73,6 +67,7 @@ const GameScreen = (props) => {
           <GamePlayersHeader
             players={game.players}
             roundPlayerDetailWidth={roundPlayerDetailWidth}
+            gameIsActive={game.isActive}
           />
           <View style={styles.roundsContainer}>
             <GameRounds />
@@ -81,9 +76,20 @@ const GameScreen = (props) => {
         </ScrollView>
       </ScrollView>
       {game.isLastRoundScored && game.isActive ? (
-        <CustomActionButton style={styles.primaryButton} onPress={confirmCompleteGame}>
-          <DefaultText style={styles.primaryButtonText}>Complete Game</DefaultText>
-        </CustomActionButton>
+        <View style={styles.buttonContainer}>
+          <ScreenPrimaryButton onPress={confirmCompleteGame} buttonText={"Complete Game"} />
+        </View>
+      ) : null}
+
+      {game.isActive === false ? (
+        <View style={styles.buttonContainer}>
+          <ScreenPrimaryButton
+            onPress={() => {
+              navigation.navigate("Winner");
+            }}
+            buttonText={"Winner Screen"}
+          />
+        </View>
       ) : null}
     </View>
   );
@@ -97,8 +103,6 @@ export const screenOptions = () => {
     },
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        {/* <HeaderButtonBids screen={"GameScreen"} />
-        <HeaderButtonScores /> */}
         <HelpButton helpKey="scorecard" isInHeader={true} />
         <HeaderButtonLeaderboard />
       </HeaderButtons>
@@ -111,15 +115,9 @@ const styles = StyleSheet.create({
   roundsContainer: {
     flexDirection: "row",
   },
-  primaryButton: {
-    backgroundColor: Defaults.button.primary,
-    margin: 5,
-  },
-
-  primaryButtonText: {
-    color: "white",
-    fontSize: Defaults.fontSize,
-    fontWeight: "bold",
+  buttonContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 15,
   },
 });
 

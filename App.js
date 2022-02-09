@@ -15,15 +15,17 @@ import { DrawNavigator } from "./navigation/DrawerNavigator";
 import { AppTabNavigator } from "./navigation/TabNavigator";
 import gameReducer from "./store/reducers/game-reducer";
 import settingsReducer from "./store/reducers/settings-reducer";
-import { init } from "./helpers/db";
+import { initGames, initSettings } from "./helpers/db";
 
-init()
-  .then(() => {
-    console.log("Initialized database");
+const initGamesTablePromise = initGames();
+const initSettingsTablePromise = initSettings();
+
+Promise.all([initGamesTablePromise, initSettingsTablePromise])
+  .then((values) => {
+    console.log(values);
   })
-  .catch((err) => {
-    console.log("Initializing db failed");
-    console.log(err);
+  .catch((error) => {
+    console.error(error.message);
   });
 
 enableScreens(); //ensure react-native uses native underlying screen components. Should be called before you render your first screen
@@ -39,8 +41,13 @@ const fetchFonts = () => {
   return Font.loadAsync({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+    "fira-sans": require("./assets/fonts/FiraSans-Regular.ttf"),
+    "fira-sans-bold": require("./assets/fonts/FiraSans-Bold.ttf"),
+    "fira-sans-light": require("./assets/fonts/FiraSans-Light.ttf"),
   });
 };
+
+//If settings don't exist in db, load from defaults.js
 
 export default function App() {
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -72,7 +79,6 @@ export default function App() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    //backgroundColor: Platform.OS === "ios" ? "white" : Colors.theme.dark4,
     backgroundColor: "white",
   },
 });

@@ -1,44 +1,39 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { IconButton } from "react-native-paper";
+import { RectButton } from "react-native-gesture-handler";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
 
 const GamePlayersHeader = (props) => {
   const navigation = useNavigation();
+
+  const editPlayerName = (player) => {
+    navigation.navigate("EditPlayerNames", {
+      playerId: player.id,
+      playerName: player.name,
+    });
+  };
+
   return (
     <View style={styles.row}>
       <View style={styles.spacer}>
-        <Text style={styles.roundLabelText}>Round</Text>
+        <Text style={styles.labelText}>Round</Text>
       </View>
       {props.players.map((player) => {
         return (
-          <View
+          <TouchableOpacity
+            onPress={editPlayerName.bind(this, player)}
             style={[styles.playerContainer, { width: props.roundPlayerDetailWidth }]}
             key={player.id.toString()}
           >
-            <View style={styles.playerNameContainer}>
-              <Text ellipsizeMode="tail" numberOfLines={1} style={styles.playerText}>
+            <View>
+              <Text ellipsizeMode="tail" numberOfLines={1} style={styles.labelText}>
                 {player.name}
               </Text>
             </View>
-            <View style={styles.buttonContainer}>
-              <IconButton
-                onPress={() => {
-                  navigation.navigate("EditPlayerNames", {
-                    playerId: player.id,
-                    playerName: player.name,
-                  });
-                }}
-                color="white"
-                style={styles.editButton}
-                icon={"pencil"}
-                size={12}
-              />
-            </View>
-          </View>
+          </TouchableOpacity>
         );
       })}
     </View>
@@ -55,13 +50,13 @@ const styles = StyleSheet.create({
   spacer: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.theme.light3,
+    backgroundColor: Colors.theme.grey6,
     width: Defaults.game.roundNumWidth,
     borderRightWidth: 1,
     borderRightColor: "black",
   },
   playerContainer: {
-    backgroundColor: Colors.theme.main2,
+    backgroundColor: Colors.theme.dark1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -69,20 +64,9 @@ const styles = StyleSheet.create({
     borderRightColor: "black",
     minWidth: Defaults.game.playerMinWidth,
   },
-  playerNameContainer: {
-    width: "80%",
-    paddingLeft: 3,
-  },
-  playerText: {
-    fontFamily: "open-sans-bold",
-    color: "white",
-    width: "100%",
-  },
-  roundLabelText: {
-    fontFamily: "open-sans-bold",
+  labelText: {
+    fontFamily: Defaults.fontFamily.bold,
     color: "white",
   },
-  buttonContainer: { width: "20%" },
-  editButton: { margin: -2 },
 });
 export default GamePlayersHeader;

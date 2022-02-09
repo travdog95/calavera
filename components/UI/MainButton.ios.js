@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import Colors from "../../constants/colors";
+import Defaults from "../../constants/defaults";
 
 const MainButton = (props) => {
   return (
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontFamily: "open-sans",
+    fontFamily: Defaults.fontFamily.regular,
   },
 });
 

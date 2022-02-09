@@ -1,12 +1,13 @@
 {
   "expo": {
-    "name": "calavera",
-    "slug": "calavera",
-    "version": "0.3.1",
+    "name": "Score King",
+    "description": "App for scoring Skull King",
+    "slug": "score-king",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/noun_Skull_9941.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -16,18 +17,17 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.travdog95.calavera"
+      "bundleIdentifier": "com.tkoapps.calavera"
     },
     "android": {
+      "versionCode": 3,
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/noun_Skull_9941.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#F8F8FA"
       },
-      "package": "com.travdog95.calavera"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+      "package": "com.tkoapps.calavera",
+      "permissions": []
     }
   }
 }

@@ -1,33 +1,28 @@
 export default {
-  success: "#89b99b",
-  successDark: "#3C6E47DA",
-  error: "#deada5",
-  primary: "#AAD1E6",
-  main: "#2E424D",
-  textInput: "#ececec",
-  textInputDark: "#b6b6b6",
-  color: "#f7f2f2",
-  delete: "#6E3C3CDA",
-  unread: "#436E81",
-  txtPlaceholder: "#466575",
-  borderColor: "#E9E9E9",
-  logoColor: "#bada55",
-  listItemBg: "#354D58DA",
   screenBackgroundColor: "white",
-  mainColor: "#C2E3F3",
-  accentColor: "#e9ecef",
   urlText: "blue",
+  danger: "#dd0000",
   theme: {
-    dark4: "#03071e",
-    dark3: "#370617",
-    dark2: "#6a040f",
-    dark1: "#9d0208",
-    main3: "#d00000",
-    main2: "#dc2f02",
-    main1: "#e85d04",
-    light3: "#f48c06",
-    light2: "#faa307",
-    light1: "#ffba08",
+    // dark4: "#03071e",
+    // dark3: "#370617",
+    // dark2: "#6a040f",
+    // dark1: "#9d0208",
+    // main3: "#d00000",
+    // main2: "#dc2f02",
+    // main1: "#e85d04",
+    // light3: "#f48c06",
+    // light2: "#faa307",
+    // light1: "#ffba08",
+    dark4: "#012A4A",
+    dark3: "#013A63",
+    dark2: "#01497C",
+    dark1: "#014F86", //main color
+    main3: "#2A6F97",
+    main2: "#2C7DA0",
+    main1: "#468FAF",
+    light3: "#61A5C2",
+    light2: "#89C2D9",
+    light1: "#A9D6E5",
     grey1: "#f8f9fa",
     grey2: "#e9ecef",
     grey3: "#dee2e6",
@@ -37,12 +32,15 @@ export default {
     grey7: "#495057",
     grey8: "#343a40",
     grey9: "#212529",
-    light1Shade: "#FFE8AD",
-    light3Shade: "#FEEDD7",
+    darkShade: "#0177cb",
+    lightShade: "#c2e5ff",
   },
 };
 
 //https://coolors.co/03071e-370617-6a040f-9d0208-d00000-dc2f02-e85d04-f48c06-faa307-ffba08
+
+//Blues
+//https://coolors.co/012a4a-013a63-01497c-014f86-2a6f97-2c7da0-468faf-61a5c2-89c2d9-a9d6e5
 
 // /* CSV */
 // 03071e,370617,6a040f,9d0208,d00000,dc2f02,e85d04,f48c06,faa307,ffba08

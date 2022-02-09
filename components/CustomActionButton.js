@@ -8,7 +8,7 @@ import {
   Platform,
 } from "react-native";
 import Proptypes from "prop-types";
-import Colors from "../constants/colors";
+import Defaults from "../constants/defaults";
 
 const CustomActionButton = ({ children, onPress, style }) => {
   let ButtonComponent = TouchableOpacity;
@@ -51,6 +51,6 @@ const styles = StyleSheet.create({
     // shadowOpacity: 0.8,
   },
   buttonText: {
-    fontFamily: "open-sans",
+    fontFamily: Defaults.fontFamily.regular,
   },
 });

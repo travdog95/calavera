@@ -1,18 +1,20 @@
 import React, { useEffect } from "react";
 import { View, ImageBackground, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 import DefaultText from "../../components/UI/DefaultText";
 import { completeCurrentGame } from "../../store/actions/game-actions";
+import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
 
 import Defaults from "../../constants/defaults";
 
 const WinnerScreen = (props) => {
-  // const game = useSelector((state) => state.game.currentGame);
   const currentGameId = useSelector((state) => state.game.currentGameId);
   const game = useSelector((state) => state.game.games[currentGameId]);
 
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const finalRoundKey = `r${game.numRounds}`;
 
@@ -67,6 +69,10 @@ const WinnerScreen = (props) => {
 
   const winnerNames = winners.map((winner) => winner.player.name);
 
+  const playNewGame = () => {
+    navigation.navigate("CreateGame", { previousGameId: currentGameId });
+  };
+
   //complete game
   useEffect(() => {
     dispatch(completeCurrentGame(winners));
@@ -79,6 +85,10 @@ const WinnerScreen = (props) => {
         style={styles.backgroundImage}
       >
         {winnerText}
+
+        <View style={styles.buttonContainer}>
+          <ScreenPrimaryButton onPress={playNewGame} buttonText={"Play another game"} />
+        </View>
       </ImageBackground>
     </View>
   );
@@ -103,12 +113,16 @@ const styles = StyleSheet.create({
     fontSize: Defaults.extraLargeFontSize,
     textAlign: "center",
     color: "white",
-    fontWeight: "bold",
+    fontFamily: Defaults.fontFamily.bold,
     backgroundColor: "#000000a0",
   },
   winner: {
     fontSize: Defaults.extraLargeFontSize,
     textAlign: "center",
+  },
+  buttonContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 15,
   },
 });
 

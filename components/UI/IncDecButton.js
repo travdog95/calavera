@@ -17,7 +17,7 @@ const IncDecButton = (props) => {
 
 const styles = StyleSheet.create({
   decrementButton: {
-    backgroundColor: Defaults.button.secondary,
+    backgroundColor: Defaults.button.primary,
     borderBottomRightRadius: 0,
     borderTopRightRadius: 0,
     height: Defaults.isSmallScreen ? 30 : 35,
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   incrementButton: {
-    backgroundColor: Defaults.button.secondary,
+    backgroundColor: Defaults.button.primary,
     borderBottomLeftRadius: 0,
     borderTopLeftRadius: 0,
     height: Defaults.isSmallScreen ? 30 : 35,

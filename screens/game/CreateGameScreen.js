@@ -4,83 +4,70 @@ import {
   ScrollView,
   ActivityIndicator,
   StyleSheet,
-  Alert,
   Platform,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import SelectDropdown from "react-native-select-dropdown";
-import { FontAwesome } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
 
+import { useNavigation } from "@react-navigation/native";
+import Dropdown from "react-native-dropdown-picker";
+
+import GamePlayerInputs from "../../components/game/GamePlayerInputs";
 import ScreenPrimaryButton from "../../components/UI/ScreenPrimaryButton";
-import IncDecButton from "../../components/UI/IncDecButton";
+import IncDecControl from "../../components/game/controls/IncDecControl";
 import DefaultText from "../../components/UI/DefaultText";
 import HelpButton from "../../components/UI/HelpButton";
-import CreateGamePlayerRow from "../../components/game/CreateGamePlayerRow";
 
 import Colors from "../../constants/colors";
 import Defaults from "../../constants/defaults";
-import Constants from "../../constants/constants";
+import TKO from "../../helpers/helperFunctions";
 
 const CreateGameScreen = (props) => {
+  const previousGameId =
+    props.route.params === undefined ? undefined : props.route.params.previousGameId;
+  const previousGame =
+    previousGameId !== undefined
+      ? useSelector((state) => state.game.games[previousGameId])
+      : undefined;
+  const settings = useSelector((state) => state.settings);
+
   const navigation = useNavigation();
+
+  const getDefaultPlayerNames = () => {
+    let defaultPlayerNames = [];
+
+    // if (previousGameId !== undefined) {
+    //   previousGame.players.forEach((player) => {
+    //     defaultPlayerNames.push(player.name);
+    //   });
+    // } else {
+    // for (let i = 0; i < settings.numPlayers; i++) {
+    //   defaultPlayerNames.push("");
+    // }
+    // }
+
+    defaultPlayerNames = settings.playerNames;
+
+    return defaultPlayerNames;
+  };
 
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
-  const [playerNames, setPlayerNames] = useState(["", "", "", ""]);
   const [isGameStartable, setIsGameStartable] = useState(true);
-  const [numRounds, setNumRounds] = useState("10");
-  const [numPlayers, setNumPlayers] = useState("4");
-  const [scoringType, setScoringType] = useState(Constants.scoringType.rascalEnhanced);
+  const [playerNames, setPlayerNames] = useState(getDefaultPlayerNames());
+  const [numRounds, setNumRounds] = useState(settings.numRounds.toString());
+  const [numPlayers, setNumPlayers] = useState(settings.numPlayers.toString());
+  const [scoringType, setScoringType] = useState(settings.scoringType);
+  const [scoringTypeDropdownOpen, setScoringTypeDropdownOpen] = useState(false);
 
-  const incOrDecRoundsHandler = (direction) => {
-    const minNumRounds = 1;
-    const newNumRounds = direction === "lower" ? parseInt(numRounds) - 1 : parseInt(numRounds) + 1;
+  const [scoringTypes, setScoringTypes] = useState(TKO.getScoringTypeItems());
 
-    if (isNaN(newNumRounds) || newNumRounds < minNumRounds) {
-      const message = "You need to play at least one round!";
-      Alert.alert("Arrrrg!", message, [
-        { text: "OK", style: "destructive", onPress: resetInputHandler("numRounds") },
-      ]);
-      return;
-    }
-
-    setNumRounds(newNumRounds.toString());
-  };
-
-  const incOrDecNumPlayersHandler = (direction) => {
-    const minNumPlayers = 2;
-    const newNumPlayers =
-      direction === "lower" ? parseInt(numPlayers) - 1 : parseInt(numPlayers) + 1;
-    const newPlayerNames = playerNames;
-
-    if (isNaN(newNumPlayers) || newNumPlayers < minNumPlayers) {
-      const message = "You need to play at least two players!";
-      Alert.alert("Arrrrg!", message, [
-        { text: "OK", style: "destructive", onPress: resetInputHandler("numPlayers") },
-      ]);
-      return;
-    }
-
-    if (direction === "lower") {
-      newPlayerNames.pop();
-    } else {
-      newPlayerNames.push("");
-    }
-
-    setNumPlayers(newNumPlayers.toString());
-    setPlayerNames(newPlayerNames);
-  };
-
-  const resetInputHandler = (input) => {
-    if (input === "numRounds") {
-      setNumRounds("1");
-    } else {
-      setNumPlayers("2");
-    }
+  const updateNumRoundsState = (controlValue) => {
+    //update local state
+    setNumRounds(controlValue);
   };
 
   const updatePlayerNamesState = (newPlayerName, index) => {
@@ -93,6 +80,18 @@ const CreateGameScreen = (props) => {
       }
     }
 
+    setPlayerNames(newPlayerNames);
+  };
+
+  const updateNumPlayersState = (controlValue) => {
+    const newPlayerNames = playerNames;
+    const difference = parseInt(controlValue) - playerNames.length;
+
+    if (difference === -1) newPlayerNames.pop("");
+    if (difference === 1) newPlayerNames.push("");
+
+    //update local state
+    setNumPlayers(controlValue);
     setPlayerNames(newPlayerNames);
   };
 
@@ -125,89 +124,59 @@ const CreateGameScreen = (props) => {
     <KeyboardAvoidingView
       behavior={Platform.OS == "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
-      keyboardVerticalOffset={60}
+      keyboardVerticalOffset={Platform.OS == "ios" ? 70 : 120}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.screen}>
+      <View style={styles.screen}>
+        <ScrollView style={styles.scrollView}>
           <View style={styles.row}>
-            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+            <View style={styles.labelContainer}>
               <DefaultText style={styles.label}>Scoring System:</DefaultText>
               <HelpButton helpKey="scoringSystem" />
             </View>
-            <SelectDropdown
-              data={Constants.scoringTypes}
-              onSelect={(selectedItem, index) => {
-                setScoringType(index);
-              }}
-              defaultValueByIndex={Constants.scoringType.rascalEnhanced}
-              buttonTextAfterSelection={(selectedItem, index) => {
-                // text represented after item is selected
-                // if data array is an array of objects then return selectedItem.property to render after item is selected
-                return selectedItem;
-              }}
-              rowTextForSelection={(item, index) => {
-                // text represented for each item in dropdown
-                // if data array is an array of objects then return item.property to represent item in dropdown
-                return item;
-              }}
-              buttonStyle={styles.dropdownBtnStyle}
-              buttonTextStyle={styles.dropdownBtnTxtStyle}
-              renderDropdownIcon={() => {
-                return <FontAwesome name="chevron-down" color={"#444"} size={18} />;
-              }}
-              dropdownIconPosition={"right"}
-              dropdownStyle={styles.dropdownDropdownStyle}
-              rowStyle={styles.dropdownRowStyle}
-              rowTextStyle={styles.dropdownRowTxtStyle}
+            <Dropdown
+              open={scoringTypeDropdownOpen}
+              value={scoringType}
+              items={scoringTypes}
+              setOpen={setScoringTypeDropdownOpen}
+              setValue={setScoringType}
+              setItems={setScoringTypes}
+              containerStyle={styles.dropdownContainerStyle}
+              textStyle={styles.dropdownTextStyle}
+              style={styles.dropdownStyle}
             />
           </View>
-          <View style={styles.row}>
+          <View style={[styles.row, Platform.OS !== "android" ? { zIndex: -1 } : null]}>
             <DefaultText style={styles.label}>Number of Rounds:</DefaultText>
-            <View style={styles.dataContainer}>
-              <IncDecButton incOrDec={"dec"} onPress={incOrDecRoundsHandler.bind(this, "lower")} />
-              <DefaultText style={styles.incDecValue}>{numRounds}</DefaultText>
-              <IncDecButton incOrDec={"inc"} onPress={incOrDecRoundsHandler.bind(this, "higher")} />
-            </View>
+            <IncDecControl
+              controlValue={numRounds}
+              setControlValue={updateNumRoundsState}
+              minValue={1}
+              errorMessage={"You need at least 1 round to play!"}
+            />
           </View>
-          <View style={styles.row}>
+          <View style={[styles.row, Platform.OS !== "android" ? { zIndex: -1 } : null]}>
             <DefaultText style={styles.label}>Number of Players:</DefaultText>
-            <View style={styles.dataContainer}>
-              <IncDecButton
-                incOrDec={"dec"}
-                onPress={incOrDecNumPlayersHandler.bind(this, "lower")}
-              />
-              <DefaultText style={styles.incDecValue}>{numPlayers}</DefaultText>
-              <IncDecButton
-                incOrDec={"inc"}
-                onPress={incOrDecNumPlayersHandler.bind(this, "higher")}
-              />
-            </View>
+            <IncDecControl
+              controlValue={numPlayers}
+              setControlValue={updateNumPlayersState}
+              minValue={2}
+              errorMessage={"You need at least 2 players to play!"}
+            />
           </View>
-          <ScrollView contentContainerStyle={styles.scrollView}>
-            <View style={styles.playerNamesContainer}>
-              {playerNames.map((playerName, index) => {
-                return (
-                  <CreateGamePlayerRow
-                    key={index}
-                    playerNameIndex={index}
-                    playerNames={playerNames}
-                    setPlayerNames={updatePlayerNamesState}
-                  />
-                );
-              })}
-            </View>
-          </ScrollView>
-
-          <View style={styles.buttonContainer}>
-            {isGameStartable ? (
-              <ScreenPrimaryButton
-                onPress={confirmNewGameHandler}
-                buttonText={"Save Game Settings"}
-              />
-            ) : null}
-          </View>
+          <GamePlayerInputs
+            playerNames={playerNames}
+            updatePlayerNamesState={updatePlayerNamesState}
+          />
+        </ScrollView>
+        <View style={styles.buttonContainer}>
+          {isGameStartable ? (
+            <ScreenPrimaryButton
+              onPress={confirmNewGameHandler}
+              buttonText={"Save Game Settings"}
+            />
+          ) : null}
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     </KeyboardAvoidingView>
   );
 };
@@ -234,44 +203,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "100%",
-    borderBottomWidth: 1,
-    borderColor: Colors.theme.grey2,
     padding: 5,
   },
   label: {
     fontSize: Defaults.largeFontSize,
-    fontWeight: "bold",
+    fontFamily: Defaults.fontFamily.bold,
     paddingRight: 5,
   },
-  dataContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  numRoundsContainer: {
-    paddingTop: 15,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  incDecValue: {
-    fontFamily: "open-sans",
-    fontSize: Defaults.largeFontSize,
-    textAlign: "center",
-    width: Defaults.isSmallScreen ? 35 : 40,
-    height: Defaults.isSmallScreen ? 30 : 35,
-    textAlignVertical: "center",
-    paddingTop: Platform.OS === "ios" ? 3 : 0,
-    borderColor: Colors.theme.grey4,
-    borderWidth: 1,
-  },
-  playerNamesContainer: {
-    marginTop: 10,
-    alignItems: "center",
-  },
+  labelContainer: { flexDirection: "row", justifyContent: "center", alignItems: "center" },
   scrollView: {
-    paddingBottom: 30,
+    zIndex: Platform.OS !== "android" ? -1 : null,
   },
   header: {
     width: "100%",
@@ -279,20 +220,18 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
   },
-  dropdownBtnStyle: {
-    height: 40,
-    backgroundColor: "#FFF",
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: "#444",
+  dropdownContainerStyle: {
+    width: Defaults.isSmallScreen ? 140 : 170,
   },
-  dropdownBtnTxtStyle: { color: "#444", textAlign: "left" },
-  dropdownDropdownStyle: { backgroundColor: "#EFEFEF" },
-  dropdownRowStyle: {
-    backgroundColor: "#EFEFEF",
-    borderBottomColor: "#C5C5C5",
+  dropdownTextStyle: {
+    color: Colors.theme.grey9,
+    fontFamily: Defaults.fontFamily.regular,
+    fontSize: Defaults.fontSize,
   },
-  dropdownRowTxtStyle: { color: "#444", textAlign: "left" },
+  dropdownStyle: {
+    height: 35,
+    zIndex: 10,
+  },
 });
 
 export default CreateGameScreen;

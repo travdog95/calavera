@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     fontSize: Defaults.largeFontSize,
   },
   emphasis: {
-    fontFamily: "open-sans-bold",
+    fontFamily: Defaults.fontFamily.bold,
   },
   playerNamesContainer: {
     width: "100%",

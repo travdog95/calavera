@@ -6,7 +6,7 @@ import { ModalResultType } from "react-native-use-modal";
 import { BorderlessButton } from "react-native-gesture-handler";
 
 import { useHelpModal } from "./HelpModal";
-import Constants from "../../constants/constants";
+import Help from "../../constants/help";
 
 const HelpButton = (props) => {
   const helpKey = props.helpKey;
@@ -18,10 +18,10 @@ const HelpButton = (props) => {
 
   const handlePress = useCallback(async () => {
     const result = await helpModal.show({
-      title: Constants.help[helpKey].title,
-      message: Constants.help[helpKey].helpText,
-      url: Constants.help[helpKey].url,
-      urlText: Constants.help[helpKey].urlText,
+      title: Help[helpKey].title,
+      message: Help[helpKey].helpText,
+      url: Help[helpKey].url,
+      urlText: Help[helpKey].urlText,
     });
 
     if (result.type === ModalResultType.CONFIRM) {

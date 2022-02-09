@@ -7,18 +7,19 @@ import AudioScreen, {
 } from "../screens/HomeTabNavigator/AudioScreen";
 
 import Colors from "../constants/colors";
+import Defaults from "../constants/defaults";
 
 const defaultNavOptions = {
   headerStyle: {
-    backgroundColor: Platform.OS === "android" ? Colors.theme.dark4 : "",
+    backgroundColor: Platform.OS === "android" ? Colors.theme.grey9 : "",
   },
   headerTitleStyle: {
-    fontFamily: "open-sans-bold",
+    fontFamily: Defaults.fontFamily.bold,
   },
   headerBackTitleStyle: {
-    fontFamily: "open-sans",
+    fontFamily: Defaults.fontFamily.regular,
   },
-  headerTintColor: Platform.OS === "android" ? "white" : Colors.theme.dark4,
+  headerTintColor: Platform.OS === "android" ? "white" : Colors.theme.grey9,
 };
 
 const AudioStackNavigator = createStackNavigator();

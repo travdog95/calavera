@@ -4,6 +4,7 @@ import { Paragraph, Button } from "react-native-paper";
 
 import Colors from "../../constants/colors";
 import Constants from "../../constants/constants";
+import Defaults from "../../constants/defaults";
 
 const ScoringSystemHelpText = (props) => {
   return (
@@ -32,10 +33,11 @@ const ScoringSystemHelpText = (props) => {
 };
 
 const styles = StyleSheet.create({
-  paragraph: { marginBottom: 10, fontSize: 16 },
+  paragraph: { marginBottom: 10, fontSize: 16, fontFamily: Defaults.fontFamily.regular },
   url: {
     color: Colors.urlText,
     textDecorationLine: "underline",
+    fontFamily: Defaults.fontFamily.bold,
   },
 });
 

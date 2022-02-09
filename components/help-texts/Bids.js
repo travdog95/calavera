@@ -6,6 +6,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 
 import Constants from "../../constants/constants";
 import Colors from "../../constants/colors";
+import Defaults from "../../constants/defaults";
 
 const BidsHelpText = (props) => {
   const currentGameId = useSelector((state) => state.game.currentGameId);
@@ -44,10 +45,15 @@ const BidsHelpText = (props) => {
 };
 
 const styles = StyleSheet.create({
-  paragraph: { marginBottom: 10, fontSize: 16 },
+  paragraph: {
+    marginBottom: 10,
+    fontSize: Defaults.smallFontSize,
+    fontFamily: Defaults.fontFamily.regular,
+  },
   url: {
     color: Colors.urlText,
     textDecorationLine: "underline",
+    fontFamily: Defaults.fontFamily.bold,
   },
 });
 

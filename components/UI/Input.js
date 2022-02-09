@@ -2,7 +2,6 @@ import React from "react";
 import { TextInput, StyleSheet } from "react-native";
 
 import Colors from "../../constants/colors";
-import Defaults from "../../constants/defaults";
 
 const Input = (props) => {
   // {...props} allows the parent to forward all the props to the custom component

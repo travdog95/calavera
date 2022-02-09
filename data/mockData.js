@@ -22,9 +22,10 @@ export const MENUITEMS = [
   new MenuItem("1", "Messages", "chatbubbles-outline", "chatbubbles", "Ionicons"),
   new MenuItem("6", "Audio", "audiotrack", "audiotrack", "MaterialIcons"),
   new MenuItem("2", "Friends", "people-outline", "people", "Ionicons"),
-  new MenuItem("3", "Games", "skull-outline", "skull", "Ionicons"),
+  new MenuItem("3", "Games", "cards-outline", "cards", "MaterialCommunityIcons"),
   new MenuItem("4", "Standings", "list-outline", "list", "Ionicons"),
   new MenuItem("5", "Profile", "person-circle-outline", "person-circle", "Ionicons"),
+  new MenuItem("7", "Settings", "settings-outline", "settings", "Ionicons"),
 ];
 
 export const RPD = [

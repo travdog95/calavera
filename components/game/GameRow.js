@@ -75,9 +75,9 @@ const GameRow = (props) => {
               <DefaultText style={styles.scoringTypeText}>
                 {Constants.scoringTypes[game.scoringType]}
               </DefaultText>
-              <DefaultText style={styles.metaData}>
+              {/* <DefaultText style={styles.metaData}>
                 ID: {game.id} Round {game.scoringRound}
-              </DefaultText>
+              </DefaultText> */}
               <DefaultText style={styles.metaData}>
                 {gameDate} @ {gameTime}
               </DefaultText>

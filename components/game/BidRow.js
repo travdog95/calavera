@@ -12,10 +12,27 @@ import Colors from "../../constants/colors";
 
 const BidRow = (props) => {
   const scoringType = props.scoringType;
-  const grapeshotColor =
-    parseInt(props.cannonTypes[props.playerIndex]) === 0 ? Colors.theme.dark4 : Colors.theme.grey4;
-  const cannonBallColor =
-    parseInt(props.cannonTypes[props.playerIndex]) === 1 ? Colors.theme.dark4 : Colors.theme.grey4;
+
+  let grapeshot = { color: "", buttonBorderColor: "", buttonBackgroundColor: "" };
+  let cannonBall = { color: "", buttonBorderColor: "", buttonBackgroundColor: "" };
+  const selectedColors = {
+    color: "white",
+    buttonBackgroundColor: Colors.theme.dark1,
+    buttonBorderColor: Colors.theme.dark1,
+  };
+  const unSelectedColors = {
+    color: Colors.theme.grey4,
+    buttonBackgroundColor: Colors.theme.grey2,
+    buttonBorderColor: Colors.theme.grey4,
+  };
+  //Determine state of Cannon Load button to load colors
+  if (parseInt(props.cannonTypes[props.playerIndex]) === 0) {
+    grapeshot = selectedColors;
+    cannonBall = unSelectedColors;
+  } else {
+    grapeshot = unSelectedColors;
+    cannonBall = selectedColors;
+  }
 
   const numberInputHandler = (inputText) => {
     props.setBids(inputText.replace(/[^0-9]/g, ""), props.playerIndex);
@@ -66,11 +83,29 @@ const BidRow = (props) => {
       </View>
       {scoringType === Constants.scoringType.rascalEnhanced ? (
         <View style={styles.cannonContainer}>
-          <CustomActionButton style={styles.cannonButton} onPress={cannonTypeHandler.bind(this, 0)}>
-            <FontAwesome5 name="hand-paper" size={24} color={grapeshotColor} />
+          <CustomActionButton
+            style={[
+              styles.cannonButton,
+              {
+                backgroundColor: grapeshot.buttonBackgroundColor,
+                borderColor: grapeshot.buttonBorderColor,
+              },
+            ]}
+            onPress={cannonTypeHandler.bind(this, 0)}
+          >
+            <FontAwesome5 name="hand-paper" size={24} color={grapeshot.color} />
           </CustomActionButton>
-          <CustomActionButton style={styles.cannonButton} onPress={cannonTypeHandler.bind(this, 1)}>
-            <FontAwesome5 name="hand-rock" size={24} color={cannonBallColor} />
+          <CustomActionButton
+            style={[
+              styles.cannonButton,
+              {
+                backgroundColor: cannonBall.buttonBackgroundColor,
+                borderColor: cannonBall.buttonBorderColor,
+              },
+            ]}
+            onPress={cannonTypeHandler.bind(this, 1)}
+          >
+            <FontAwesome5 name="hand-rock" size={24} color={cannonBall.color} />
           </CustomActionButton>
         </View>
       ) : null}
@@ -98,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   bid: {
-    fontFamily: "open-sans",
+    fontFamily: Defaults.fontFamily.regular,
     fontSize: Defaults.largeFontSize,
     textAlign: "center",
     width: Defaults.isSmallScreen ? 35 : 40,
@@ -112,8 +147,8 @@ const styles = StyleSheet.create({
   },
   cannonButton: {
     padding: 5,
-    backgroundColor: Colors.theme.grey2,
-    borderColor: Colors.theme.grey4,
+    // backgroundColor: Colors.theme.grey2,
+    // borderColor: Colors.theme.grey4,
     borderWidth: 1,
     marginLeft: 5,
   },

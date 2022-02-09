@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, ScrollView, StyleSheet, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { HeaderButtons } from "react-navigation-header-buttons";
+import { useKeepAwake } from "expo-keep-awake";
 
 import {
   updatePlayerDetail,
@@ -26,6 +27,8 @@ import Colors from "../../constants/colors";
 import Constants from "../../constants/constants";
 
 const ScoresScreen = (props) => {
+  useKeepAwake();
+
   const currentGameId = useSelector((state) => state.game.currentGameId);
   const game = useSelector((state) => state.game.games[currentGameId]);
 
@@ -35,8 +38,8 @@ const ScoresScreen = (props) => {
   const round = parseInt(props.route.params.round);
   const roundKey = `r${round}`;
   const roundDetail = game.roundData[roundKey];
-  // const roundBonusDetail = game.roundBonusesDetail[`r${round}`];
   const finalRound = game.numRounds;
+  const totalBids = parseInt(props.route.params.totalBids);
 
   const dispatch = useDispatch();
 
@@ -347,25 +350,12 @@ const ScoresScreen = (props) => {
     setBaseScores(newBaseScores);
   };
 
-  // useEffect(() => {
-  //   props.navigation.setOptions({
-  //     headerRight: () => (
-  //       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-  //         <HeaderButtonBids />
-
-  //         <HeaderButtonLeaderboard />
-  //         {/* <Item title="Save" iconName="save" onPress={updateScoresHandler} /> */}
-  //       </HeaderButtons>
-  //     ),
-  //   });
-  // }, [updateScoresHandler]);
-
   const headerText = `Round ${round}`;
 
   return (
     <View style={styles.screen}>
-      <RoundHeader round={round} headerText={headerText} />
-      <RoundNumCards numCards={numCards} setNumCards={updateNumCardsState} />
+      <RoundHeader round={round} headerText={headerText} totalBids={totalBids} showBids={true} />
+      <RoundNumCards numCards={numCards} setNumCards={updateNumCardsState} showBids={true} />
       <ScrollView contentContainerStyle={styles.playerScoresContainer}>
         {players.map((player, index) => {
           const playerDetail = roundDetail[player.id];
@@ -401,8 +391,6 @@ const ScoresScreen = (props) => {
 };
 
 export const screenOptions = (navData) => {
-  // const round = navData.route.params.round;
-
   return {
     headerTitle: `Scores`,
     headerRight: () => (
@@ -417,17 +405,7 @@ export const screenOptions = (navData) => {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: Colors.screenBackgroundColor },
-  playerScoresContainer: {
-    borderColor: "black",
-    borderTopWidth: 1,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 10,
-    backgroundColor: Colors.theme.light1,
-  },
+  playerScoresContainer: {},
   buttonContainer: {
     paddingHorizontal: 15,
     paddingTop: 15,

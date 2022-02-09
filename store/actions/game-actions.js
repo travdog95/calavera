@@ -7,13 +7,13 @@ export const UPDATE_ROUND_BONUSES = "UPDATE_ROUND_BONUSES";
 export const UPDATE_TOTAL_SCORES = "UPDATE_TOTAL_SCORES";
 export const COMPLETE_CURRENT_GAME = "COMPLETE_CURRENT_GAME";
 export const LOAD_GAMES = "LOAD_GAMES";
-export const DELETE_GAMES = "DELETE_GAMES";
+// export const DELETE_GAMES = "DELETE_GAMES";
 export const DELETE_GAME = "DELETE_GAME";
 export const SET_CURRENT_GAME = "SET_CURRENT_GAME";
 export const SET_IS_LAST_ROUND_SCORED = "SET_IS_LAST_ROUND_SCORED";
 export const UPDATE_NUM_CARDS_BY_ROUND = "UPDATE_NUM_CARDS_BY_ROUND";
 
-import { insertGame, fetchGames, deleteGameData, deleteGameFromDB } from "../../helpers/db";
+import { insertGame, fetchAll, dropTable, deleteGameFromDB } from "../../helpers/db";
 
 export const createGame = (
   players,
@@ -105,7 +105,7 @@ export const completeCurrentGame = (winner) => {
 export const loadGames = () => {
   return async (dispatch) => {
     try {
-      const dbResult = await fetchGames();
+      const dbResult = await fetchAll("games");
       dispatch({ type: LOAD_GAMES, games: dbResult.rows._array });
     } catch (err) {
       console.log(err);
@@ -117,7 +117,7 @@ export const loadGames = () => {
 export const deleteGames = () => {
   return async (dispatch) => {
     try {
-      const dbResult = await deleteGameData();
+      const dbResult = await dropTable("games");
       dispatch({ type: LOAD_GAMES, games: [] });
     } catch (err) {
       console.log(err);

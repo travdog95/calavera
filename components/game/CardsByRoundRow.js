@@ -5,8 +5,6 @@ import Input from "../UI/Input";
 import DefaultText from "../UI/DefaultText";
 import IncDecButton from "../UI/IncDecButton";
 import Defaults from "../../constants/defaults";
-import Constants from "../../constants/constants";
-import Colors from "../../constants/colors";
 
 const CardsByRoundRow = (props) => {
   const round = parseInt(props.index) + 1;
@@ -72,14 +70,14 @@ const styles = StyleSheet.create({
   },
   roundLabelText: {
     fontSize: Defaults.largeFontSize,
-    fontWeight: "bold",
+    fontFamily: Defaults.fontFamily.bold,
   },
   cardsByRoundContainer: {
     flexDirection: "row",
     width: "50%",
   },
   cardsByRound: {
-    fontFamily: "open-sans",
+    fontFamily: Defaults.fontFamily.regular,
     fontSize: Defaults.largeFontSize,
     textAlign: "center",
     width: Defaults.isSmallScreen ? 35 : 40,

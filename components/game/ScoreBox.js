@@ -15,7 +15,6 @@ const ScoreBox = (props) => {
 
   let wagerIndicator = "";
   let cellBackgroundColor = "";
-  // const game = useSelector((state) => state.game.currentGame);
   const currentGameId = useSelector((state) => state.game.currentGameId);
   const game = useSelector((state) => state.game.games[currentGameId]);
 
@@ -23,16 +22,16 @@ const ScoreBox = (props) => {
   const round = parseInt(props.round);
 
   let totalScoreStyle = {
-    fontFamily: "open-sans-bold",
+    fontFamily: Defaults.fontFamily.bold,
     fontSize: 16,
     color: "black",
   };
   if (props.isRoundLeader) {
-    totalScoreStyle.color = Colors.theme.main3;
+    totalScoreStyle.color = Colors.danger;
   }
 
   if (round === currentRound) {
-    cellBackgroundColor = Colors.theme.light3Shade;
+    cellBackgroundColor = Colors.theme.lightShade;
   } else {
     cellBackgroundColor = round % 2 === 0 ? Colors.theme.grey2 : "white";
   }
@@ -44,72 +43,48 @@ const ScoreBox = (props) => {
   const isAligned1Indicator = playerDetail.isAligned1 ? "*" : "";
   const isAligned2Indicator = playerDetail.isAligned2 ? "*" : "";
 
-  //ONly allow user to go to scores for current round and previous round
-  let isPressable = false;
-  // if (round === currentRound) isPressable = true;
-  // if (round < currentRound) isPressable = true;
-
   return (
     <View>
-      <Pressable
-        style={({ pressed }) => [
-          {
-            backgroundColor: pressed && isPressable ? Colors.theme.grey1 : cellBackgroundColor,
+      <View
+        style={{
+          ...styles.roundContainer,
+          ...{
+            width: props.roundPlayerDetailWidth,
+            backgroundColor: cellBackgroundColor,
           },
-          {
-            ...styles.roundContainer,
-            ...{
-              width: props.roundPlayerDetailWidth,
-            },
-          },
-        ]}
-        onPress={() => {
-          //set current round
-          //dispatch(setCurrentRound(round));
-
-          if (isPressable) {
-            dispatch(setSelectedRound(round));
-
-            //navigate to Scores screen
-            navigation.navigate("Scores", {
-              round: round,
-            });
-          }
         }}
       >
-        <View
-          style={{
-            ...styles.roundContainer,
-            ...{
-              width: props.roundPlayerDetailWidth,
-              backgroundColor: cellBackgroundColor,
-            },
-          }}
-        >
-          <View style={styles.topRowContainer}>
-            <View style={styles.bidContainer}>
-              <Text style={styles.bidText}>{playerDetail.bid}</Text>
+        {parseInt(round) > game.scoringRound ? (
+          <View>
+            <Text></Text>
+          </View>
+        ) : (
+          <View>
+            <View style={styles.topRowContainer}>
+              <View style={styles.bidContainer}>
+                <Text style={styles.bidText}>{playerDetail.bid}</Text>
+              </View>
+              <View style={styles.scoreContainer}>
+                <Text>{roundScore}</Text>
+              </View>
+              <View style={styles.allianceContainer}>
+                <Text>{isAligned1Indicator}</Text>
+              </View>
             </View>
-            <View style={styles.scoreContainer}>
-              <Text style={styles.score}>{roundScore}</Text>
-            </View>
-            <View style={styles.allianceContainer}>
-              <Text style={styles.alliance}>{isAligned1Indicator}</Text>
+            <View style={styles.bottomRowContainer}>
+              <View style={styles.wagerContainer}>
+                <Text>{wagerIndicator}</Text>
+              </View>
+              <View style={styles.totalScoreContainer}>
+                <Text style={totalScoreStyle}>{playerDetail.totalScore}</Text>
+              </View>
+              <View style={styles.allianceContainer}>
+                <Text>{isAligned2Indicator}</Text>
+              </View>
             </View>
           </View>
-          <View style={styles.bottomRowContainer}>
-            <View style={styles.wagerContainer}>
-              <Text>{wagerIndicator}</Text>
-            </View>
-            <View style={styles.totalScoreContainer}>
-              <Text style={totalScoreStyle}>{playerDetail.totalScore}</Text>
-            </View>
-            <View style={styles.allianceContainer}>
-              <Text style={styles.alliance}>{isAligned2Indicator}</Text>
-            </View>
-          </View>
-        </View>
-      </Pressable>
+        )}
+      </View>
     </View>
   );
 };
@@ -126,7 +101,7 @@ const styles = StyleSheet.create({
   topRowContainer: {
     flexDirection: "row",
     flex: 1,
-    fontFamily: "open-sans",
+    fontFamily: Defaults.fontFamily.regular,
     fontSize: 12,
     width: "100%",
     alignItems: "center",
