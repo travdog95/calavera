@@ -118,6 +118,7 @@ const GameDefaultsScreen = (props) => {
                 textStyle={styles.dropdownTextStyle}
                 style={styles.dropdownStyle}
                 onChangeValue={(value) => saveSettings({ scoringType: value })}
+                listMode={"SCROLLVIEW"}
               />
             </View>
             <View style={[styles.row, Platform.OS !== "android" ? { zIndex: -1 } : null]}>

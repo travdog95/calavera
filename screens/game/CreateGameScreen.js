@@ -25,12 +25,12 @@ import Defaults from "../../constants/defaults";
 import TKO from "../../helpers/helperFunctions";
 
 const CreateGameScreen = (props) => {
-  const previousGameId =
-    props.route.params === undefined ? undefined : props.route.params.previousGameId;
-  const previousGame =
-    previousGameId !== undefined
-      ? useSelector((state) => state.game.games[previousGameId])
-      : undefined;
+  // const previousGameId =
+  //   props.route.params === undefined ? undefined : props.route.params.previousGameId;
+  // const previousGame =
+  //   previousGameId !== undefined
+  //     ? useSelector((state) => state.game.games[previousGameId])
+  //     : undefined;
   const settings = useSelector((state) => state.settings);
 
   const navigation = useNavigation();
@@ -143,6 +143,7 @@ const CreateGameScreen = (props) => {
               containerStyle={styles.dropdownContainerStyle}
               textStyle={styles.dropdownTextStyle}
               style={styles.dropdownStyle}
+              listMode={"SCROLLVIEW"}
             />
           </View>
           <View style={[styles.row, Platform.OS !== "android" ? { zIndex: -1 } : null]}>
